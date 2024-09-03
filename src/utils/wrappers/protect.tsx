@@ -1,7 +1,7 @@
 import React, { ComponentType, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import Toaster from '../toaster';
-import Base from '@/screens/base_template';
+import BaseWrapper from '@/wrappers/base';
 
 const Protect = <Props extends Object>(Component: ComponentType<Props>) => {
   const ProtectedComponent = (props: Props) => {
@@ -17,7 +17,11 @@ const Protect = <Props extends Object>(Component: ComponentType<Props>) => {
     }, []);
 
     if (isAuthenticated === 1) return <Component {...props} />;
-    return <Base />;
+    return (
+      <BaseWrapper>
+        <div></div>
+      </BaseWrapper>
+    );
   };
   return ProtectedComponent;
 };

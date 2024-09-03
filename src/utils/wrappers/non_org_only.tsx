@@ -1,9 +1,9 @@
 import React, { ComponentType, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import Toaster from '../toaster';
-import Base from '@/screens/base_template';
 import { useSelector } from 'react-redux';
 import { userSelector } from '@/slices/userSlice';
+import BaseWrapper from '@/wrappers/base';
 
 const NonOrgOnlyAndProtect = <Props extends Object>(Component: ComponentType<Props>) => {
   const ProtectedComponent = (props: Props) => {
@@ -24,7 +24,11 @@ const NonOrgOnlyAndProtect = <Props extends Object>(Component: ComponentType<Pro
     }, []);
 
     if (isAuthenticated === 1) return <Component {...props} />;
-    return <Base />;
+    return (
+      <BaseWrapper>
+        <div></div>
+      </BaseWrapper>
+    );
   };
   return ProtectedComponent;
 };

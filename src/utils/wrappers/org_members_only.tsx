@@ -1,11 +1,11 @@
 import React, { ComponentType, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import Toaster from '../toaster';
-import OrgBase from '@/screens/org_base_template';
 import { useSelector } from 'react-redux';
 import { userSelector } from '@/slices/userSlice';
 import { currentOrgMembershipSelector, currentOrgSelector } from '@/slices/orgSlice';
 import { initialOrganization, initialOrganizationMembership } from '@/types/initials';
+import BaseWrapper from '@/wrappers/base';
 
 const OrgMembersOnlyAndProtect = <Props extends Object>(Component: ComponentType<Props>) => {
   const ProtectedComponent = (props: Props) => {
@@ -34,7 +34,11 @@ const OrgMembersOnlyAndProtect = <Props extends Object>(Component: ComponentType
     }, []);
 
     if (isAuthenticated === 1) return <Component {...props} />;
-    return <OrgBase />;
+    return (
+      <BaseWrapper>
+        <div></div>
+      </BaseWrapper>
+    );
   };
   return ProtectedComponent;
 };
