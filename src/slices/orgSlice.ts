@@ -52,8 +52,8 @@ export const orgSlice = createSlice({
       state.currentOrg.coverPic = action.payload.user?.profilePic;
       state.currentOrg.teams = action.payload.teams || [];
     },
-    setCurrentOrgRole:(state, action: PayloadAction<string>) => {
-      state.currentOrgMembership.role= action.payload;
+    setCurrentOrgRole: (state, action: PayloadAction<string>) => {
+      state.currentOrgMembership.role = action.payload;
     },
     setCurrentOrgTeams: (state, action: PayloadAction<Team[]>) => {
       state.currentOrg.teams = action.payload;
@@ -84,7 +84,8 @@ export const orgSlice = createSlice({
   },
 });
 
-export const { setCurrentOrg, setCurrentOrgRole, setCurrentOrgTeams, setCurrentOrgMembership, resetCurrentOrg } = orgSlice.actions;
+export const { setCurrentOrg, setCurrentOrgRole, setCurrentOrgTeams, setCurrentOrgMembership, resetCurrentOrg } =
+  orgSlice.actions;
 
 export default orgSlice.reducer;
 

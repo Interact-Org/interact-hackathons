@@ -1,5 +1,5 @@
 import { RootState } from '@/store';
-import { EventBookmark, OpeningBookmark, OrganizationMembership, PostBookmark, ProjectBookmark, User } from '@/types';
+import { OrganizationMembership, User } from '@/types';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -16,7 +16,6 @@ export interface UserState {
   tagline: string;
   email: string;
   phoneNo: string;
-  resume: string;
   following: string[];
   likes: string[];
   dislikes: string[];
@@ -25,10 +24,6 @@ export interface UserState {
   personalChatSlices: ChatSlice[];
   profilePic: string;
   coverPic: string;
-  isLoggedIn: boolean;
-  isVerified: boolean;
-  isOnboardingComplete: boolean;
-  isPasswordSetupComplete: boolean;
   organizationMemberships: OrganizationMembership[];
   registeredEvents: string[];
   githubUsername: string;
@@ -44,8 +39,6 @@ const initialState: UserState = {
   tagline: '',
   email: '',
   phoneNo: '',
-  resume: '',
-  isLoggedIn: false,
   profilePic: '',
   coverPic: '',
   following: [],
@@ -54,9 +47,6 @@ const initialState: UserState = {
   links: [],
   chats: [],
   personalChatSlices: [],
-  isVerified: false,
-  isOnboardingComplete: false,
-  isPasswordSetupComplete: true,
   organizationMemberships: [],
   registeredEvents: [],
   githubUsername: '',
@@ -75,14 +65,9 @@ export const userSlice = createSlice({
       state.bio = action.payload.bio;
       state.tagline = action.payload.tagline;
       state.email = action.payload.email;
-      state.resume = action.payload.resume;
       state.profilePic = action.payload.profilePic;
       state.coverPic = action.payload.coverPic;
-      state.isLoggedIn = true;
       state.phoneNo = action.payload.phoneNo;
-      state.isVerified = action.payload.isVerified;
-      state.isOnboardingComplete = action.payload.isOnboardingComplete;
-      state.isPasswordSetupComplete = true;
       state.links = action.payload.links;
       state.chats = [];
       state.personalChatSlices = [];
@@ -102,12 +87,9 @@ export const userSlice = createSlice({
       state.bio = '';
       state.tagline = '';
       state.email = '';
-      state.resume = '';
       state.profilePic = 'default.jpg';
       state.coverPic = 'default.jpg';
-      state.isLoggedIn = false;
       state.phoneNo = '';
-      state.isVerified = false;
       state.chats = [];
       state.personalChatSlices = [];
       state.following = [];
@@ -115,8 +97,6 @@ export const userSlice = createSlice({
       state.dislikes = [];
       state.links = [];
       state.organizationMemberships = [];
-      state.isOnboardingComplete = false;
-      state.isPasswordSetupComplete = true;
       state.registeredEvents = [];
       state.githubUsername = '';
       state.createdAt = '';
@@ -166,18 +146,6 @@ export const userSlice = createSlice({
     setPhoneNumber: (state, action: PayloadAction<string>) => {
       state.phoneNo = action.payload;
     },
-    setResume: (state, action: PayloadAction<string>) => {
-      state.resume = action.payload;
-    },
-    setVerificationStatus: (state, action: PayloadAction<boolean>) => {
-      state.isVerified = action.payload;
-    },
-    setOnboardingStatus: (state, action: PayloadAction<boolean>) => {
-      state.isOnboardingComplete = action.payload;
-    },
-    setPasswordSetupStatus: (state, action: PayloadAction<boolean>) => {
-      state.isPasswordSetupComplete = action.payload;
-    },
     setOrganizationMemberships: (state, action: PayloadAction<OrganizationMembership[]>) => {
       state.organizationMemberships = action.payload;
     },
@@ -208,10 +176,6 @@ export const {
   setPersonalChatSlices,
   setEmail,
   setPhoneNumber,
-  setResume,
-  setVerificationStatus,
-  setOnboardingStatus,
-  setPasswordSetupStatus,
   setOrganizationMemberships,
   setRegisteredEvents,
   setGithubUsername,
