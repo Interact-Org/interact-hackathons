@@ -755,6 +755,8 @@ export interface Hackathon {
   links?: string[];
   startTime: Date;
   endTime: Date;
+  teamFormationStartTime: Date;
+  teamFormationEndTime: Date;
   location: string;
   minTeamSize: number;
   maxTeamSize: number;
