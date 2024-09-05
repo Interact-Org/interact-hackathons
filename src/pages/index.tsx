@@ -1,4 +1,5 @@
 import useUserStateSynchronizer from '@/hooks/sync';
+import Protect from '@/utils/wrappers/protect';
 import React, { useEffect } from 'react';
 
 const Index = () => {
@@ -13,4 +14,4 @@ const Index = () => {
   return <div>Index</div>;
 };
 
-export default Index;
+export default Protect(Index);

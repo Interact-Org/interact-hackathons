@@ -7,7 +7,7 @@ import { resetConfig } from '@/slices/configSlice';
 import { setUser } from '@/slices/userSlice';
 import { User } from '@/types';
 import Cookies from 'js-cookie';
-import { BACKEND_URL } from '@/config/routes';
+import { BACKEND_URL, FRONTEND_URL } from '@/config/routes';
 import nookies from 'nookies';
 import { SERVER_ERROR } from '@/config/errors';
 import useUserStateFetcher from '@/hooks/user_fetcher';
@@ -44,7 +44,7 @@ const LoginCallback = ({ token }: Props) => {
           // socketService.connect(user.id);
           userStateFetcher();
           if (user.isVerified) window.location.replace('/');
-          else window.location.assign(`${process.env.FRONTEND_URL || ''}/verification`);
+          else window.location.assign(`${FRONTEND_URL || ''}/verification`);
         }
       })
       .catch(err => {

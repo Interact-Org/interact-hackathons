@@ -4,7 +4,7 @@ import { Eye, EyeClosed } from '@phosphor-icons/react';
 import { useState } from 'react';
 import Toaster from '@/utils/toaster';
 import Cookies from 'js-cookie';
-import { BACKEND_URL } from '@/config/routes';
+import { BACKEND_URL, FRONTEND_URL } from '@/config/routes';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/slices/userSlice';
 import Head from 'next/head';
@@ -64,7 +64,7 @@ const Login = () => {
           // socketService.connect(user.id);
           userStateFetcher();
           if (user.isVerified) window.location.replace('/');
-          else window.location.assign(`${process.env.FRONTEND_URL || ''}/verification`);
+          else window.location.assign(`${FRONTEND_URL || ''}/verification`);
         }
         setMutex(false);
       })
@@ -78,7 +78,7 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.assign(`${BACKEND_URL}/auth/google`);
+    window.location.assign(`${BACKEND_URL}/auth/google?origin=${process.env.NEXT_PUBLIC_HACKATHONS_URL || ''}`);
   };
 
   useEffect(() => {
@@ -172,14 +172,11 @@ const Login = () => {
             </div>
             <div className="w-full p-1 flex flex-col gap-2 items-center">
               <RegistrationButton />
-              <div
-                onClick={() => window.location.assign(`${process.env.FRONTEND_URL || ''}/signup`)}
-                className="text-gray-400 text-sm cursor-pointer"
-              >
+              <div onClick={() => window.location.assign(`${FRONTEND_URL || ''}/signup`)} className="text-gray-400 text-sm cursor-pointer">
                 Don&apos;t have an Account? <span className="font-medium underline underline-offset-2">Sign Up</span>
               </div>
               <div
-                onClick={() => window.location.assign(`${process.env.FRONTEND_URL || ''}/forgot_password`)}
+                onClick={() => window.location.assign(`${FRONTEND_URL || ''}/forgot_password`)}
                 className="text-gray-400 font-medium hover:underline hover:underline-offset-2 text-sm cursor-pointer"
               >
                 Forgot Password?

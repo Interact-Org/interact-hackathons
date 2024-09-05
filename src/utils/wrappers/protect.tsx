@@ -5,7 +5,6 @@ import BaseWrapper from '@/wrappers/base';
 
 const Protect = <Props extends Object>(Component: ComponentType<Props>) => {
   const ProtectedComponent = (props: Props) => {
-    //TODO do verification redirect here only
     const [isAuthenticated, setIsAuthenticated] = useState(0);
     useEffect(() => {
       const token = Cookies.get('token');
