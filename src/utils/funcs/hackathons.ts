@@ -15,7 +15,7 @@ export const getHackathonStage = (hackathon: Hackathon): string => {
   const now = moment();
 
   if (now.isBefore(startTime)) return HACKATHON_NOT_STARTED;
-  if (now.isAfter(endTime)) return HACKATHON_COMPLETED;
+  if (hackathon.isEnded) return HACKATHON_COMPLETED;
   if (now.isBetween(teamFormationStartTime, teamFormationEndTime)) return HACKATHON_TEAM_REGISTRATION;
   return HACKATHON_LIVE;
 };

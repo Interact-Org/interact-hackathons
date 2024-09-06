@@ -226,6 +226,7 @@ export interface Project {
   organizationID: string;
   organization: Organization | null;
   createdAt: Date;
+  updatedAt?: Date;
 }
 
 export interface PostTag {
@@ -765,6 +766,7 @@ export interface Hackathon {
   participants: User[];
   coordinators: User[];
   judges: User[];
+  isEnded: boolean;
   eventID: string;
   history: HackathonHistory[];
 }
@@ -810,6 +812,7 @@ export interface HackathonTeam {
   hackathonID: string;
   title: string;
   token: string;
+  track?: string;
   idea?: string;
   userID: string;
   user: User;

@@ -51,7 +51,7 @@ const Index = () => {
         <div className="text-2xl font-medium">Admin Hackathons</div>
         <div className="w-full flex flex-wrap gap-8">
           {adminHackathons.map(hackathon => (
-            <HackathonCard key={hackathon.id} hackathon={hackathon} />
+            <HackathonCard key={hackathon.id} hackathon={hackathon} isAdmin={true} />
           ))}
         </div>
       </div>
@@ -59,7 +59,7 @@ const Index = () => {
         <div className="text-2xl font-medium">Org Hackathons</div>
         <div className="w-full flex flex-wrap gap-8">
           {orgHackathons.map(hackathon => (
-            <HackathonCard key={hackathon.id} hackathon={hackathon} />
+            <HackathonCard key={hackathon.id} hackathon={hackathon} isAdmin={true} />
           ))}
         </div>
       </div>

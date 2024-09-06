@@ -1,23 +1,45 @@
 import { EVENT_PIC_URL } from '@/config/routes';
 import { Hackathon } from '@/types';
-import { getHackathonStage } from '@/utils/funcs/hackathons';
-import { Eye, Users } from '@phosphor-icons/react';
+import { getHackathonStage, HACKATHON_COMPLETED, HACKATHON_LIVE, HACKATHON_NOT_STARTED, HACKATHON_TEAM_REGISTRATION } from '@/utils/funcs/hackathons';
+import { Users } from '@phosphor-icons/react';
 import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface Props {
   hackathon: Hackathon;
+  isAdmin?: boolean;
 }
 
-const HackathonCard = ({ hackathon }: Props) => {
+const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
+  const URL = useMemo(() => {
+    const hackathonStage = getHackathonStage(hackathon);
+    let URL = '';
+    if (isAdmin) URL += 'admin';
+    else URL += 'participant';
+
+    switch (hackathonStage) {
+      case HACKATHON_NOT_STARTED:
+        URL = '#';
+        break;
+      case HACKATHON_TEAM_REGISTRATION:
+        if (isAdmin) URL += '/teams';
+        else URL += '/team';
+        break;
+      case HACKATHON_LIVE:
+        URL += '/live';
+        break;
+      case HACKATHON_COMPLETED:
+        URL += '/completed';
+        break;
+    }
+
+    return URL;
+  }, [hackathon, isAdmin]);
+
   return (
-    <Link
-      href={`/explore/event/${hackathon.id}`}
-      target="_blank"
-      className="w-96 rounded-xl hover:shadow-xl transition-ease-out-500 animate-fade_third"
-    >
+    <Link href={URL} target={URL == '#' ? '_self' : '_blank'} className="w-96 rounded-xl hover:shadow-xl transition-ease-out-500 animate-fade_third">
       <div className="w-full relative group">
         <div className="flex gap-1 top-2 right-2 absolute bg-white text-gray-500 text-xxs px-2 py-1 rounded-lg">
           <Users size={12} /> <div>{hackathon.noParticipants}</div>
