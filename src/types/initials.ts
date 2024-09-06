@@ -8,6 +8,7 @@ import {
   Education,
   Event,
   EventBookmark,
+  HackathonTeam,
   Invitation,
   Meeting,
   Membership,
@@ -525,4 +526,21 @@ export const initialTeam: Team = {
   noUsers: 0,
   tags: [],
   createdAt: new Date(),
+};
+
+export const initialHackathonTeam: HackathonTeam = {
+  id: '',
+  hackathonID: '',
+  title: '',
+  token: '',
+  idea: '',
+  userID: '',
+  user: initialUser,
+  projectID: '',
+  project: initialProject,
+  members: [],
+  isEliminated: false,
+  noComments: 0,
+  createdAt: new Date(),
+  comments: [],
 };
