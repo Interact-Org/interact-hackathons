@@ -1,8 +1,10 @@
 import { SERVER_ERROR } from '@/config/errors';
+import deleteHandler from '@/handlers/delete_handler';
 import getHandler from '@/handlers/get_handler';
 import postHandler from '@/handlers/post_handler';
 import CreateTeam from '@/sections/teams/create_team';
 import JoinTeam from '@/sections/teams/join_team';
+import TeamView from '@/sections/teams/team_view';
 import { HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
 import { GetServerSidePropsContext } from 'next';
@@ -54,10 +56,32 @@ const Team = ({ hid }: Props) => {
     }
   };
 
+  const handleDeleteTeam = async () => {
+    const URL = `/hackathons/${hid}/teams/${team?.id}`;
+    const res = await deleteHandler(URL);
+    if (res.statusCode == 204) {
+      setTeam(null);
+    } else {
+      if (res.data.message) Toaster.error(res.data.message);
+      else Toaster.error(SERVER_ERROR);
+    }
+  };
+
+  const handleLeaveTeam = async () => {
+    const URL = `/hackathons/${hid}/teams/${team?.id}/leave`;
+    const res = await deleteHandler(URL);
+    if (res.statusCode == 200) {
+      setTeam(null);
+    } else {
+      if (res.data.message) Toaster.error(res.data.message);
+      else Toaster.error(SERVER_ERROR);
+    }
+  };
+
   return (
     <div>
       {team ? (
-        <>Team View</>
+        <TeamView team={team} onDeleteTeam={handleDeleteTeam} onLeaveTeam={handleLeaveTeam} />
       ) : (
         <div className="w-full flex-center gap-12">
           {clickedOnCreateTeam && <CreateTeam setShow={setClickedOnCreateTeam} submitHandler={handleCreateTeam} />}
