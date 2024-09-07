@@ -84,8 +84,7 @@ export const orgSlice = createSlice({
   },
 });
 
-export const { setCurrentOrg, setCurrentOrgRole, setCurrentOrgTeams, setCurrentOrgMembership, resetCurrentOrg } =
-  orgSlice.actions;
+export const { setCurrentOrg, setCurrentOrgRole, setCurrentOrgTeams, setCurrentOrgMembership, resetCurrentOrg } = orgSlice.actions;
 
 export default orgSlice.reducer;
 
