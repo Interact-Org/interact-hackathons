@@ -17,7 +17,7 @@ const Live = ({ hid }: Props) => {
   const [clickedOnProject, setClickedOnProject] = useState(false);
 
   const getTeam = async () => {
-    const URL = `/hackathons/${hid}/teams/me`;
+    const URL = `/hackathons/${hid}/participants/teams`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       setTeam(res.data.team);
