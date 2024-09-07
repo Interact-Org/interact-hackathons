@@ -2,12 +2,12 @@ import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
-  darkMode: 'class',
+  darkMode: ['class', 'class'],
   theme: {
     extend: {
       width: {
-        90: '360px',
-        108: '32rem',
+        '90': '360px',
+        '108': '32rem',
         sidebar_open: '280px',
         sidebar_close: '100px',
         base_open: 'calc(100vw - 560px)',
@@ -19,8 +19,8 @@ const config: Config = {
         bottomBar: '100px',
       },
       height: {
-        90: '360px',
-        108: '32rem',
+        '90': '360px',
+        '108': '32rem',
         navbar: '64px',
         base: 'calc(100vh - 64px)',
         taskbar: '48px',
@@ -39,10 +39,10 @@ const config: Config = {
         outer: '0 0 15px 2px #262626a1;',
         inner: '0px 0px 10px 1px #262626a1 inset;',
       },
-      backgroundImage: {
-        onboarding: "url('/assets/onboarding.webp')",
-        new_post: "url('/assets/new_post.webp')",
-      },
+      // backgroundImage: {
+      // 	onboarding: 'url('/assets/onboarding.webp')',
+      // 	new_post: 'url('/assets/new_post.webp')'
+      // },
       colors: {
         primary_text: '#478EE1',
         dark_primary_gradient_start: '#633267',
@@ -94,35 +94,68 @@ const config: Config = {
       },
       keyframes: {
         shrink: {
-          '0%': { scale: '100%' },
-          '100%': { scale: '0%' },
+          '0%': {
+            scale: '100%',
+          },
+          '100%': {
+            scale: '0%',
+          },
         },
         fade: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
+          '0%': {
+            opacity: '0',
+          },
+          '100%': {
+            opacity: '1',
+          },
         },
         reveal: {
-          '0%': { transform: 'translateY(20px)', opacity: '0' },
-          '100%': { transform: 'translateY(0px)', opacity: '1' },
+          '0%': {
+            transform: 'translateY(20px)',
+            opacity: '0',
+          },
+          '100%': {
+            transform: 'translateY(0px)',
+            opacity: '1',
+          },
         },
         reveal_reverse: {
-          '0%': { transform: 'translateY(0px)', opacity: '1' },
-          '100%': { transform: 'translateY(20px)', opacity: '0' },
+          '0%': {
+            transform: 'translateY(0px)',
+            opacity: '1',
+          },
+          '100%': {
+            transform: 'translateY(20px)',
+            opacity: '0',
+          },
         },
         onboarding_dummy_user_card: {
-          '0%': { transform: 'translateX(316px)' },
-          '100%': { transform: 'translateX(0px)' },
+          '0%': {
+            transform: 'translateX(316px)',
+          },
+          '100%': {
+            transform: 'translateX(0px)',
+          },
         },
         onboarding_dummy_user_card_backwards: {
-          '0%': { transform: 'translateX(0px)' },
-          '100%': { transform: 'translateX(316px)' },
+          '0%': {
+            transform: 'translateX(0px)',
+          },
+          '100%': {
+            transform: 'translateX(316px)',
+          },
         },
       },
       lineClamp: {
-        7: '7',
-        8: '8',
-        9: '9',
-        10: '10',
+        '7': '7',
+        '8': '8',
+        '9': '9',
+        '10': '10',
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
       },
     },
     screens: {
@@ -130,5 +163,6 @@ const config: Config = {
       lg: '1080px',
     },
   },
+  plugins: [require('tailwindcss-animate')],
 };
 export default config;
