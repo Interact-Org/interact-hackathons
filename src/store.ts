@@ -3,12 +3,13 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import configReducer from './slices/configSlice';
+import hackathonReducer from './slices/hackathonSlice';
 import organizationReducer from './slices/orgSlice';
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['user', 'config', 'organization'],
+  whitelist: ['user', 'config', 'organization', 'hackathon'],
 };
 
 const configPersistConfig = {
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   config: persistReducer(configPersistConfig, configReducer),
   organization: persistReducer(orgPersistConfig, organizationReducer),
+  hackathon: hackathonReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
