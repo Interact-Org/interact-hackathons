@@ -27,7 +27,7 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam }: Props) => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {team.members.map(member => (
+        {team.members?.map(member => (
           <div key={member.id} className="flex items-center space-x-4 p-4 bg-gray-100 rounded-lg shadow">
             <Image
               width={50}

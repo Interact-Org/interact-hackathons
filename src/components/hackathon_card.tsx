@@ -26,12 +26,13 @@ const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
       case HACKATHON_TEAM_REGISTRATION:
         if (isAdmin) URL += '/teams';
         else URL += '/team';
+        URL += `?hid=${hackathon.id}`;
         break;
       case HACKATHON_LIVE:
-        URL += '/live';
+        URL += `/live?hid=${hackathon.id}`;
         break;
       case HACKATHON_COMPLETED:
-        URL += '/completed';
+        URL += `/completed?hid=${hackathon.id}`;
         break;
     }
 
