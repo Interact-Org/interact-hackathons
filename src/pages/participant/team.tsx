@@ -5,10 +5,12 @@ import postHandler from '@/handlers/post_handler';
 import CreateTeam from '@/sections/teams/create_team';
 import JoinTeam from '@/sections/teams/join_team';
 import TeamView from '@/sections/teams/team_view';
+import { userSelector } from '@/slices/userSlice';
 import { HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
 import { GetServerSidePropsContext } from 'next';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 interface Props {
   hid: string;
@@ -18,6 +20,8 @@ const Team = ({ hid }: Props) => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
   const [clickedOnCreateTeam, setClickedOnCreateTeam] = useState(false);
   const [clickedOnJoinTeam, setClickedOnJoinTeam] = useState(false);
+
+  const user = useSelector(userSelector);
 
   const getTeam = async () => {
     const URL = `/hackathons/${hid}/participants/teams`;
@@ -71,7 +75,33 @@ const Team = ({ hid }: Props) => {
     const URL = `/hackathons/${hid}/participants/teams/${team?.id}/leave`;
     const res = await deleteHandler(URL);
     if (res.statusCode == 200) {
+      setTeam(prev => {
+        if (prev)
+          return {
+            ...prev,
+            members: prev?.members.filter(m => m.id != user.id),
+          };
+        return null;
+      });
       setTeam(null);
+    } else {
+      if (res.data.message) Toaster.error(res.data.message);
+      else Toaster.error(SERVER_ERROR);
+    }
+  };
+
+  const handleKickMember = async (userID: string) => {
+    const URL = `/hackathons/${hid}/participants/teams/${team?.id}/member/${userID}`;
+    const res = await deleteHandler(URL);
+    if (res.statusCode == 200) {
+      setTeam(prev => {
+        if (prev)
+          return {
+            ...prev,
+            members: prev?.members.filter(m => m.id != userID),
+          };
+        return null;
+      });
     } else {
       if (res.data.message) Toaster.error(res.data.message);
       else Toaster.error(SERVER_ERROR);
@@ -84,9 +114,16 @@ const Team = ({ hid }: Props) => {
         <div className="w-2/5 flex-center flex-col gap-2">
           <div className="w-full text-8xl flex-center flex-col font-bold">
             <div className="text-[#607EE7]">Team</div>
-            <div className="text-[#4B9EFF]">Formation</div>
+            <div className="text-[#4B9EFF]">{team ? team.title : 'Formation'}</div>
           </div>
-          <div className="w-fit text-2xl font-medium">Find, Create, and Join Teams Easily and Effortlessly.</div>
+          <div className="w-fit text-2xl font-medium">
+            {team ? 'Team Formation is Live!' : 'Find, Create, and Join Teams Easily and Effortlessly.'}
+          </div>
+          {team && (
+            <div className="font-medium mt-2">
+              The Team Code is <span className="underline underline-offset-2">{team.token}</span>
+            </div>
+          )}
         </div>
         <div className="w-3/5 flex gap-4">
           <div className="w-1/2 flex flex-col gap-4">
@@ -103,7 +140,7 @@ const Team = ({ hid }: Props) => {
         </div>
       </div>
       {team ? (
-        <TeamView team={team} onDeleteTeam={handleDeleteTeam} onLeaveTeam={handleLeaveTeam} />
+        <TeamView team={team} onDeleteTeam={handleDeleteTeam} onLeaveTeam={handleLeaveTeam} onKickMember={handleKickMember} />
       ) : (
         <div className="w-full flex-center gap-12">
           {clickedOnCreateTeam && <CreateTeam setShow={setClickedOnCreateTeam} submitHandler={handleCreateTeam} hackathonID={hid} />}
