@@ -2,7 +2,7 @@ import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
-  darkMode: ['class', 'class'],
+  darkMode: ['class'],
   theme: {
     extend: {
       width: {
@@ -39,10 +39,6 @@ const config: Config = {
         outer: '0 0 15px 2px #262626a1;',
         inner: '0px 0px 10px 1px #262626a1 inset;',
       },
-      // backgroundImage: {
-      // 	onboarding: 'url('/assets/onboarding.webp')',
-      // 	new_post: 'url('/assets/new_post.webp')'
-      // },
       colors: {
         primary_text: '#478EE1',
         dark_primary_gradient_start: '#633267',
