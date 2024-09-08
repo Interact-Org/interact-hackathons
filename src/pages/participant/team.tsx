@@ -4,7 +4,7 @@ import getHandler from '@/handlers/get_handler';
 import postHandler from '@/handlers/post_handler';
 import CreateTeam from '@/sections/teams/create_team';
 import JoinTeam from '@/sections/teams/join_team';
-import TeamView from '@/sections/teams/team_view';
+import TeamView from '@/screens/participants/team_view';
 import { userSelector } from '@/slices/userSlice';
 import { HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
