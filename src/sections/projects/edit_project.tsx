@@ -24,7 +24,6 @@ interface Props {
 const EditProject = ({ projectToEdit, setShow, setTeam }: Props) => {
   const [description, setDescription] = useState(projectToEdit.description);
   const [tagline, setTagline] = useState(projectToEdit.tagline);
-  const [isPrivate, setIsPrivate] = useState(projectToEdit.isPrivate);
   const [category, setCategory] = useState(projectToEdit.category);
   const [tags, setTags] = useState<string[]>(projectToEdit.tags || []);
   const [links, setLinks] = useState<string[]>(projectToEdit.links || []);
@@ -69,7 +68,6 @@ const EditProject = ({ projectToEdit, setShow, setTeam }: Props) => {
     // if (isArrEdited(privateLinks, projectToEdit.privateLinks))
     privateLinks.forEach(link => formData.append('privateLinks', link));
     if (category != projectToEdit.category) formData.append('category', category);
-    formData.append('isPrivate', String(isPrivate));
     if (image) formData.append('coverPic', image);
 
     const URL = `${PROJECT_URL}/${projectToEdit.slug}`;

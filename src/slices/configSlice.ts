@@ -9,6 +9,7 @@ interface ConfigState {
   lastFetchedUnreadNotifications: string;
   lastFetchedOrganizationMemberships: string;
   lastFetchedRegisteredEvents: string;
+  lastFetchedHackathon: string;
 }
 
 const getInitialDate = (): string => {
@@ -22,12 +23,6 @@ const getInitialNotificationDate = (): string => {
   return date.toUTCString();
 };
 
-const getInitialInvitationDate = (): string => {
-  const date = new Date();
-  date.setMinutes(date.getMinutes() - 3);
-  return date.toUTCString();
-};
-
 const initialState: ConfigState = {
   updatingFollowing: false,
   updatingLikes: false,
@@ -36,6 +31,7 @@ const initialState: ConfigState = {
   lastFetchedUnreadNotifications: getInitialNotificationDate(),
   lastFetchedOrganizationMemberships: getInitialDate(),
   lastFetchedRegisteredEvents: getInitialDate(),
+  lastFetchedHackathon: getInitialDate(),
 };
 
 export const configSlice = createSlice({
@@ -50,6 +46,7 @@ export const configSlice = createSlice({
       state.lastFetchedUnreadNotifications = getInitialNotificationDate();
       state.lastFetchedOrganizationMemberships = getInitialDate();
       state.lastFetchedRegisteredEvents = getInitialDate();
+      state.lastFetchedHackathon = getInitialDate();
     },
     setUpdatingFollowing: (state, action: PayloadAction<boolean>) => {
       state.updatingFollowing = action.payload;
@@ -79,6 +76,9 @@ export const configSlice = createSlice({
     setLastFetchedRegisteredEvents: (state, action: PayloadAction<string>) => {
       state.lastFetchedRegisteredEvents = action.payload;
     },
+    setLastFetchedHackathon: (state, action: PayloadAction<string>) => {
+      state.lastFetchedHackathon = action.payload;
+    },
   },
 });
 
@@ -92,6 +92,7 @@ export const {
   setLastFetchedUnreadNotifications,
   setLastFetchedOrganizationMemberships,
   setLastFetchedRegisteredEvents,
+  setLastFetchedHackathon,
 } = configSlice.actions;
 
 export default configSlice.reducer;
