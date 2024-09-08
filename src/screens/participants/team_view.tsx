@@ -1,5 +1,6 @@
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell, TableCaption } from '@/components/ui/table';
 import { USER_PROFILE_PIC_URL } from '@/config/routes';
+import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { userSelector } from '@/slices/userSlice';
 import { HackathonTeam } from '@/types';
 import { ArrowLineRight, PencilLine, Trash } from '@phosphor-icons/react';
@@ -10,18 +11,21 @@ import { useSelector } from 'react-redux';
 
 interface Props {
   team: HackathonTeam;
-  onLeaveTeam: () => void;
-  onDeleteTeam: () => void;
-  onKickMember: (userID: string) => void;
+  onLeaveTeam?: () => void;
+  onDeleteTeam?: () => void;
+  onKickMember?: (userID: string) => void;
 }
 
 const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember }: Props) => {
   const user = useSelector(userSelector);
+  const hackathon = useSelector(currentHackathonSelector);
   return (
     <div className="w-full p-6 bg-white rounded-xl shadow-lg transition hover:shadow-xl">
       <div className="w-full flex items-end justify-between">
         <div>Your Track: </div>
-        <div>Members {team.members.length}/5</div>
+        <div>
+          Members {team.members.length}/{hackathon.maxTeamSize}
+        </div>
       </div>
       <Table>
         <TableCaption>
@@ -59,10 +63,18 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember }: Props) => {
                     (user.id == team.userID ? (
                       <>
                         <PencilLine className="cursor-pointer" size={20} />
-                        <Trash onClick={() => onKickMember(member.id)} className="text-primary_danger cursor-pointer" size={20} />
+                        {onKickMember && (
+                          <Trash
+                            onClick={() => {
+                              if (onKickMember) onKickMember(member.id);
+                            }}
+                            className="text-primary_danger cursor-pointer"
+                            size={20}
+                          />
+                        )}
                       </>
                     ) : (
-                      <ArrowLineRight onClick={onLeaveTeam} className="text-primary_danger cursor-pointer" size={20} />
+                      onLeaveTeam && <ArrowLineRight onClick={onLeaveTeam} className="text-primary_danger cursor-pointer" size={20} />
                     ))}
                 </div>
               </TableCell>

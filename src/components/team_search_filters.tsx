@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CalendarBlank, MagnifyingGlass, Newspaper, User } from '@phosphor-icons/react';
+import { Newspaper, User } from '@phosphor-icons/react';
 import { CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

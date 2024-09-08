@@ -5,7 +5,6 @@ import Tags from '@/components/form/tags';
 import TextArea from '@/components/form/textarea';
 // import CoverPic from '@/components/utils/new_cover';
 import { SERVER_ERROR } from '@/config/errors';
-import { PROJECT_URL } from '@/config/routes';
 import postHandler from '@/handlers/post_handler';
 import { userSelector } from '@/slices/userSlice';
 import { HackathonTeam } from '@/types';
@@ -20,9 +19,10 @@ import { useSelector } from 'react-redux';
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setTeam: React.Dispatch<React.SetStateAction<HackathonTeam>>;
+  team: HackathonTeam;
 }
 
-const NewProject = ({ setShow, setTeam }: Props) => {
+const NewProject = ({ setShow, setTeam, team }: Props) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tagline, setTagline] = useState('');
@@ -80,16 +80,16 @@ const NewProject = ({ setShow, setTeam }: Props) => {
     if (image) formData.append('coverPic', image);
     else formData.append('coverPic', randomImage);
 
-    const URL = PROJECT_URL;
+    const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project`;
 
     const res = await postHandler(URL, formData, 'multipart/form-data');
-
     if (res.statusCode === 201) {
       const project = res.data.project;
       project.user = user;
       setTeam(prev => {
-        return { ...prev, project };
+        return { ...prev, projectID: project.id, project };
       });
+
       Toaster.stopLoad(toaster, 'Project Added', 1);
       setTitle('');
       setTagline('');
@@ -134,7 +134,7 @@ const NewProject = ({ setShow, setTeam }: Props) => {
               <input
                 value={title}
                 onChange={el => setTitle(el.target.value)}
-                maxLength={20}
+                maxLength={40}
                 type="text"
                 placeholder="Untitled Project"
                 className="w-full text-5xl max-lg:text-center max-lg:text-3xl font-bold bg-transparent focus:outline-none"

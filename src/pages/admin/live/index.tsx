@@ -47,7 +47,7 @@ const Index = ({ hid }: Props) => {
   };
 
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
-    const URL = `${ORG_URL}/hackathons/${hid}/teams`;
+    const URL = `/hackathons/${hid}/admin/teams`;
     const res = await getHandler(URL, abortController?.signal);
     if (res.statusCode == 200) {
       if (initialPage == 1) {
