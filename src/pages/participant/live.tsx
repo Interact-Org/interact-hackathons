@@ -2,13 +2,14 @@ import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import EditProject from '@/sections/projects/edit_project';
 import NewProject from '@/sections/projects/new_project';
-import TeamView from '@/sections/teams/team_view';
+import TeamView from '@/screens/participants/team_view';
 import { HackathonTeam } from '@/types';
 import { initialHackathonTeam } from '@/types/initials';
 import Toaster from '@/utils/toaster';
 import { Pen } from '@phosphor-icons/react';
 import { GetServerSidePropsContext } from 'next';
 import React, { useEffect, useMemo, useState } from 'react';
+import Tasks from '@/screens/participants/tasks';
 
 interface Props {
   hid: string;
@@ -103,6 +104,7 @@ const Live = ({ hid }: Props) => {
           )}
         </>
       )}
+      {index == 2 && <Tasks slug={project?.slug || ''} />}
     </div>
   );
 };
