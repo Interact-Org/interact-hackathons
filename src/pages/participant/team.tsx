@@ -15,6 +15,7 @@ import { getHackathonRole } from '@/utils/funcs/hackathons';
 import TeamOverviewAnalytics from '@/sections/analytics/team_overview';
 import moment from 'moment';
 import { Plus } from 'lucide-react';
+import patchHandler from '@/handlers/patch_handler';
 
 const Team = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -55,6 +56,7 @@ const Team = () => {
         //   window.location.replace('/participant/live');
         // else
         getTeam();
+        getTracks();
       }
     }
   }, []);
@@ -110,7 +112,16 @@ const Team = () => {
       else Toaster.error(SERVER_ERROR);
     }
   };
-
+  const handleUpdateTeam = async (formData: any) => {
+    const URL = `/hackathons/${hackathon.id}/participants/teams/${team?.id}`;
+    const res = await patchHandler(URL, formData);
+    if (res.statusCode == 200) {
+      Toaster.success('Team Data Updated Successfully');
+    } else {
+      if (res.data.message) Toaster.error(res.data.message);
+      else Toaster.error(SERVER_ERROR);
+    }
+  };
   const handleKickMember = async (userID: string) => {
     const URL = `/hackathons/${hackathon.id}/participants/teams/${team?.id}/member/${userID}`;
     const res = await deleteHandler(URL);
@@ -160,7 +171,14 @@ const Team = () => {
         </div>
       </div>
       {team ? (
-        <TeamView team={team} onDeleteTeam={handleDeleteTeam} onLeaveTeam={handleLeaveTeam} onKickMember={handleKickMember} />
+        <TeamView
+          team={team}
+          onDeleteTeam={handleDeleteTeam}
+          onUpdateTeam={handleUpdateTeam}
+          onLeaveTeam={handleLeaveTeam}
+          onKickMember={handleKickMember}
+          tracks={tracks}
+        />
       ) : (
         <div className="w-full flex-center gap-12">
           {clickedOnCreateTeam && tracks && tracks.length > 0 && (
@@ -170,14 +188,14 @@ const Team = () => {
 
           <div
             onClick={() => setClickedOnCreateTeam(true)}
-            className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col cursor-pointer"
+            className="w-90 h-52 p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col"
           >
             <div className="text-4xl font-semibold">Create Team</div>
             <div className="text-sm">Initiate brilliance! Create a team to transform your visionary ideas into actionable innovation</div>
           </div>
           <div
             onClick={() => setClickedOnJoinTeam(true)}
-            className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col cursor-pointer"
+            className="w-90 h-52 p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col"
           >
             <div className="text-4xl font-semibold">Join Team</div>
             <div className="text-sm">Contribute to success! Join a team to merge your skills with theirs and drive innovative solutions.</div>
