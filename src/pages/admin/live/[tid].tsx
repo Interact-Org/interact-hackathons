@@ -13,6 +13,7 @@ import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import { GetServerSidePropsContext } from 'next';
+import CommentBox from '@/components/comment/comment_box';
 
 export default function Page({ tid }: { tid: string }) {
   const [team, setTeam] = useState(initialHackathonTeam);
@@ -54,7 +55,7 @@ export default function Page({ tid }: { tid: string }) {
     {
       title: 'Comments',
       Icon: Chat,
-      Screen: <p>Comments</p>,
+      Screen: <CommentBox item={team} type="hackathon_team" subURL={`${hackathon.organizationID}/${team.hackathonID}`} />,
     },
   ];
 

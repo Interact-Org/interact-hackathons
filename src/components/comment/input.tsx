@@ -19,15 +19,7 @@ interface Props {
   userFetchURL?: string;
 }
 
-const CommentInput = ({
-  content,
-  setContent,
-  taggedUsernames,
-  setTaggedUsernames,
-  handleSubmit,
-  type,
-  userFetchURL,
-}: Props) => {
+const CommentInput = ({ content, setContent, taggedUsernames, setTaggedUsernames, handleSubmit, type, userFetchURL }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
   const [showUsers, setShowUsers] = useState(false);
   const [cursorPosition, setCursorPosition] = useState<number | null>(null);
@@ -79,7 +71,7 @@ const CommentInput = ({
             className={`w-5/6 ${
               type == 'comment' ? 'text-sm' : 'max-md:text-sm'
             } border-[1px] border-dashed p-2 rounded-lg dark:text-white dark:bg-dark_primary_comp focus:outline-none min-h-[3rem] max-h-64 max-md:w-full`}
-            placeholder={`${type == 'comment' ? 'Reply to' : 'Comment on'} this ${type}`}
+            placeholder={`${type == 'comment' ? 'Reply to' : 'Comment on'} this ${type.replace('_', ' ')}`}
           />
           <div
             className={`w-1/6 h-fit ${
