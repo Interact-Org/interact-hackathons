@@ -24,7 +24,7 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember }: Props) => {
       <div className="w-full flex items-end justify-between">
         <div>Your Track: </div>
         <div>
-          Members {team.members.length}/{hackathon.maxTeamSize}
+          Members {team.memberships.length}/{hackathon.maxTeamSize}
         </div>
       </div>
       <Table>
@@ -40,46 +40,49 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember }: Props) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {team.members?.map(member => (
-            <TableRow key={member.id}>
-              <TableCell className="flex items-center gap-2 font-medium">
-                <Image
-                  width={50}
-                  height={50}
-                  src={`${USER_PROFILE_PIC_URL}/${member.profilePic}`}
-                  alt={member.username}
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-                <div className="flex items-center gap-1">
-                  <div className="text-lg">{member.name}</div>
-                  <div className="text-gray-500">@{member.username}</div>
-                </div>
-              </TableCell>
-              <TableCell>{member.username}</TableCell>
-              <TableCell>{member.createdAt}</TableCell>
-              <TableCell>
-                <div className="w-full h-full flex justify-end gap-4">
-                  {member.id != user.id &&
-                    (user.id == team.userID ? (
-                      <>
-                        <PencilLine className="cursor-pointer" size={20} />
-                        {onKickMember && (
-                          <Trash
-                            onClick={() => {
-                              if (onKickMember) onKickMember(member.id);
-                            }}
-                            className="text-primary_danger cursor-pointer"
-                            size={20}
-                          />
-                        )}
-                      </>
-                    ) : (
-                      onLeaveTeam && <ArrowLineRight onClick={onLeaveTeam} className="text-primary_danger cursor-pointer" size={20} />
-                    ))}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
+          {team.memberships?.map(membership => {
+            const member = membership.user;
+            return (
+              <TableRow key={member.id}>
+                <TableCell className="flex items-center gap-2 font-medium">
+                  <Image
+                    width={50}
+                    height={50}
+                    src={`${USER_PROFILE_PIC_URL}/${member.profilePic}`}
+                    alt={member.username}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <div className="flex items-center gap-1">
+                    <div className="text-lg">{member.name}</div>
+                    <div className="text-gray-500">@{member.username}</div>
+                  </div>
+                </TableCell>
+                <TableCell>{member.username}</TableCell>
+                <TableCell>{member.createdAt}</TableCell>
+                <TableCell>
+                  <div className="w-full h-full flex justify-end gap-4">
+                    {member.id != user.id &&
+                      (user.id == team.userID ? (
+                        <>
+                          <PencilLine className="cursor-pointer" size={20} />
+                          {onKickMember && (
+                            <Trash
+                              onClick={() => {
+                                if (onKickMember) onKickMember(member.id);
+                              }}
+                              className="text-primary_danger cursor-pointer"
+                              size={20}
+                            />
+                          )}
+                        </>
+                      ) : (
+                        onLeaveTeam && <ArrowLineRight onClick={onLeaveTeam} className="text-primary_danger cursor-pointer" size={20} />
+                      ))}
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>

@@ -818,11 +818,20 @@ export interface HackathonTeam {
   user: User;
   projectID?: string;
   project?: Project;
-  members: User[];
+  memberships: HackathonTeamMembership[];
   isEliminated: boolean;
   noComments: number;
   createdAt: Date;
   comments: Comment[];
+}
+
+export interface HackathonTeamMembership {
+  id: string;
+  userID: string;
+  user: User;
+  hackathonTeamID: string;
+  role: string;
+  createdAt: Date;
 }
 
 export interface HackathonRound {

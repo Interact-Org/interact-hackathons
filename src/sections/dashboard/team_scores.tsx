@@ -1,6 +1,6 @@
 import { Input } from '@/components/ui/input';
 import { HackathonRound, HackathonRoundScoreMetric, HackathonRoundTeamScoreCard } from '@/types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,11 +12,13 @@ import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import postHandler from '@/handlers/post_handler';
+import { getHackathonRole } from '@/utils/funcs/hackathons';
 
 const TeamScores = ({ teamID }: { teamID: string }) => {
   const [activeRound, setActiveRound] = useState(0);
   const [rounds, setRounds] = useState<HackathonRound[]>([]);
   const [scores, setScores] = useState<HackathonRoundTeamScoreCard[]>([]);
+  const [currentRound, setCurrentRound] = useState(null);
   const hackathon = useSelector(currentHackathonSelector);
 
   const getRounds = async () => {
@@ -29,10 +31,23 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
     }
   };
 
+  const getCurrentRound = async () => {
+    const URL = `/hackathons/${hackathon.id}/participants/round?type=judging`;
+    const res = await getHandler(URL);
+    if (res.statusCode === 200) {
+      setCurrentRound(res.data.round);
+    } else {
+      Toaster.error(res.data?.message || SERVER_ERROR);
+    }
+  };
+
   useEffect(() => {
     getRounds();
     getScores();
-  }, []);
+    getCurrentRound();
+  }, [teamID]);
+
+  const role = getHackathonRole();
 
   const [inputScores, setInputScores] = useState<{ [key: string]: any }>({});
 
@@ -103,44 +118,66 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
             </span>
 
             {metric.type === 'number' && (
-              <Input
-                type="number"
-                className="w-full p-2 border border-gray-300 rounded-md"
-                placeholder="Enter score"
-                value={Number(inputScores[metric.id]) || ''}
-                onChange={e => handleInputChange(metric.id, e.target.value)}
-              />
+              <>
+                {role == 'admin' ? (
+                  <Input
+                    type="number"
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                    placeholder="Enter score"
+                    value={Number(inputScores[metric.id]) || ''}
+                    onChange={e => handleInputChange(metric.id, e.target.value)}
+                  />
+                ) : (
+                  <div>Score: {Number(inputScores[metric.id]) || ''}</div>
+                )}
+              </>
             )}
 
             {metric.type === 'text' && (
-              <TextArea
-                className="w-full p-2 border border-gray-300 rounded-md resize-none"
-                placeholder="Enter judgement"
-                maxLength={300}
-                val={inputScores[metric.id] || ''}
-                setVal={val => handleInputChange(metric.id, val)}
-              />
+              <>
+                {role == 'admin' ? (
+                  <TextArea
+                    className="w-full p-2 border border-gray-300 rounded-md resize-none"
+                    placeholder="Enter judgement"
+                    maxLength={300}
+                    val={inputScores[metric.id] || ''}
+                    setVal={val => handleInputChange(metric.id, val)}
+                  />
+                ) : (
+                  <div>Score: {inputScores[metric.id] || ''}</div>
+                )}
+              </>
             )}
+
             {metric.type === 'select' && metric.options && metric.options.length > 0 && (
-              <Select onValueChange={value => handleInputChange(metric.id, value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Option" />
-                </SelectTrigger>
-                <SelectContent>
-                  {metric.options.map((option, index) => (
-                    <SelectItem key={index} value={option}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <>
+                {role == 'admin' ? (
+                  <Select onValueChange={value => handleInputChange(metric.id, value)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select Option" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {metric.options.map((option, index) => (
+                        <SelectItem key={index} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <div>Score: {inputScores[metric.id] || ''}</div>
+                )}
+              </>
             )}
-            <Button
-              onClick={() => handleSubmit(metric.hackathonRoundID, inputScores[metric.id], metric.id)}
-              className="bg-primary_text/90 hover:bg-primary_text px-12"
-            >
-              Submit
-            </Button>
+
+            {role == 'admin' && (
+              <Button
+                onClick={() => handleSubmit(metric.hackathonRoundID, inputScores[metric.id], metric.id)}
+                className="bg-primary_text/90 hover:bg-primary_text px-12"
+              >
+                Submit
+              </Button>
+            )}
           </div>
         ))}
       </div>
@@ -148,20 +185,26 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
         <span className="flex items-center gap-2">
           <Trophy size={32} />
           <h1 className="text-3xl font-semibold text-nowrap">Overall Score</h1>
-          <Input
-            type="number"
-            className="bg-white text-black w-60 ml-8"
-            placeholder="Enter Score"
-            value={inputScores['overallScore'] || ''}
-            onChange={e => handleInputChange('overallScore', e.target.value)}
-          />
+          {role == 'admin' ? (
+            <Input
+              type="number"
+              className="bg-white text-black w-60 ml-8"
+              placeholder="Enter Score"
+              value={inputScores['overallScore'] || ''}
+              onChange={e => handleInputChange('overallScore', e.target.value)}
+            />
+          ) : (
+            <h1 className="text-3xl font-semibold">: {inputScores['overallScore'] || ''}</h1>
+          )}
         </span>
-        <Button
-          onClick={() => handleSubmit(rounds[activeRound].id, inputScores['overallScore'])}
-          className="bg-primary_text/90 hover:bg-primary_text px-12"
-        >
-          Submit
-        </Button>
+        {role == 'admin' && (
+          <Button
+            onClick={() => handleSubmit(rounds[activeRound].id, inputScores['overallScore'])}
+            className="bg-primary_text/90 hover:bg-primary_text px-12"
+          >
+            Submit
+          </Button>
+        )}
       </div>
     </div>
   );

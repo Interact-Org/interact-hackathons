@@ -12,6 +12,8 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
+import TeamOverviewAnalytics from '@/sections/analytics/team_overview';
+import moment from 'moment';
 
 const Team = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -37,7 +39,12 @@ const Team = () => {
     else {
       const role = getHackathonRole();
       if (role != 'participant') window.location.replace('/');
-      else getTeam();
+      else {
+        const now = moment();
+        if (!now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
+          window.location.replace('/participant/live');
+        else getTeam();
+      }
     }
   }, []);
 
@@ -82,7 +89,7 @@ const Team = () => {
         if (prev)
           return {
             ...prev,
-            members: prev?.members.filter(m => m.id != user.id),
+            membership: prev?.memberships.filter(m => m.userID != user.id),
           };
         return null;
       });
@@ -101,7 +108,7 @@ const Team = () => {
         if (prev)
           return {
             ...prev,
-            members: prev?.members.filter(m => m.id != userID),
+            memberships: prev?.memberships.filter(m => m.userID != userID),
           };
         return null;
       });
@@ -129,17 +136,7 @@ const Team = () => {
           )}
         </div>
         <div className="w-3/5 flex gap-4">
-          <div className="w-1/2 flex flex-col gap-4">
-            <div className="w-full h-56 bg-white rounded-xl"></div>
-            <div className="w-full h-28 bg-white rounded-xl"></div>
-          </div>
-          <div className="w-1/2 flex flex-col gap-4">
-            <div className="w-full h-56 bg-white rounded-xl"></div>
-            <div className="w-full flex gap-4">
-              <div className="w-1/2 h-28 bg-white rounded-xl"></div>
-              <div className="w-1/2 h-28 bg-white rounded-xl"></div>
-            </div>
-          </div>
+          <TeamOverviewAnalytics />
         </div>
       </div>
       {team ? (
