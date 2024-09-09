@@ -5,9 +5,12 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '
 import { Bar, BarChart, XAxis } from 'recharts';
 import { TrendingUp } from 'lucide-react';
 import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import getHandler from '@/handlers/get_handler';
+import { useSelector } from 'react-redux';
+import { currentHackathonSelector } from '@/slices/hackathonSlice';
 
 const chartData2 = [{ month: 'january', desktop: 1260, mobile: 570 }];
+
 const chartConfig2 = {
   desktop: {
     label: 'Desktop',
@@ -18,6 +21,7 @@ const chartConfig2 = {
     color: '#60a5fa',
   },
 } satisfies ChartConfig;
+
 const analyticsData = {
   users_left: {
     heading: 'Users Left',
@@ -58,6 +62,7 @@ const analyticsData = {
     endDate: new Date('2024-09-09T10:30:00').toString(),
   },
 };
+
 const chartData = [
   { month: 'January', desktop: 186, mobile: 80 },
   { month: 'February', desktop: 305, mobile: 200 },
@@ -66,6 +71,7 @@ const chartData = [
   { month: 'May', desktop: 209, mobile: 130 },
   { month: 'June', desktop: 214, mobile: 140 },
 ];
+
 const chartConfig = {
   desktop: {
     label: 'Desktop',
@@ -76,9 +82,14 @@ const chartConfig = {
     color: '#60a5fa',
   },
 } satisfies ChartConfig;
+
 export default function LiveRoundAnalytics() {
   const totalVisitors = chartData2[0].desktop + chartData2[0].mobile;
   const [timeLeft, setTimeLeft] = useState('');
+  const [totalTeams, setTotalTeams] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalTeamsLeft, setTotalTeamsLeft] = useState(0);
+  const [totalUsersLeft, setTotalUsersLeft] = useState(0);
 
   useEffect(() => {
     const endTime = new Date(analyticsData.timeLeft.endDate);
@@ -94,35 +105,51 @@ export default function LiveRoundAnalytics() {
       clearInterval(interval);
     };
   }, []);
+
+  const hackathon = useSelector(currentHackathonSelector);
+
+  useEffect(() => {
+    const fetchAnalyticsData = async () => {
+      const res = await getHandler(`/org/${hackathon.organizationID}/hackathons/${hackathon.id}/analytics/live`);
+      if (res.statusCode == 200) {
+        setTotalTeams(res.data.totalTeams);
+        setTotalUsers(res.data.totalUsers);
+        setTotalTeamsLeft(res.data.totalTeamsLeft);
+        setTotalUsersLeft(res.data.totalUsersLeft);
+      }
+    };
+
+    fetchAnalyticsData();
+  }, []);
   return (
     <div className="w-full grid grid-cols-3 gap-4">
       <AnalyticBox className="flex flex-col justify-between">
         <div className="flex items-start justify-between">
           <span>
-            <h3 className="text-sm font-semibold text-primary_btn">{analyticsData.users_left.heading}</h3>
-            <h1 className="text-xl font-semibold">{analyticsData.team_left.value}</h1>
+            <h3 className="text-sm font-semibold text-primary_btn">Users Left</h3>
+            <h1 className="text-xl font-semibold">{totalUsersLeft}</h1>
           </span>
           {analyticsData.users_left.Icon}
         </div>
-        <span className={`${analyticsData.users_left.increase ? 'text-green-600' : 'text-red-600'} font-medium text-xs flex items-center gap-2`}>
+        {/* <span className={`${analyticsData.users_left.increase ? 'text-green-600' : 'text-red-600'} font-medium text-xs flex items-center gap-2`}>
           {analyticsData.users_left.increase && <TrendUp size={20} />}
           {!analyticsData.users_left.increase && <TrendDown size={20} />}
           <p>{analyticsData.users_left.trend}</p>
-        </span>
+        </span> */}
       </AnalyticBox>
       <AnalyticBox className="flex flex-col gap-5 justify-between">
         <div className="flex items-start justify-between">
           <span>
-            <h3 className="text-sm font-semibold text-primary_btn">{analyticsData.total_users.heading}</h3>
-            <h1 className="text-xl font-semibold">{analyticsData.total_users.value}</h1>
+            <h3 className="text-sm font-semibold text-primary_btn">Total Users</h3>
+            <h1 className="text-xl font-semibold">{totalUsers}</h1>
           </span>
           {analyticsData.total_users.Icon}
         </div>
-        <span className={`${analyticsData.total_users.increase ? 'text-green-600' : 'text-red-600'} font-medium text-xs flex items-center gap-2`}>
+        {/* <span className={`${analyticsData.total_users.increase ? 'text-green-600' : 'text-red-600'} font-medium text-xs flex items-center gap-2`}>
           {analyticsData.total_users.increase && <TrendUp size={20} />}
           {!analyticsData.total_users.increase && <TrendDown size={20} />}
           <p>{analyticsData.total_users.trend}</p>
-        </span>
+        </span> */}
       </AnalyticBox>
       <AnalyticBox>
         <div className="flex flex-col gap-0">
@@ -143,30 +170,30 @@ export default function LiveRoundAnalytics() {
       <AnalyticBox className="flex flex-col gap-5 justify-between">
         <div className="flex items-start justify-between">
           <span>
-            <h3 className="text-sm font-semibold text-primary_btn">{analyticsData.team_left.heading}</h3>
-            <h1 className="text-xl font-semibold">{analyticsData.team_left.value}</h1>
+            <h3 className="text-sm font-semibold text-primary_btn">Teams Left</h3>
+            <h1 className="text-xl font-semibold">{totalTeamsLeft}</h1>
           </span>
           {analyticsData.team_left.Icon}
         </div>
-        <span className={`${analyticsData.team_left.increase ? 'text-green-600' : 'text-red-600'} font-medium text-xs flex items-center gap-2`}>
+        {/* <span className={`${analyticsData.team_left.increase ? 'text-green-600' : 'text-red-600'} font-medium text-xs flex items-center gap-2`}>
           {analyticsData.team_left.increase && <TrendUp size={20} />}
           {!analyticsData.team_left.increase && <TrendDown size={20} />}
           <p>{analyticsData.team_left.trend}</p>
-        </span>
+        </span> */}
       </AnalyticBox>
       <AnalyticBox className="flex flex-col gap-5 justify-between">
         <div className="flex items-start justify-between">
           <span>
-            <h3 className="text-sm font-semibold text-primary_btn">{analyticsData.total_teams.heading}</h3>
-            <h1 className="text-xl font-semibold">{analyticsData.total_teams.value}</h1>
+            <h3 className="text-sm font-semibold text-primary_btn">Total Teams</h3>
+            <h1 className="text-xl font-semibold">{totalTeams}</h1>
           </span>
           {analyticsData.total_teams.Icon}
         </div>
-        <span className={`${analyticsData.total_teams.increase ? 'text-green-600' : 'text-red-600'} font-medium text-xs flex items-center gap-2`}>
+        {/* <span className={`${analyticsData.total_teams.increase ? 'text-green-600' : 'text-red-600'} font-medium text-xs flex items-center gap-2`}>
           {analyticsData.total_teams.increase && <TrendUp size={20} />}
           {!analyticsData.total_teams.increase && <TrendDown size={20} />}
           <p>{analyticsData.total_teams.trend}</p>
-        </span>
+        </span> */}
       </AnalyticBox>
       <AnalyticBox className="h-[150px] overflow-hidden">
         <ChartContainer config={chartConfig2} className="mx-auto aspect-square w-full max-w-[250px]">

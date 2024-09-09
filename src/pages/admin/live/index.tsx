@@ -117,32 +117,6 @@ const Index = () => {
                 ENDS IN 18:47
               </h1>
               <h1 className="text-5xl w-3/4">NEXT JUDING ROUND STARTS IN 20:21</h1>
-              <div className="flex items-center gap-4 mt-12">
-                <Button className="gap-3 ">
-                  <p>Edit Details</p>
-                  <PencilSimple size={18} />
-                </Button>
-                <Dialog>
-                  <DialogTrigger className="text-sm flex items-center gap-3 bg-neutral-900 text-white h-9 px-4 py-2 rounded-md">
-                    <p>Filter Teams</p>
-                    <Funnel size={18} />
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Filter Teams</DialogTitle>
-                      <DialogDescription>
-                        <p>Please select filters among the given options:</p>
-                      </DialogDescription>
-                    </DialogHeader>
-                    {filters.map((filter, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <input type="checkbox" checked={filter.checked} onChange={() => handleFilterChange(index)} />
-                        <label>{filter.name}</label>
-                      </div>
-                    ))}
-                  </DialogContent>
-                </Dialog>
-              </div>
             </section>
             <aside className="--analytics w-1/2 h-full">
               <div className="w-full h-full">
@@ -173,7 +147,7 @@ const Index = () => {
                   <TableHead>Project</TableHead>
                   <TableHead>Track</TableHead>
                   <TableHead>Members</TableHead>
-                  <TableHead>Evaluation Status</TableHead>
+                  <TableHead>Elimination Status</TableHead>
                   <TableHead>Scores</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -183,14 +157,14 @@ const Index = () => {
                   <TableRow onClick={() => window.location.assign('/admin/live/' + team.id)} key={index}>
                     <TableCell className="font-medium">{team.title}</TableCell>
                     <TableCell>{team.project?.title}</TableCell>
-                    <TableCell>{team.track}</TableCell>
+                    <TableCell>{team.track?.title}</TableCell>
                     <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
                       {team.memberships.map((membership, index) => (
                         <AvatarBox key={index} name={membership.user.name} />
                       ))}
                     </TableCell>
                     <TableCell>
-                      <Status status={'completed'} />
+                      <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
                     </TableCell>
                     <TableCell>{1}</TableCell>
                     <TableCell>
@@ -209,10 +183,10 @@ const Index = () => {
 
 export default Index;
 
-function Status({ status }: { status: 'pending' | 'completed' }) {
+export function Status({ status }: { status: 'eliminated' | 'not eliminated' }) {
   return (
-    <button className={`${status === 'pending' ? 'bg-red-500' : 'bg-green-500'} text-white text-xs font-medium px-3 py-1 rounded-full`}>
-      {status === 'pending' ? 'Pending' : 'Completed'}
+    <button className={`${status === 'eliminated' ? 'bg-red-500' : 'bg-green-500'} text-white text-xs font-medium px-3 py-1 rounded-full`}>
+      {status === 'eliminated' ? 'Eliminated' : 'Not Eliminated'}
     </button>
   );
 }

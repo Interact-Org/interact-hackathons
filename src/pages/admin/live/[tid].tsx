@@ -65,7 +65,7 @@ export default function Page({ tid }: { tid: string }) {
     <div className="w-full bg-[#E1F1FF] min-h-screen">
       <header className="bg-white w-full py-1 px-4 font-semibold h-8 border-b-[1px] border-[#dedede] sticky top-0 left-0">Interact</header>
       <div className="w-full flex items-start justify-between h-full">
-        <DashboardSidebar data={menuData} activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
+        <DashboardSidebar data={menuData} activeIndex={activeIndex} setActiveIndex={setActiveIndex} team={team} setTeam={setTeam} />
         <div className="h-fit w-[85%]">{ActiveScreen}</div>
       </div>
     </div>

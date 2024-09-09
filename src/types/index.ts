@@ -818,7 +818,7 @@ export interface HackathonTeam {
   projectID?: string;
   project?: Project;
   trackID?: string;
-  track?: string;
+  track?: HackathonTrack;
   memberships: HackathonTeamMembership[];
   isEliminated: boolean;
   noComments: number;
