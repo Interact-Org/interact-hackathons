@@ -7,18 +7,20 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 interface Props {
   data: {
     title: string;
-    Icon: any;
-    Screen: () => JSX.Element;
+    Icon: React.ComponentType;
+    Screen: JSX.Element;
   }[];
   activeIndex: number;
   setActiveIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 const DashboardSidebar = ({ data, activeIndex, setActiveIndex }: Props) => {
   const [mutex, setMutex] = useState(false);
+
   async function handleEliminate() {
     // Eliminate team
     //use mutex for loading state
   }
+
   return (
     <div className="w-[15%] sticky top-8 left-0 bg-white h-[calc(100vh-2rem)] p-3 flex flex-col justify-between">
       <div className="w-full">
@@ -37,18 +39,18 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex }: Props) => {
             </h2>
           </div>
         </section>
-        <section className="--menu-items flex flex-col mt-4">
+        <section className="--menu-items flex flex-col gap-2 mt-4">
           {data.map((item, index) => (
             <button
               className={`flex items-center gap-2  w-full py-2 rounded-sm px-3  hover:bg-primary_text hover:text-white  ${
                 activeIndex === index ? 'bg-primary_text text-white' : 'text-primary_black/80'
-              }`}
+              } transition-ease-300`}
               key={index}
               onClick={() => {
                 setActiveIndex(index);
               }}
             >
-              {item.Icon}
+              <item.Icon />
               <span className="font-semibold">{item.title}</span>
             </button>
           ))}
@@ -60,7 +62,7 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex }: Props) => {
           <DialogContent>
             <DialogHeader className="text-left">
               <DialogTitle>Eliminate Team</DialogTitle>
-              <DialogDescription>This action cannot be undone. This will remove the team from the competition.</DialogDescription>
+              <DialogDescription>This action can be undone. This will remove the team from the competition.</DialogDescription>
             </DialogHeader>
             <Button variant={'destructive'} disabled={mutex}>
               Eliminate

@@ -43,7 +43,7 @@ const LoginCallback = ({ token }: Props) => {
           dispatch(resetConfig());
           // socketService.connect(user.id);
           userStateFetcher();
-          if (user.isVerified) window.location.replace('/');
+          if (user.isVerified) window.location.replace('/?action=sync');
           else window.location.assign(`${FRONTEND_URL || ''}/verification`);
         }
       })

@@ -31,15 +31,15 @@ const TeamProjectsTable = ({ teams, fetcher, hasMore }: Props) => {
             <div className="w-[20%] max-md:w-[25%] flex-center">{team.project?.title}</div>
             <div className="w-[20%] max-md:w-[25%] flex-center">{team.track}</div>
             <div className="w-[25%] max-md:w-[25%] flex-center">
-              {team.members.map(member => (
+              {team.memberships.map(membership => (
                 <Image
-                  key={member.id}
+                  key={membership.id}
                   crossOrigin="anonymous"
                   className="w-8 h-8 rounded-full"
                   width={50}
                   height={50}
                   alt="user"
-                  src={`${USER_PROFILE_PIC_URL}/${member.profilePic}`}
+                  src={`${USER_PROFILE_PIC_URL}/${membership.user.profilePic}`}
                 />
               ))}
             </div>

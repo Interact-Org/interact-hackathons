@@ -12,6 +12,7 @@ import Tasks from '@/screens/participants/tasks';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { useSelector } from 'react-redux';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
+import moment from 'moment';
 
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam>(initialHackathonTeam);
@@ -24,28 +25,35 @@ const Live = () => {
     const URL = `/hackathons/${hackathon.id}/participants/teams`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
-      setTeam(res.data.team);
+      const team = res.data.team;
+      if (!team) Toaster.error('Team Not Found');
+      else setTeam(team);
     } else {
       if (res.data.message) Toaster.error(res.data.message);
       else Toaster.error(SERVER_ERROR);
     }
   };
 
-  const project = useMemo(() => team.project, [team]);
+  const project = useMemo(() => team?.project, [team]);
 
   useEffect(() => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
       const role = getHackathonRole();
       if (role != 'participant') window.location.replace('/');
-      else getTeam();
+      else {
+        const now = moment();
+        if (now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
+          window.location.replace('/participant/team');
+        else getTeam();
+      }
     }
   }, []);
 
   return (
     <div className="w-full min-h-screen bg-[#E1F1FF] p-12 flex flex-col gap-16">
       <div className="w-full flex gap-8">
-        <div className="w-2/5 flex-center flex-col gap-2">
+        <div className="w-full flex-center flex-col gap-2">
           <div className="w-full text-8xl flex-center flex-col font-bold">
             <div className="text-[#607EE7]">Team</div>
             <div className="text-[#4B9EFF]">{team ? team.title : 'Formation'}</div>
@@ -63,19 +71,6 @@ const Live = () => {
                 {tab}
               </div>
             ))}
-          </div>
-        </div>
-        <div className="w-3/5 flex gap-4">
-          <div className="w-1/2 flex flex-col gap-4">
-            <div className="w-full h-56 bg-white rounded-xl"></div>
-            <div className="w-full h-28 bg-white rounded-xl"></div>
-          </div>
-          <div className="w-1/2 flex flex-col gap-4">
-            <div className="w-full h-56 bg-white rounded-xl"></div>
-            <div className="w-full flex gap-4">
-              <div className="w-1/2 h-28 bg-white rounded-xl"></div>
-              <div className="w-1/2 h-28 bg-white rounded-xl"></div>
-            </div>
           </div>
         </div>
       </div>

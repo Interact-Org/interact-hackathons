@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { COMMENT_URL } from '@/config/routes';
 import Toaster from '@/utils/toaster';
-import { Announcement, Application, Comment, Event, Post, Project, Task } from '@/types';
+import { Announcement, Application, Comment, Event, HackathonTeam, Post, Project, Task } from '@/types';
 import getHandler from '@/handlers/get_handler';
 import { userSelector } from '@/slices/userSlice';
 import { useSelector } from 'react-redux';
@@ -14,12 +14,13 @@ import CommentInput from './input';
 
 interface Props {
   type: string;
-  item: Project | Post | Event | Announcement | Task | Application;
+  subURL?: string;
+  item: Project | Post | Event | Announcement | Task | Application | HackathonTeam;
   setNoComments?: React.Dispatch<React.SetStateAction<number>>;
   userFetchURL?: string;
 }
 
-const CommentBox = ({ type, item, setNoComments, userFetchURL }: Props) => {
+const CommentBox = ({ type, subURL = '', item, setNoComments, userFetchURL }: Props) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -37,7 +38,7 @@ const CommentBox = ({ type, item, setNoComments, userFetchURL }: Props) => {
 
   const getComments = async () => {
     setLoading(true);
-    const URL = `${COMMENT_URL}/${type}/${item.id}?page=${page}&limit=${limit}`;
+    const URL = `${COMMENT_URL}/${type}${subURL ? `/${subURL}` : ''}/${item.id}?page=${page}&limit=${limit}`;
     getHandler(URL)
       .then(res => {
         if (res.statusCode == 200) {
@@ -64,13 +65,7 @@ const CommentBox = ({ type, item, setNoComments, userFetchURL }: Props) => {
     const toaster = Toaster.startLoad('Adding your comment...');
 
     const formData =
-      type === 'post'
-        ? {
-            postID: item.id,
-            content: commentBody,
-            taggedUsernames,
-          }
-        : type === 'project'
+      type === 'project'
         ? {
             projectID: item.id,
             content: commentBody,
@@ -94,11 +89,7 @@ const CommentBox = ({ type, item, setNoComments, userFetchURL }: Props) => {
             content: commentBody,
             taggedUsernames,
           }
-        : {
-            applicationID: item.id,
-            content: commentBody,
-            taggedUsernames,
-          };
+        : { hackathonTeamID: item.id, content: commentBody, taggedUsernames };
 
     const res = await postHandler(COMMENT_URL, formData);
     if (res.statusCode === 201) {

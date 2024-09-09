@@ -12,6 +12,8 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
+import TeamOverviewAnalytics from '@/sections/analytics/team_overview';
+import moment from 'moment';
 import { Plus } from 'lucide-react';
 
 const Team = () => {
@@ -95,7 +97,7 @@ const Team = () => {
         if (prev)
           return {
             ...prev,
-            members: prev?.members.filter(m => m.id != user.id),
+            membership: prev?.memberships.filter(m => m.userID != user.id),
           };
         return null;
       });
@@ -114,7 +116,7 @@ const Team = () => {
         if (prev)
           return {
             ...prev,
-            members: prev?.members.filter(m => m.id != userID),
+            memberships: prev?.memberships.filter(m => m.userID != userID),
           };
         return null;
       });
@@ -151,17 +153,7 @@ const Team = () => {
           )}
         </div>
         <div className="w-3/5 flex gap-4">
-          <div className="w-1/2 flex flex-col gap-4">
-            <div className="w-full h-56 bg-white rounded-xl"></div>
-            <div className="w-full h-28 bg-white rounded-xl"></div>
-          </div>
-          <div className="w-1/2 flex flex-col gap-4">
-            <div className="w-full h-56 bg-white rounded-xl"></div>
-            <div className="w-full flex gap-4">
-              <div className="w-1/2 h-28 bg-white rounded-xl"></div>
-              <div className="w-1/2 h-28 bg-white rounded-xl"></div>
-            </div>
-          </div>
+          <TeamOverviewAnalytics />
         </div>
       </div>
       {team ? (
@@ -175,21 +167,21 @@ const Team = () => {
 
           <div
             onClick={() => setClickedOnCreateTeam(true)}
-            className="w-90 h-52 p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col"
+            className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col"
           >
             <div className="text-4xl font-semibold">Create Team</div>
             <div className="text-sm">Initiate brilliance! Create a team to transform your visionary ideas into actionable innovation</div>
           </div>
           <div
             onClick={() => setClickedOnJoinTeam(true)}
-            className="w-90 h-52 p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col"
+            className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col"
           >
             <div className="text-4xl font-semibold">Join Team</div>
             <div className="text-sm">Contribute to success! Join a team to merge your skills with theirs and drive innovative solutions.</div>
           </div>
-          <div className="w-90 h-52 p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col">
+          <div className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col">
             <div className="text-4xl font-semibold">Explore Channels</div>
-            <div className="text-sm">Need some inspiration? Explore channels to find resources, tips, or maybe even your next teammate</div>
+            <div className="text-lg">Need some inspiration? Explore channels to find resources, tips, or maybe even your next teammate</div>
           </div>
         </div>
       )}

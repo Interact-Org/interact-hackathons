@@ -538,7 +538,7 @@ export const initialHackathonTeam: HackathonTeam = {
   user: initialUser,
   projectID: '',
   project: initialProject,
-  members: [],
+  memberships: [],
   isEliminated: false,
   noComments: 0,
   createdAt: new Date(),

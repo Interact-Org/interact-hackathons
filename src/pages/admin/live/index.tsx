@@ -180,13 +180,13 @@ const Index = () => {
               </TableHeader>
               <TableBody>
                 {teams.map((team, index) => (
-                  <TableRow key={index}>
+                  <TableRow onClick={() => window.location.assign('/admin/live/' + team.id)} key={index}>
                     <TableCell className="font-medium">{team.title}</TableCell>
                     <TableCell>{team.project?.title}</TableCell>
                     <TableCell>{team.track}</TableCell>
                     <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
-                      {team.members.map((member, index) => (
-                        <AvatarBox key={index} name={member.name} />
+                      {team.memberships.map((membership, index) => (
+                        <AvatarBox key={index} name={membership.user.name} />
                       ))}
                     </TableCell>
                     <TableCell>
