@@ -1,64 +1,94 @@
-import React, { useState } from 'react';
-import { Newspaper, User } from '@phosphor-icons/react';
-import { CalendarIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import Calendar from '@/components/ui/calendar';
+import React from 'react';
+import { MagnifyingGlass, Newspaper } from '@phosphor-icons/react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Input } from './ui/input';
 
-const TeamSearchFilters = () => {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-  const [selectedAuthor, setSelectedAuthor] = useState<string | undefined>();
-  const [selectedTrack, setSelectedTrack] = useState<string | undefined>();
+interface TeamSearchFiltersProps {
+  search: string;
+  setSearch: (value: string) => void;
+  track: string;
+  setTrack: (value: string) => void;
+  isEliminated: boolean;
+  setIsEliminated: (value: boolean) => void;
+  overallScore: number;
+  setOverallScore: (value: number) => void;
+  order: string;
+  setOrder: (value: string) => void;
+}
 
+const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
+  search,
+  setSearch,
+  track,
+  setTrack,
+  isEliminated,
+  setIsEliminated,
+  overallScore,
+  setOverallScore,
+  order,
+  setOrder,
+}) => {
   return (
-    <div className="--filters flex items-center gap-2">
-      {/* ----CREATED_AT FILTER------- */}
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button variant={'outline'} className={cn('min-w-fit w-32 pl-3 text-left font-normal border-[2px] border-[#dedede] h-10')}>
-            <span>{selectedDate ? selectedDate.toDateString() : 'Created At'}</span>
-            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={setSelectedDate}
-            disabled={date => date > new Date() || date < new Date('1900-01-01')}
-            initialFocus
+    <section className="--search-filters flex items-center justify-between gap-4">
+      <div className="--search-box w-full flex-grow relative h-10">
+        <Input
+          className="bg-white border-[2px] border-[#dedede] focus-visible:border-primary_text ring-0 focus-visible:ring-0 pl-10 h-10"
+          placeholder="Search"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+        <MagnifyingGlass size={16} className="absolute top-1/2 -translate-y-1/2 left-4" />
+      </div>
+      <div className="--filters flex items-center gap-2">
+        <Select value={track} onValueChange={setTrack}>
+          <SelectTrigger className="w-32 min-w-fit bg-white h-10 border-[2px] border-[#dedede]">
+            <Newspaper size={16} />
+            <SelectValue placeholder="Track" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Sustainable Development">Sustainable Development</SelectItem>
+            <SelectItem value="FinTech">FinTech</SelectItem>
+            <SelectItem value="EdTech">EdTech</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={order} onValueChange={setOrder}>
+          <SelectTrigger className="w-32 min-w-fit bg-white h-10 border-[2px] border-[#dedede]">
+            <SelectValue placeholder="Sort Order" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="latest">Latest</SelectItem>
+            <SelectItem value="oldest">Oldest</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <div className="flex items-center gap-2">
+          <label htmlFor="overall-score" className="text-sm">
+            Score
+          </label>
+          <input
+            id="overall-score"
+            type="number"
+            value={overallScore}
+            onChange={e => setOverallScore(Number(e.target.value))}
+            className="w-20 h-10 border-[2px] border-[#dedede] text-center"
           />
-        </PopoverContent>
-      </Popover>
+        </div>
 
-      {/* ----AUTHOR FILTER------- */}
-      <Select value={selectedAuthor} onValueChange={setSelectedAuthor}>
-        <SelectTrigger className="w-32 min-w-fit bg-white h-10 border-[2px] border-[#dedede]">
-          <User size={16} />
-          <SelectValue placeholder="Author" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="Keshav Aneja">Keshav Aneja</SelectItem>
-          <SelectItem value="Pratham Mishra">Pratham Mishra</SelectItem>
-          <SelectItem value="Aryan Bharti">Aryan Bharti</SelectItem>
-        </SelectContent>
-      </Select>
-
-      {/* ----TRACK FILTER------- */}
-      <Select value={selectedTrack} onValueChange={setSelectedTrack}>
-        <SelectTrigger className="w-32 min-w-fit bg-white h-10 border-[2px] border-[#dedede]">
-          <Newspaper size={16} />
-          <SelectValue placeholder="Track" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="Sustainable Development">Sustainable Development</SelectItem>
-          <SelectItem value="FinTech">FinTech</SelectItem>
-          <SelectItem value="EdTech">EdTech</SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="elimination-checkbox" className="text-sm">
+            Eliminated
+          </label>
+          <input
+            id="elimination-checkbox"
+            type="checkbox"
+            checked={isEliminated}
+            onChange={() => setIsEliminated(!isEliminated)}
+            className="w-4 h-4 border-gray-300 rounded focus:ring-primary_text"
+          />
+        </div>
+      </div>
+    </section>
   );
 };
 

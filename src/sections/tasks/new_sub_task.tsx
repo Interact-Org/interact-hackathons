@@ -115,7 +115,7 @@ const NewSubTask = ({ setShow, task, setTasks, byOrgManager = false }: Props) =>
 
   return (
     <>
-      <div className="fixed top-24 max-md:top-20 w-[640px] max-md:w-5/6 backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col gap-4 rounded-lg p-10 max-md:p-5 dark:text-white font-primary border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50 max-md:z-[60]">
+      <div className="fixed top-24 max-md:top-20 w-[640px] max-md:w-5/6 backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col gap-4 rounded-lg p-6 max-md:p-5 dark:text-white font-primary border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50 max-md:z-[60]">
         <div className="text-3xl max-md:text-xl font-semibold">
           {status == 0 ? 'Sub Task Info' : status == 1 ? 'Select Users' : 'Review Sub Task Details'}
         </div>
@@ -125,12 +125,7 @@ const NewSubTask = ({ setShow, task, setTasks, byOrgManager = false }: Props) =>
               <Input label="Sub Task Title" val={title} setVal={setTitle} maxLength={50} required={true} />
               <TextArea label="Sub Task Description" val={description} setVal={setDescription} maxLength={500} />
               <Tags label="Sub Task Tags" tags={tags} setTags={setTags} maxTags={5} />
-              <Select
-                label="Sub Task Priority"
-                val={priority}
-                setVal={setPriority}
-                options={['low', 'medium', 'high']}
-              />
+              <Select label="Sub Task Priority" val={priority} setVal={setPriority} options={['low', 'medium', 'high']} />
               <Time
                 label="Sub Task Deadline"
                 val={deadline}
@@ -154,12 +149,7 @@ const NewSubTask = ({ setShow, task, setTasks, byOrgManager = false }: Props) =>
             <>
               <div className="w-full h-12 flex items-center px-4 gap-4 dark:bg-dark_primary_comp_hover rounded-md">
                 <MagnifyingGlass size={24} />
-                <input
-                  className="grow bg-transparent focus:outline-none font-medium"
-                  placeholder="Search"
-                  value={search}
-                  onChange={handleChange}
-                />
+                <input className="grow bg-transparent focus:outline-none font-medium" placeholder="Search" value={search} onChange={handleChange} />
               </div>
               <div className="w-full flex-1 flex flex-col gap-2 overflow-y-auto">
                 {users.map(user => {
@@ -205,10 +195,7 @@ const NewSubTask = ({ setShow, task, setTasks, byOrgManager = false }: Props) =>
         </div>
       </div>
 
-      <div
-        onClick={() => setShow(false)}
-        className="bg-backdrop w-screen h-screen fixed top-0 left-0 animate-fade_third z-20 max-md:z-[51]"
-      ></div>
+      <div onClick={() => setShow(false)} className="bg-backdrop w-screen h-screen fixed top-0 left-0 animate-fade_third z-20 max-md:z-[51]"></div>
     </>
   );
 };
