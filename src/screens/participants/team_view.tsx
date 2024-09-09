@@ -24,7 +24,7 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember }: Props) => {
       <div className="w-full flex items-end justify-between">
         <div>Your Track: </div>
         <div>
-          Members {team.memberships.length}/{hackathon.maxTeamSize}
+          Members {team.memberships?.length}/{hackathon.maxTeamSize}
         </div>
       </div>
       <Table>
@@ -57,8 +57,8 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember }: Props) => {
                     <div className="text-gray-500">@{member.username}</div>
                   </div>
                 </TableCell>
-                <TableCell>{member.username}</TableCell>
-                <TableCell>{member.createdAt}</TableCell>
+                <TableCell>{membership.role}</TableCell>
+                <TableCell>{moment(membership.createdAt).format('hh:mm a, DD MMMM')}</TableCell>
                 <TableCell>
                   <div className="w-full h-full flex justify-end gap-4">
                     {member.id != user.id &&

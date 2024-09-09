@@ -60,7 +60,7 @@ const Live = () => {
           </div>
           <div className="w-fit text-2xl font-medium">Round 1 is Live!</div>
           <div className="w-fit flex-center gap-6 mt-8">
-            {['Team', 'Project', 'Tasks'].map((tab, i) => (
+            {(team.projectID ? ['Team', 'Project', 'Tasks'] : ['Team', 'Project']).map((tab, i) => (
               <div
                 key={i}
                 onClick={() => setIndex(i)}
@@ -98,7 +98,12 @@ const Live = () => {
             </div>
           ) : (
             <>
-              <div onClick={() => setClickedOnProject(true)}>Add your Project</div>
+              <div
+                onClick={() => setClickedOnProject(true)}
+                className="w-fit mx-auto text-3xl font-medium cursor-pointer hover:scale-105 transition-ease-300"
+              >
+                Add your Project and Get Started!
+              </div>
               {clickedOnProject && <NewProject setShow={setClickedOnProject} setTeam={setTeam} team={team} />}
             </>
           )}
