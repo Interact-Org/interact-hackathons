@@ -112,6 +112,6 @@ type BoxProps = {
   children: ReactNode;
   className?: string;
 };
-function AnalyticBox({ children, className }: BoxProps) {
+export function AnalyticBox({ children, className }: BoxProps) {
   return <div className={`p-4 bg-white rounded-lg border-[2px] border-[#dedede]  w-full ${className}`}>{children}</div>;
 }
