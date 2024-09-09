@@ -17,9 +17,9 @@ interface Props {
 const CreateTeam = ({ setShow, submitHandler, hackathonID, tracks }: Props) => {
   const [title, setTitle] = useState('');
   const [track, setTrack] = useState('');
-
+  const [role, setRole] = useState('');
   return (
-    <ModalWrapper setShow={setShow}>
+    <ModalWrapper setShow={setShow} top="1/2">
       <div className="w-full flex flex-col gap-3">
         <span>
           <h1 className="text-2xl font-semibold">Create new team</h1>
@@ -44,12 +44,24 @@ const CreateTeam = ({ setShow, submitHandler, hackathonID, tracks }: Props) => {
             ))}
           </SelectContent>
         </Select>
+        <Select value={role} onValueChange={setRole}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select Role" />
+          </SelectTrigger>
+          <SelectContent>
+            {sampleRoleData.map((role, index) => (
+              <SelectItem value={role} key={index}>
+                {role}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <div className="w-full flex justify-center">
           <PrimaryButton
             label="Create Team"
             onClick={() => {
-              if (title && track) {
-                submitHandler({ title, trackID: track, hackathonID });
+              if (title && track && role) {
+                submitHandler({ title, trackID: track, hackathonID, role });
               } else {
                 Toaster.error('Please fill in all the fields');
               }
@@ -63,3 +75,22 @@ const CreateTeam = ({ setShow, submitHandler, hackathonID, tracks }: Props) => {
 };
 
 export default CreateTeam;
+
+const sampleRoleData = [
+  'Frontend Developer',
+  'Backend Developer',
+  'Machine Learning Engineer',
+  'Designer',
+  'Fullstack Developer',
+  'Data Scientist',
+  'UI/UX Designer',
+  'DevOps Engineer',
+  'Project Manager',
+  'Product Manager',
+  'Mobile Developer',
+  'Cloud Engineer',
+  'AI/ML Researcher',
+  'QA Engineer',
+  'Business Analyst',
+  'Security Specialist',
+];

@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import { Bar, BarChart, XAxis } from 'recharts';
+import { Bar, BarChart, Label, PolarRadiusAxis, RadialBar, RadialBarChart, XAxis } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import getHandler from '@/handlers/get_handler';
 import { useSelector } from 'react-redux';
@@ -33,6 +33,18 @@ const TeamOverviewAnalytics = () => {
   const [totalPrize, setTotalPrize] = useState(0);
 
   const hackathon = useSelector(currentHackathonSelector);
+  const chartData2 = [{ desktop: 6, mobile: 3 }];
+
+  const chartConfig2 = {
+    desktop: {
+      label: 'Desktop',
+      color: 'rgba(0,0,0,0)',
+    },
+    mobile: {
+      label: 'Mobile',
+      color: '#60a5fa',
+    },
+  } satisfies ChartConfig;
 
   useEffect(() => {
     const fetchAnalyticsData = async () => {
@@ -81,34 +93,33 @@ const TeamOverviewAnalytics = () => {
           </BarChart>
         </ChartContainer>
       </AnalyticBox>
-      <AnalyticBox className="w-full flex items-center justify-between">
-        <div>
-          <h1 className="uppercase text-xs font-medium text-black/70 mb-2">Time left for Registration</h1>
-          <div
-            className="aspect-[2] h-[80px] bg-white rounded-t-full p-4 relative"
-            style={{
-              backgroundImage: `conic-gradient(#478EE1 0deg,#478EE1 60deg,#fff 60deg,#fff 180deg,#478EE1 180deg, #478EE1 3000deg, #fff 360deg)`,
-            }}
-          >
-            <div className="h-[55px] aspect-[2] bg-white rounded-t-full absolute bottom-0 left-1/2 -translate-x-1/2 flex items-end justify-center text-lg font-semibold">
-              3 Hrs
-            </div>
-          </div>
-        </div>
-        <div className="h-full flex flex-col justify-between">
-          <h1 className="w-full text-center uppercase text-xs font-medium text-black/70 mb-2">Time till Round 1</h1>
-          <div
-            className="aspect-[2] h-[80px] bg-white rounded-t-full p-4 relative"
-            style={{
-              backgroundImage: `conic-gradient(#fff 0deg,#fff 60deg,#fff 60deg,#fff 180deg,#478EE1 180deg, #478EE1 3000deg, #fff 360deg)`,
-            }}
-          >
-            <div className="h-[55px] aspect-[2] bg-white rounded-t-full absolute bottom-0 left-1/2 -translate-x-1/2 flex items-end justify-center text-lg font-semibold">
-              1 Hrs
-            </div>
-          </div>
-        </div>
+      <AnalyticBox className="h-[150px] overflow-hidden">
+        <ChartContainer config={chartConfig2} className="mx-auto aspect-square w-full max-w-[250px] relative -top-8">
+          <RadialBarChart data={chartData2} endAngle={180} innerRadius={80} outerRadius={130}>
+            <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
+              <Label
+                content={({ viewBox }) => {
+                  if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                    return (
+                      <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle">
+                        <tspan x={viewBox.cx} y={(viewBox.cy || 0) - 16} className="fill-foreground text-2xl font-bold">
+                          3 Hrs
+                        </tspan>
+                        <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 4} className="fill-muted-foreground">
+                          Till Round 1
+                        </tspan>
+                      </text>
+                    );
+                  }
+                }}
+              />
+            </PolarRadiusAxis>
+            <RadialBar dataKey="desktop" stackId="a" cornerRadius={5} fill="var(--color-desktop)" className="stroke-transparent stroke-2" />
+            <RadialBar dataKey="mobile" fill="var(--color-mobile)" stackId="a" cornerRadius={5} className="stroke-transparent stroke-2" />
+          </RadialBarChart>
+        </ChartContainer>
       </AnalyticBox>
+
       <div className="w-full grid grid-cols-2 gap-2">
         <AnalyticBox className="flex flex-col  justify-between">
           <span>
