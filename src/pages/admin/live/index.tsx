@@ -4,9 +4,8 @@ import { HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Funnel, MagnifyingGlass, PencilSimple } from '@phosphor-icons/react';
+import { Funnel, PencilSimple } from '@phosphor-icons/react';
 import TeamSearchFilters from '@/components/team_search_filters';
-import { Input } from '@/components/ui/input';
 import { AvatarBox } from '@/components/common/avatar_box';
 import { Button } from '@/components/ui/button';
 import LiveRoundAnalytics from '@/sections/analytics/live_round_analytics';
@@ -14,6 +13,8 @@ import TeamActions from '@/components/team_actions';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { useSelector } from 'react-redux';
+import { getHackathonRole } from '@/utils/funcs/hackathons';
+import { ORG_URL } from '@/config/routes';
 
 interface Filter {
   name: string;
@@ -25,8 +26,11 @@ const Index = () => {
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
-  const [tempQuery, setTempQuery] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [search, setSearch] = useState('');
+  const [track, setTrack] = useState('');
+  const [isEliminated, setIsEliminated] = useState(false);
+  const [overallScore, setOverallScore] = useState(0);
+  const [order, setOrder] = useState('latest');
 
   const [filters, setFilters] = useState<Filter[]>([
     { name: 'Filter 1', checked: false },
@@ -47,7 +51,9 @@ const Index = () => {
   const hackathon = useSelector(currentHackathonSelector);
 
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
-    const URL = `/hackathons/${hackathon.id}/admin/teams`;
+    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${page}&limit=${20}&search=${search}${
+      overallScore != 0 ? `&overall_score=${overallScore}` : ''
+    }&order=${order}`;
     const res = await getHandler(URL, abortController?.signal);
     if (res.statusCode == 200) {
       if (initialPage == 1) {
@@ -84,16 +90,12 @@ const Index = () => {
     return () => {
       abortController.abort();
     };
-  }, []);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSearchQuery(tempQuery);
-    }, 300);
+  }, [search, track, isEliminated, overallScore, order]);
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [tempQuery]);
+  useEffect(() => {
+    const role = getHackathonRole();
+    if (role != 'admin' && role != 'org') window.location.replace('/');
+  }, []);
 
   return (
     <div className="w-full bg-[#E1F1FF] min-h-screen">
@@ -150,20 +152,18 @@ const Index = () => {
           </div>
         </div>
         <div className="--team-data-box flex flex-col gap-4">
-          <section className="--search-filters flex items-center justify-between gap-4">
-            <div className="--search-box w-full flex-grow relative h-10">
-              <Input
-                className="bg-white border-[2px] border-[#dedede] focus-visible:border-primary_text ring-0 focus-visible:ring-0 pl-10 h-10"
-                placeholder="Search"
-                value={tempQuery}
-                onChange={e => {
-                  setTempQuery(e.target.value);
-                }}
-              ></Input>
-              <MagnifyingGlass size={16} className="absolute top-1/2 -translate-y-1/2 left-4" />
-            </div>
-            {/* <TeamSearchFilters /> */}
-          </section>
+          <TeamSearchFilters
+            search={search}
+            setSearch={setSearch}
+            track={track}
+            setTrack={setTrack}
+            isEliminated={isEliminated}
+            setIsEliminated={setIsEliminated}
+            overallScore={overallScore}
+            setOverallScore={setOverallScore}
+            order={order}
+            setOrder={setOrder}
+          />{' '}
           <section className="--team-table">
             <Table className="bg-white rounded-md">
               <TableCaption>A list of all the participating teams</TableCaption>
@@ -179,23 +179,22 @@ const Index = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sampleData.map((data, index) => (
+                {teams.map((team, index) => (
                   <TableRow key={index}>
-                    <TableCell className="font-medium">{data.teamName}</TableCell>
-                    <TableCell>{data.project}</TableCell>
-                    <TableCell>{data.track}</TableCell>
+                    <TableCell className="font-medium">{team.title}</TableCell>
+                    <TableCell>{team.project?.title}</TableCell>
+                    <TableCell>{team.track}</TableCell>
                     <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
-                      {data.members.map((member, index) => (
-                        <AvatarBox key={index} name={member} />
+                      {team.members.map((member, index) => (
+                        <AvatarBox key={index} name={member.name} />
                       ))}
                     </TableCell>
                     <TableCell>
-                      <Status status={data.evaluationStatus} />
-                      {/* You can put status as either pending or completed, check below for the status comp. code */}
+                      <Status status={'completed'} />
                     </TableCell>
-                    <TableCell>{data.scores}</TableCell>
+                    <TableCell>{1}</TableCell>
                     <TableCell>
-                      <TeamActions teamId={data.teamId} data={data} />
+                      <TeamActions teamId={team.id} data={team} />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -217,68 +216,3 @@ function Status({ status }: { status: 'pending' | 'completed' }) {
     </button>
   );
 }
-type sampleData = {
-  teamName: string;
-  project: string;
-  track: string;
-  members: string[];
-  evaluationStatus: 'pending' | 'completed';
-  scores: number;
-  teamId: string;
-};
-const sampleData: sampleData[] = [
-  {
-    teamName: 'seCSI',
-    project: 'Interact',
-    track: 'Sustainable Development',
-    members: ['Keshav Aneja', 'Pratham Mishra', 'Keshav Aneja', 'Keshav Aneja'],
-    evaluationStatus: 'pending',
-    scores: 928,
-    teamId: '12345',
-  },
-  {
-    teamName: 'seCSI',
-    project: 'Interact',
-    track: 'Sustainable Development',
-    members: ['Keshav Aneja', 'Pratham Mishra', 'Keshav Aneja', 'Keshav Aneja'],
-    evaluationStatus: 'completed',
-    scores: 928,
-    teamId: '12345',
-  },
-  {
-    teamName: 'seCSI',
-    project: 'Interact',
-    track: 'Sustainable Development',
-    members: ['Keshav Aneja', 'Pratham Mishra', 'Keshav Aneja', 'Keshav Aneja'],
-    evaluationStatus: 'pending',
-    scores: 928,
-    teamId: '12345',
-  },
-  {
-    teamName: 'seCSI',
-    project: 'Interact',
-    track: 'Sustainable Development',
-    members: ['Keshav Aneja', 'Pratham Mishra', 'Keshav Aneja', 'Keshav Aneja'],
-    evaluationStatus: 'completed',
-    scores: 928,
-    teamId: '12345',
-  },
-  {
-    teamName: 'seCSI',
-    project: 'Interact',
-    track: 'Sustainable Development',
-    members: ['Keshav Aneja', 'Pratham Mishra', 'Keshav Aneja', 'Keshav Aneja'],
-    evaluationStatus: 'pending',
-    scores: 928,
-    teamId: '12345',
-  },
-  {
-    teamName: 'seCSI',
-    project: 'Interact',
-    track: 'Sustainable Development',
-    members: ['Keshav Aneja', 'Pratham Mishra', 'Keshav Aneja', 'Keshav Aneja'],
-    evaluationStatus: 'completed',
-    scores: 928,
-    teamId: '12345',
-  },
-];

@@ -10,6 +10,8 @@ import moment from 'moment';
 import PictureList from '@/components/common/picture_list';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
+import { getHackathonRole } from '@/utils/funcs/hackathons';
+import { ORG_URL } from '@/config/routes';
 
 const Teams = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -25,9 +27,9 @@ const Teams = () => {
   const hackathon = useSelector(currentHackathonSelector);
 
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
-    const URL = `/hackathons/${hackathon.id}/admin/teams?page=${page}&limit=${20}&search=${search}${track != '' ? `&track=${track}` : ''}${
-      overallScore != 0 ? `&overall_score=${overallScore}` : ''
-    }&order=${order}`;
+    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${page}&limit=${20}&search=${search}${
+      track != '' ? `&track=${track}` : ''
+    }${overallScore != 0 ? `&overall_score=${overallScore}` : ''}&order=${order}`;
     const res = await getHandler(URL, abortController?.signal);
     if (res.statusCode == 200) {
       if (initialPage == 1) {
@@ -65,6 +67,11 @@ const Teams = () => {
       abortController.abort();
     };
   }, [search, track, isEliminated, overallScore, order]);
+
+  useEffect(() => {
+    const role = getHackathonRole();
+    if (role != 'admin' && role != 'org') window.location.replace('/');
+  }, []);
 
   return (
     <div className="w-full bg-[#E1F1FF] min-h-screen">

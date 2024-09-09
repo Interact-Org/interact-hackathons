@@ -8,6 +8,7 @@ import { teamDetailSchema, teamDetailType } from '@/schemas/teams';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
 import { Input } from './ui/input';
+import { HackathonTeam } from '@/types';
 type sampleData = {
   teamName: string;
   project: string;
@@ -19,7 +20,7 @@ type sampleData = {
 };
 interface Props {
   teamId: string;
-  data: sampleData;
+  data: HackathonTeam;
 }
 export default function TeamActions({ teamId, data }: Props) {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -29,10 +30,10 @@ export default function TeamActions({ teamId, data }: Props) {
   const form = useForm<teamDetailType>({
     resolver: zodResolver(teamDetailSchema),
     defaultValues: {
-      name: data?.teamName || '',
-      project: data?.project || '',
+      name: data?.title || '',
+      project: data?.project?.title || '',
       track: data?.track || '',
-      scores: data?.scores || 0,
+      // scores: data?.scores || 0,
     },
   });
 

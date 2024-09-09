@@ -13,6 +13,7 @@ interface HackathonState {
   description: string;
   tags?: string[];
   links?: string[];
+  eventID: string;
   startTime: string;
   endTime: string;
   teamFormationStartTime: string;
@@ -38,6 +39,7 @@ const initialState: HackathonState = {
   description: '',
   tags: [],
   links: [],
+  eventID: '',
   startTime: new Date().toUTCString(),
   endTime: new Date().toUTCString(),
   teamFormationStartTime: new Date().toUTCString(),
@@ -67,6 +69,7 @@ export const hackathonSlice = createSlice({
       state.description = action.payload.description;
       state.tags = action.payload.tags || [];
       state.links = action.payload.links || [];
+      state.eventID = action.payload.eventID;
       state.startTime = new Date(action.payload.startTime).toUTCString();
       state.endTime = new Date(action.payload.endTime).toUTCString();
       state.teamFormationStartTime = new Date(action.payload.teamFormationStartTime).toUTCString();

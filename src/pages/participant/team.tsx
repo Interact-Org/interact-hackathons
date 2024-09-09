@@ -11,6 +11,7 @@ import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
+import { getHackathonRole } from '@/utils/funcs/hackathons';
 
 const Team = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -33,7 +34,11 @@ const Team = () => {
 
   useEffect(() => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
-    else getTeam();
+    else {
+      const role = getHackathonRole();
+      if (role != 'participant') window.location.replace('/');
+      else getTeam();
+    }
   }, []);
 
   const handleCreateTeam = async (formData: any) => {
