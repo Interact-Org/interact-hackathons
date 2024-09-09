@@ -25,14 +25,16 @@ const Live = () => {
     const URL = `/hackathons/${hackathon.id}/participants/teams`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
-      setTeam(res.data.team);
+      const team = res.data.team;
+      if (!team) Toaster.error('Team Not Found');
+      else setTeam(team);
     } else {
       if (res.data.message) Toaster.error(res.data.message);
       else Toaster.error(SERVER_ERROR);
     }
   };
 
-  const project = useMemo(() => team.project, [team]);
+  const project = useMemo(() => team?.project, [team]);
 
   useEffect(() => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);

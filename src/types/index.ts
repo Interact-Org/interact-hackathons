@@ -812,12 +812,13 @@ export interface HackathonTeam {
   hackathonID: string;
   title: string;
   token: string;
-  track?: string;
   idea?: string;
   userID: string;
   user: User;
   projectID?: string;
   project?: Project;
+  trackID?: string;
+  track?: string;
   memberships: HackathonTeamMembership[];
   isEliminated: boolean;
   noComments: number;

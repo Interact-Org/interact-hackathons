@@ -40,10 +40,11 @@ const Team = () => {
       const role = getHackathonRole();
       if (role != 'participant') window.location.replace('/');
       else {
-        const now = moment();
-        if (!now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
-          window.location.replace('/participant/live');
-        else getTeam();
+        // const now = moment();
+        // if (!now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
+        //   window.location.replace('/participant/live');
+        // else
+        getTeam();
       }
     }
   }, []);
@@ -148,22 +149,22 @@ const Team = () => {
 
           <div
             onClick={() => setClickedOnCreateTeam(true)}
-            className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col"
+            className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col cursor-pointer"
           >
             <div className="text-4xl font-semibold">Create Team</div>
             <div className="text-lg">Initiate brilliance! Create a team to transform your visionary ideas into actionable innovation</div>
           </div>
           <div
             onClick={() => setClickedOnJoinTeam(true)}
-            className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col"
+            className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col cursor-pointer"
           >
             <div className="text-4xl font-semibold">Join Team</div>
             <div className="text-lg">Contribute to success! Join a team to merge your skills with theirs and drive innovative solutions.</div>
           </div>
-          <div className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col">
+          {/* <div className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col">
             <div className="text-4xl font-semibold">Explore Channels</div>
             <div className="text-lg">Need some inspiration? Explore channels to find resources, tips, or maybe even your next teammate</div>
-          </div>
+          </div> */}
         </div>
       )}
     </div>

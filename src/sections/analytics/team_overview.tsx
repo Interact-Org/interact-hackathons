@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import { Bar, BarChart, XAxis } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import getHandler from '@/handlers/get_handler';
 import { useSelector } from 'react-redux';
@@ -48,6 +48,7 @@ const TeamOverviewAnalytics = () => {
 
     fetchAnalyticsData();
   }, []);
+
   return (
     <div className="w-full h-full grid grid-cols-2 gap-6">
       <AnalyticBox>
@@ -80,7 +81,7 @@ const TeamOverviewAnalytics = () => {
           </BarChart>
         </ChartContainer>
       </AnalyticBox>
-      <AnalyticBox className="flex items-center ">
+      <AnalyticBox className="w-full flex items-center justify-between">
         <div>
           <h1 className="uppercase text-xs font-medium text-black/70 mb-2">Time left for Registration</h1>
           <div
@@ -95,7 +96,7 @@ const TeamOverviewAnalytics = () => {
           </div>
         </div>
         <div className="h-full flex flex-col justify-between">
-          <h1 className="uppercase text-xs font-medium text-black/70 mb-2">Time till Round 1</h1>
+          <h1 className="w-full text-center uppercase text-xs font-medium text-black/70 mb-2">Time till Round 1</h1>
           <div
             className="aspect-[2] h-[80px] bg-white rounded-t-full p-4 relative"
             style={{
