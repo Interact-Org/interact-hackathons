@@ -8,7 +8,7 @@ import Toaster from '@/utils/toaster';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 
-const useHackathonStateSynchronizer = (hid: string) => {
+const useHackathonStateSynchronizer = () => {
   const config = useSelector(configSelector);
   const hackathon = useSelector(currentHackathonSelector);
   const user = useSelector(userSelector);
@@ -27,15 +27,15 @@ const useHackathonStateSynchronizer = (hid: string) => {
   };
 
   const syncHackathonState = () => {
-    if (moment().utc().diff(config.lastFetchedHackathon, 'minute') < 5 && hackathon.id == hid) return;
+    if (moment().utc().diff(config.lastFetchedHackathon, 'minute') < 5) return;
 
     const role = getRole();
 
     let URL = '';
 
-    if (role == 'admin') URL = `/hackathons/${hid}/admin`;
-    else if (role == 'org') URL = `/org/${getHackathonOrg()}/hackathons/${hid}`;
-    else URL = `/hackathons/${hid}/participants`;
+    if (role == 'admin') URL = `/hackathons/${hackathon.id}/admin`;
+    else if (role == 'org') URL = `/org/${getHackathonOrg()}/hackathons/${hackathon.id}`;
+    else URL = `/hackathons/${hackathon.id}/participants`;
 
     getHandler(URL)
       .then(res => {

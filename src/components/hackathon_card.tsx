@@ -18,6 +18,7 @@ const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
   const URL = useMemo(() => {
     const hackathonStage = getHackathonStage(hackathon);
     let URL = '';
+
     if (isAdmin) URL += 'admin';
     else URL += 'participant';
 
@@ -28,13 +29,12 @@ const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
       case HACKATHON_TEAM_REGISTRATION:
         if (isAdmin) URL += '/teams';
         else URL += '/team';
-        URL += `?hid=${hackathon.id}`;
         break;
       case HACKATHON_LIVE:
-        URL += `/live?hid=${hackathon.id}`;
+        URL += `/live`;
         break;
       case HACKATHON_COMPLETED:
-        URL += `/completed?hid=${hackathon.id}`;
+        URL += `/completed`;
         break;
     }
 

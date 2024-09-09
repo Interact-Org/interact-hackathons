@@ -3,18 +3,15 @@ import getHandler from '@/handlers/get_handler';
 import TeamOverviewAnalytics from '@/sections/analytics/team_overview';
 import { HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
-import { GetServerSidePropsContext } from 'next';
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import TeamSearchFilters from '@/components/team_search_filters';
 import moment from 'moment';
 import PictureList from '@/components/common/picture_list';
+import { useSelector } from 'react-redux';
+import { currentHackathonSelector } from '@/slices/hackathonSlice';
 
-interface Props {
-  hid: string;
-}
-
-const Teams = ({ hid }: Props) => {
+const Teams = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -25,8 +22,10 @@ const Teams = ({ hid }: Props) => {
   const [overallScore, setOverallScore] = useState(0);
   const [order, setOrder] = useState('latest');
 
+  const hackathon = useSelector(currentHackathonSelector);
+
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
-    const URL = `/hackathons/${hid}/admin/teams?page=${page}&limit=${20}&search=${search}${track != '' ? `&track=${track}` : ''}${
+    const URL = `/hackathons/${hackathon.id}/admin/teams?page=${page}&limit=${20}&search=${search}${track != '' ? `&track=${track}` : ''}${
       overallScore != 0 ? `&overall_score=${overallScore}` : ''
     }&order=${order}`;
     const res = await getHandler(URL, abortController?.signal);
@@ -53,11 +52,14 @@ const Teams = ({ hid }: Props) => {
     if (oldAbortController) oldAbortController.abort();
     oldAbortController = abortController;
 
-    setPage(1);
-    setTeams([]);
-    setHasMore(true);
-    setLoading(true);
-    fetchTeams(abortController, 1);
+    if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
+    else {
+      setPage(1);
+      setTeams([]);
+      setHasMore(true);
+      setLoading(true);
+      fetchTeams(abortController, 1);
+    }
 
     return () => {
       abortController.abort();
@@ -132,22 +134,5 @@ const Teams = ({ hid }: Props) => {
     </div>
   );
 };
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { query } = context;
-  const hid = query.hid;
-
-  if (!hid)
-    return {
-      redirect: {
-        permanent: true,
-        destination: '/',
-      },
-      props: { hid },
-    };
-  return {
-    props: { hid },
-  };
-}
 
 export default Teams;

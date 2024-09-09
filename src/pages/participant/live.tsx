@@ -7,21 +7,20 @@ import { HackathonTeam } from '@/types';
 import { initialHackathonTeam } from '@/types/initials';
 import Toaster from '@/utils/toaster';
 import { Pen } from '@phosphor-icons/react';
-import { GetServerSidePropsContext } from 'next';
 import React, { useEffect, useMemo, useState } from 'react';
 import Tasks from '@/screens/participants/tasks';
+import { currentHackathonSelector } from '@/slices/hackathonSlice';
+import { useSelector } from 'react-redux';
 
-interface Props {
-  hid: string;
-}
-
-const Live = ({ hid }: Props) => {
+const Live = () => {
   const [team, setTeam] = useState<HackathonTeam>(initialHackathonTeam);
   const [index, setIndex] = useState(0);
   const [clickedOnProject, setClickedOnProject] = useState(false);
 
+  const hackathon = useSelector(currentHackathonSelector);
+
   const getTeam = async () => {
-    const URL = `/hackathons/${hid}/participants/teams`;
+    const URL = `/hackathons/${hackathon.id}/participants/teams`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       setTeam(res.data.team);
@@ -34,7 +33,8 @@ const Live = ({ hid }: Props) => {
   const project = useMemo(() => team.project, [team]);
 
   useEffect(() => {
-    getTeam();
+    if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
+    else getTeam();
   }, []);
 
   return (
@@ -108,22 +108,5 @@ const Live = ({ hid }: Props) => {
     </div>
   );
 };
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { query } = context;
-  const hid = query.hid;
-
-  if (!hid)
-    return {
-      redirect: {
-        permanent: true,
-        destination: '/',
-      },
-      props: { hid },
-    };
-  return {
-    props: { hid },
-  };
-}
 
 export default Live;

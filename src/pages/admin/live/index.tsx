@@ -1,10 +1,7 @@
-import TeamProjectsTable from '@/components/tables/teams_projects';
 import { SERVER_ERROR } from '@/config/errors';
-import { ORG_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import { HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
-import { GetServerSidePropsContext } from 'next';
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Funnel, MagnifyingGlass, PencilSimple } from '@phosphor-icons/react';
@@ -15,14 +12,15 @@ import { Button } from '@/components/ui/button';
 import LiveRoundAnalytics from '@/sections/analytics/live_round_analytics';
 import TeamActions from '@/components/team_actions';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-interface Props {
-  hid: string;
-}
+import { currentHackathonSelector } from '@/slices/hackathonSlice';
+import { useSelector } from 'react-redux';
+
 interface Filter {
   name: string;
   checked: boolean;
 }
-const Index = ({ hid }: Props) => {
+
+const Index = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -46,8 +44,10 @@ const Index = ({ hid }: Props) => {
     });
   };
 
+  const hackathon = useSelector(currentHackathonSelector);
+
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
-    const URL = `/hackathons/${hid}/admin/teams`;
+    const URL = `/hackathons/${hackathon.id}/admin/teams`;
     const res = await getHandler(URL, abortController?.signal);
     if (res.statusCode == 200) {
       if (initialPage == 1) {
@@ -72,11 +72,14 @@ const Index = ({ hid }: Props) => {
     if (oldAbortController) oldAbortController.abort();
     oldAbortController = abortController;
 
-    setPage(1);
-    setTeams([]);
-    setHasMore(true);
-    setLoading(true);
-    fetchTeams(abortController, 1);
+    if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
+    else {
+      setPage(1);
+      setTeams([]);
+      setHasMore(true);
+      setLoading(true);
+      fetchTeams(abortController, 1);
+    }
 
     return () => {
       abortController.abort();
@@ -159,7 +162,7 @@ const Index = ({ hid }: Props) => {
               ></Input>
               <MagnifyingGlass size={16} className="absolute top-1/2 -translate-y-1/2 left-4" />
             </div>
-            <TeamSearchFilters />
+            {/* <TeamSearchFilters /> */}
           </section>
           <section className="--team-table">
             <Table className="bg-white rounded-md">
@@ -204,23 +207,6 @@ const Index = ({ hid }: Props) => {
     </div>
   );
 };
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { query } = context;
-  const hid = query.hid;
-
-  if (!hid)
-    return {
-      redirect: {
-        permanent: true,
-        destination: '/',
-      },
-      props: { hid },
-    };
-  return {
-    props: { hid },
-  };
-}
 
 export default Index;
 
