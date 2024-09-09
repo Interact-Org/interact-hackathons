@@ -14,6 +14,7 @@ import Toaster from '@/utils/toaster';
 import ModalWrapper from '@/wrappers/modal';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import CoverPic from '@/components/utils/new_cover';
 
 interface Props {
   projectToEdit: Project;
@@ -24,7 +25,6 @@ interface Props {
 const EditProject = ({ projectToEdit, setShow, setTeam }: Props) => {
   const [description, setDescription] = useState(projectToEdit.description);
   const [tagline, setTagline] = useState(projectToEdit.tagline);
-  const [isPrivate, setIsPrivate] = useState(projectToEdit.isPrivate);
   const [category, setCategory] = useState(projectToEdit.category);
   const [tags, setTags] = useState<string[]>(projectToEdit.tags || []);
   const [links, setLinks] = useState<string[]>(projectToEdit.links || []);
@@ -69,7 +69,6 @@ const EditProject = ({ projectToEdit, setShow, setTeam }: Props) => {
     // if (isArrEdited(privateLinks, projectToEdit.privateLinks))
     privateLinks.forEach(link => formData.append('privateLinks', link));
     if (category != projectToEdit.category) formData.append('category', category);
-    formData.append('isPrivate', String(isPrivate));
     if (image) formData.append('coverPic', image);
 
     const URL = `${PROJECT_URL}/${projectToEdit.slug}`;
@@ -111,9 +110,9 @@ const EditProject = ({ projectToEdit, setShow, setTeam }: Props) => {
   return (
     <ModalWrapper setShow={setShow} width="2/3" height="fit" blur={true} modalStyles={{ top: '50%' }}>
       <div className="w-full flex max-lg:flex-col justify-between rounded-lg max-lg:rounded-md p-2 gap-8 max-lg:gap-4 dark:text-white font-primary z-30">
-        {/* <div className="w-80 max-lg:w-full lg:sticky lg:top-0">
-          <Images initialImage={projectToEdit.coverPic} setSelectedFile={setImage} />
-        </div> */}
+        <div className="w-80 max-lg:w-full lg:sticky lg:top-0">
+          <CoverPic initialImage={projectToEdit.coverPic} setSelectedFile={setImage} />
+        </div>
         <div className="w-[calc(100%-320px)] max-lg:w-full h-fit flex flex-col max-lg:items-center gap-4 max-lg:gap-6 max-lg:pb-4">
           <div className="w-fit text-5xl max-lg:text-3xl font-bold cursor-default">{projectToEdit.title}</div>
           <Select label="Project Category" val={category} setVal={setCategory} options={categories} required={true} />

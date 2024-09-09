@@ -4,27 +4,24 @@ import getHandler from '@/handlers/get_handler';
 import postHandler from '@/handlers/post_handler';
 import CreateTeam from '@/sections/teams/create_team';
 import JoinTeam from '@/sections/teams/join_team';
-import TeamView from '@/sections/teams/team_view';
+import TeamView from '@/screens/participants/team_view';
 import { userSelector } from '@/slices/userSlice';
 import { HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
-import { GetServerSidePropsContext } from 'next';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { currentHackathonSelector } from '@/slices/hackathonSlice';
 
-interface Props {
-  hid: string;
-}
-
-const Team = ({ hid }: Props) => {
+const Team = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
   const [clickedOnCreateTeam, setClickedOnCreateTeam] = useState(false);
   const [clickedOnJoinTeam, setClickedOnJoinTeam] = useState(false);
 
   const user = useSelector(userSelector);
+  const hackathon = useSelector(currentHackathonSelector);
 
   const getTeam = async () => {
-    const URL = `/hackathons/${hid}/participants/teams`;
+    const URL = `/hackathons/${hackathon.id}/participants/teams`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       setTeam(res.data.team);
@@ -35,11 +32,12 @@ const Team = ({ hid }: Props) => {
   };
 
   useEffect(() => {
-    getTeam();
+    if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
+    else getTeam();
   }, []);
 
   const handleCreateTeam = async (formData: any) => {
-    const URL = `/hackathons/${hid}/participants/teams`;
+    const URL = `/hackathons/${hackathon.id}/participants/teams`;
     const res = await postHandler(URL, formData);
     if (res.statusCode == 201) {
       setTeam(res.data.team);
@@ -50,7 +48,7 @@ const Team = ({ hid }: Props) => {
   };
 
   const handleJoinTeam = async (formData: any) => {
-    const URL = `/hackathons/${hid}/participants/teams/join`;
+    const URL = `/hackathons/${hackathon.id}/participants/teams/join`;
     const res = await postHandler(URL, formData);
     if (res.statusCode == 200) {
       setTeam(res.data.team);
@@ -61,7 +59,7 @@ const Team = ({ hid }: Props) => {
   };
 
   const handleDeleteTeam = async () => {
-    const URL = `/hackathons/${hid}/participants/teams/${team?.id}`;
+    const URL = `/hackathons/${hackathon.id}/participants/teams/${team?.id}`;
     const res = await deleteHandler(URL);
     if (res.statusCode == 204) {
       setTeam(null);
@@ -72,7 +70,7 @@ const Team = ({ hid }: Props) => {
   };
 
   const handleLeaveTeam = async () => {
-    const URL = `/hackathons/${hid}/participants/teams/${team?.id}/leave`;
+    const URL = `/hackathons/${hackathon.id}/participants/teams/${team?.id}/leave`;
     const res = await deleteHandler(URL);
     if (res.statusCode == 200) {
       setTeam(prev => {
@@ -91,7 +89,7 @@ const Team = ({ hid }: Props) => {
   };
 
   const handleKickMember = async (userID: string) => {
-    const URL = `/hackathons/${hid}/participants/teams/${team?.id}/member/${userID}`;
+    const URL = `/hackathons/${hackathon.id}/participants/teams/${team?.id}/member/${userID}`;
     const res = await deleteHandler(URL);
     if (res.statusCode == 200) {
       setTeam(prev => {
@@ -143,7 +141,7 @@ const Team = ({ hid }: Props) => {
         <TeamView team={team} onDeleteTeam={handleDeleteTeam} onLeaveTeam={handleLeaveTeam} onKickMember={handleKickMember} />
       ) : (
         <div className="w-full flex-center gap-12">
-          {clickedOnCreateTeam && <CreateTeam setShow={setClickedOnCreateTeam} submitHandler={handleCreateTeam} hackathonID={hid} />}
+          {clickedOnCreateTeam && <CreateTeam setShow={setClickedOnCreateTeam} submitHandler={handleCreateTeam} hackathonID={hackathon.id} />}
           {clickedOnJoinTeam && <JoinTeam setShow={setClickedOnJoinTeam} submitHandler={handleJoinTeam} />}
 
           <div
@@ -169,22 +167,5 @@ const Team = ({ hid }: Props) => {
     </div>
   );
 };
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { query } = context;
-  const hid = query.hid;
-
-  if (!hid)
-    return {
-      redirect: {
-        permanent: true,
-        destination: '/',
-      },
-      props: { hid },
-    };
-  return {
-    props: { hid },
-  };
-}
 
 export default Team;

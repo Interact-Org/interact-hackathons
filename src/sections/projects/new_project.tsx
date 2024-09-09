@@ -3,9 +3,8 @@ import Links from '@/components/form/links';
 import Select from '@/components/form/select';
 import Tags from '@/components/form/tags';
 import TextArea from '@/components/form/textarea';
-// import CoverPic from '@/components/utils/new_cover';
+import CoverPic from '@/components/utils/new_cover';
 import { SERVER_ERROR } from '@/config/errors';
-import { PROJECT_URL } from '@/config/routes';
 import postHandler from '@/handlers/post_handler';
 import { userSelector } from '@/slices/userSlice';
 import { HackathonTeam } from '@/types';
@@ -20,9 +19,10 @@ import { useSelector } from 'react-redux';
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setTeam: React.Dispatch<React.SetStateAction<HackathonTeam>>;
+  team: HackathonTeam;
 }
 
-const NewProject = ({ setShow, setTeam }: Props) => {
+const NewProject = ({ setShow, setTeam, team }: Props) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tagline, setTagline] = useState('');
@@ -80,16 +80,16 @@ const NewProject = ({ setShow, setTeam }: Props) => {
     if (image) formData.append('coverPic', image);
     else formData.append('coverPic', randomImage);
 
-    const URL = PROJECT_URL;
+    const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project`;
 
     const res = await postHandler(URL, formData, 'multipart/form-data');
-
     if (res.statusCode === 201) {
       const project = res.data.project;
       project.user = user;
       setTeam(prev => {
-        return { ...prev, project };
+        return { ...prev, projectID: project.id, project };
       });
+
       Toaster.stopLoad(toaster, 'Project Added', 1);
       setTitle('');
       setTagline('');
@@ -125,16 +125,16 @@ const NewProject = ({ setShow, setTeam }: Props) => {
     <ModalWrapper setShow={setShow} width="2/3" height="4/5" blur={true} modalStyles={{ top: '50%' }}>
       <div className="w-full h-full bg-white dark:bg-[#ffe1fc22] flex max-lg:flex-col justify-between rounded-lg p-2 gap-8 max-lg:gap-4 dark:text-white font-primary border-primary_btn  dark:border-dark_primary_btn">
         <X onClick={() => setShow(false)} className="lg:hidden absolute top-2 right-2 cursor-pointer" weight="bold" size={32} />
-        {/* <div className="w-80 max-lg:w-full lg:sticky lg:top-0">
+        <div className="w-80 max-lg:w-full lg:sticky lg:top-0">
           <CoverPic setSelectedFile={setImage} initialImage={randomImage} />
-        </div> */}
+        </div>
         <div className="w-[calc(100%-320px)] max-lg:w-full h-full flex flex-col justify-between gap-2">
           <div className="w-full h-fit flex flex-col gap-6">
             <div className="w-full max-lg:w-full text-primary_black flex flex-col gap-4 pb-8 max-lg:pb-4">
               <input
                 value={title}
                 onChange={el => setTitle(el.target.value)}
-                maxLength={20}
+                maxLength={40}
                 type="text"
                 placeholder="Untitled Project"
                 className="w-full text-5xl max-lg:text-center max-lg:text-3xl font-bold bg-transparent focus:outline-none"

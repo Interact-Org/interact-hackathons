@@ -13,14 +13,14 @@ interface HackathonState {
   description: string;
   tags?: string[];
   links?: string[];
-  startTime: Date;
-  endTime: Date;
-  teamFormationStartTime: Date;
-  teamFormationEndTime: Date;
+  startTime: string;
+  endTime: string;
+  teamFormationStartTime: string;
+  teamFormationEndTime: string;
   location: string;
   minTeamSize: number;
   maxTeamSize: number;
-  createdAt: Date;
+  createdAt: string;
   noParticipants: number;
   coordinators: string[];
   judges: string[];
@@ -38,14 +38,14 @@ const initialState: HackathonState = {
   description: '',
   tags: [],
   links: [],
-  startTime: new Date(),
-  endTime: new Date(),
-  teamFormationStartTime: new Date(),
-  teamFormationEndTime: new Date(),
+  startTime: new Date().toUTCString(),
+  endTime: new Date().toUTCString(),
+  teamFormationStartTime: new Date().toUTCString(),
+  teamFormationEndTime: new Date().toUTCString(),
   location: '',
   minTeamSize: 1,
   maxTeamSize: 5,
-  createdAt: new Date(),
+  createdAt: new Date().toUTCString(),
   noParticipants: 0,
   coordinators: [],
   judges: [],
@@ -67,14 +67,14 @@ export const hackathonSlice = createSlice({
       state.description = action.payload.description;
       state.tags = action.payload.tags || [];
       state.links = action.payload.links || [];
-      state.startTime = action.payload.startTime;
-      state.endTime = action.payload.endTime;
-      state.teamFormationStartTime = action.payload.teamFormationStartTime;
-      state.teamFormationEndTime = action.payload.teamFormationEndTime;
+      state.startTime = new Date(action.payload.startTime).toUTCString();
+      state.endTime = new Date(action.payload.endTime).toUTCString();
+      state.teamFormationStartTime = new Date(action.payload.teamFormationStartTime).toUTCString();
+      state.teamFormationEndTime = new Date(action.payload.teamFormationEndTime).toUTCString();
       state.location = action.payload.location;
       state.minTeamSize = action.payload.minTeamSize;
       state.maxTeamSize = action.payload.maxTeamSize;
-      state.createdAt = action.payload.createdAt;
+      state.createdAt = new Date(action.payload.createdAt).toUTCString();
       state.noParticipants = action.payload.noParticipants;
       state.coordinators = action.payload.coordinators.map(user => user.id);
       state.judges = action.payload.judges.map(user => user.id);

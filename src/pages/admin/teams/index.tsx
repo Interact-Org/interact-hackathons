@@ -1,32 +1,33 @@
-import TeamsTable from '@/components/tables/teams';
 import { SERVER_ERROR } from '@/config/errors';
-import { ORG_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import TeamOverviewAnalytics from '@/sections/analytics/team_overview';
 import { HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
-import { GetServerSidePropsContext } from 'next';
 import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-
-import { AvatarBox } from '@/components/common/avatar_box';
-import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import TeamSearchFilters from '@/components/team_search_filters';
-import { MagnifyingGlass } from '@phosphor-icons/react';
+import moment from 'moment';
+import PictureList from '@/components/common/picture_list';
+import { useSelector } from 'react-redux';
+import { currentHackathonSelector } from '@/slices/hackathonSlice';
 
-interface Props {
-  hid: string;
-}
-
-const Teams = ({ hid }: Props) => {
+const Teams = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
-  const [tempQuery, setTempQuery] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [search, setSearch] = useState('');
+  const [track, setTrack] = useState('');
+  const [isEliminated, setIsEliminated] = useState(false);
+  const [overallScore, setOverallScore] = useState(0);
+  const [order, setOrder] = useState('latest');
+
+  const hackathon = useSelector(currentHackathonSelector);
+
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
-    const URL = `${ORG_URL}/hackathons/${hid}/teams`;
+    const URL = `/hackathons/${hackathon.id}/admin/teams?page=${page}&limit=${20}&search=${search}${track != '' ? `&track=${track}` : ''}${
+      overallScore != 0 ? `&overall_score=${overallScore}` : ''
+    }&order=${order}`;
     const res = await getHandler(URL, abortController?.signal);
     if (res.statusCode == 200) {
       if (initialPage == 1) {
@@ -51,25 +52,20 @@ const Teams = ({ hid }: Props) => {
     if (oldAbortController) oldAbortController.abort();
     oldAbortController = abortController;
 
-    setPage(1);
-    setTeams([]);
-    setHasMore(true);
-    setLoading(true);
-    fetchTeams(abortController, 1);
+    if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
+    else {
+      setPage(1);
+      setTeams([]);
+      setHasMore(true);
+      setLoading(true);
+      fetchTeams(abortController, 1);
+    }
 
     return () => {
       abortController.abort();
     };
-  }, []);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSearchQuery(tempQuery);
-    }, 300);
+  }, [search, track, isEliminated, overallScore, order]);
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [tempQuery]);
   return (
     <div className="w-full bg-[#E1F1FF] min-h-screen">
       <header className="bg-white w-full py-1 px-4 font-semibold">Interact</header>
@@ -95,45 +91,39 @@ const Teams = ({ hid }: Props) => {
           </div>
         </div>
         <div className="--team-data-box flex flex-col gap-4">
-          <section className="--search-filters flex items-center justify-between gap-4">
-            <div className="--search-box w-full flex-grow relative h-10">
-              <Input
-                className="bg-white border-[2px] border-[#dedede] focus-visible:border-primary_text ring-0 focus-visible:ring-0 pl-10 h-10"
-                placeholder="Search"
-                value={tempQuery}
-                onChange={e => {
-                  setTempQuery(e.target.value);
-                }}
-              ></Input>
-              <MagnifyingGlass size={16} className="absolute top-1/2 -translate-y-1/2 left-4" />
-            </div>
-            <TeamSearchFilters />
-          </section>
+          <TeamSearchFilters
+            search={search}
+            setSearch={setSearch}
+            track={track}
+            setTrack={setTrack}
+            isEliminated={isEliminated}
+            setIsEliminated={setIsEliminated}
+            overallScore={overallScore}
+            setOverallScore={setOverallScore}
+            order={order}
+            setOrder={setOrder}
+          />
           <section className="--team-table">
             <Table className="bg-white rounded-md">
-              <TableCaption>A list of all the participating teams</TableCaption>
               <TableHeader className="uppercase">
                 <TableRow>
                   <TableHead className="min-w-[100px] w-1/4">Team Name</TableHead>
                   <TableHead>Created By</TableHead>
-                  <TableHead>Created At</TableHead>
-                  <TableHead>Track</TableHead>
                   <TableHead>Members</TableHead>
+                  <TableHead>Track</TableHead>
+                  <TableHead>Created At</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {[1, 2, 3, 4].map(sample => (
-                  <TableRow key={sample}>
-                    <TableCell className="font-medium">seCSI</TableCell>
-                    <TableCell>Keshav Aneja</TableCell>
-                    <TableCell>31/10/2024</TableCell>
-                    <TableCell>Sustainable Development</TableCell>
+                {teams.map(team => (
+                  <TableRow key={team.id}>
+                    <TableCell className="font-medium">{team.title}</TableCell>
+                    <TableCell>{team.user.name}</TableCell>
                     <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
-                      <AvatarBox name="Keshav Aneja" />
-                      <AvatarBox name="Pratham Mishra" />
-                      <AvatarBox name="Keshav Aneja" />
-                      <AvatarBox name="Keshav Aneja" />
+                      <PictureList users={team.members} size={6} gap={7} />
                     </TableCell>
+                    <TableCell>{team.track}</TableCell>
+                    <TableCell>{moment(team.createdAt).format('hh:mm a DD MMMM')}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -144,22 +134,5 @@ const Teams = ({ hid }: Props) => {
     </div>
   );
 };
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { query } = context;
-  const hid = query.hid;
-
-  if (!hid)
-    return {
-      redirect: {
-        permanent: true,
-        destination: '/',
-      },
-      props: { hid },
-    };
-  return {
-    props: { hid },
-  };
-}
 
 export default Teams;

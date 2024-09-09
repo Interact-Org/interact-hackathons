@@ -104,66 +104,18 @@ const Tags = ({
               borderColor: `${borderColor ? borderColor : onboardingDesign ? 'black' : '#9ca3af'}`,
             }}
             key={tag}
-            className="flex-center text-sm px-2 py-1 border-[1px] text-sm rounded-full cursor-default active:border-2 active:border-black"
+            className="flex-center text-sm px-2 py-1 border-[1px] rounded-full cursor-default active:border-2 active:border-black"
             onDragStart={e => dragStart(e, i)}
             onDragEnter={e => dragEnter(e, i)}
             onDragEnd={drop}
             draggable={draggable}
           >
             {tag}
-            <svg
-              onClick={() => handleTagRemove(tag)}
-              className="w-4 h-4 ml-1 cursor-pointer"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-            >
+            <svg onClick={() => handleTagRemove(tag)} className="w-4 h-4 ml-1 cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </div>
         ))}
-
-        {/* <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="droppable">
-            {provided => (
-              <div
-                className="w-full flex flex-wrap items-center gap-2 "
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-              >
-                {tags.map((item, index) => (
-                  <Draggable key={index} draggableId={index.toString()} index={index}>
-                    {(provided, snapshot) => (
-                      <div
-                        className="w-fit flex-center px-2 py-1 border-[1px] text-sm rounded-full cursor-default active:border-2 active:border-black"
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        style={{
-                          backgroundColor: snapshot.isDragging ? 'gray' : 'white',
-                          ...provided.draggableProps.style,
-                        }}
-                      >
-                        {item}
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {tags.length < maxTags && (
-                  <input
-                    type="text"
-                    className="grow text-sm border-[1px] bg-transparent border-transparent rounded-md px-3 py-2 outline-none"
-                    maxLength={20}
-                    value={tagInput}
-                    onChange={handleTagInputChange}
-                    onKeyDown={handleTagInputKeyDown}
-                  />
-                )}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext> */}
 
         {tags.length < maxTags && (
           <input
@@ -176,9 +128,7 @@ const Tags = ({
           />
         )}
       </div>
-      {suggestions && (
-        <TagSuggestions match={tagInput} setMatch={setTagInput} tags={tags} setTags={setTags} maxTags={maxTags} />
-      )}
+      {suggestions && <TagSuggestions match={tagInput} setMatch={setTagInput} tags={tags} setTags={setTags} maxTags={maxTags} />}
     </>
   );
 };
