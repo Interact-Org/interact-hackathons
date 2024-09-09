@@ -6,18 +6,19 @@ import CreateTeam from '@/sections/teams/create_team';
 import JoinTeam from '@/sections/teams/join_team';
 import TeamView from '@/screens/participants/team_view';
 import { userSelector } from '@/slices/userSlice';
-import { HackathonTeam } from '@/types';
+import { HackathonTeam, HackathonTrack } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
+import { Plus } from 'lucide-react';
 
 const Team = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
+  const [tracks, setTracks] = useState<HackathonTrack[] | null>(null);
   const [clickedOnCreateTeam, setClickedOnCreateTeam] = useState(false);
   const [clickedOnJoinTeam, setClickedOnJoinTeam] = useState(false);
-
   const user = useSelector(userSelector);
   const hackathon = useSelector(currentHackathonSelector);
 
@@ -31,13 +32,25 @@ const Team = () => {
       else Toaster.error(SERVER_ERROR);
     }
   };
-
+  const getTracks = async () => {
+    const URL = `/hackathons/tracks/${hackathon.id}`;
+    const res = await getHandler(URL);
+    if (res.statusCode == 200) {
+      setTracks(res.data.tracks);
+    } else {
+      if (res.data.message) Toaster.error(res.data.message);
+      else Toaster.error(SERVER_ERROR);
+    }
+  };
   useEffect(() => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
       const role = getHackathonRole();
       if (role != 'participant') window.location.replace('/');
-      else getTeam();
+      else {
+        getTeam();
+        getTracks();
+      }
     }
   }, []);
 
@@ -115,11 +128,20 @@ const Team = () => {
     <div className="w-full min-h-screen bg-[#E1F1FF] p-12 flex flex-col justify-center gap-16">
       <div className="w-full flex gap-8">
         <div className="w-2/5 flex-center flex-col gap-2">
-          <div className="w-full text-8xl flex-center flex-col font-bold">
-            <div className="text-[#607EE7]">Team</div>
-            <div className="text-[#4B9EFF]">{team ? team.title : 'Formation'}</div>
+          <div className="w-full text-7xl flex-center text-center flex-col font-bold">
+            <h1
+              style={{
+                background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              Team
+              <br />
+              {team ? team.title : 'Formation'}
+            </h1>
           </div>
-          <div className="w-fit text-2xl font-medium">
+          <div className="w-fit text-2xl text-center font-medium">
             {team ? 'Team Formation is Live!' : 'Find, Create, and Join Teams Easily and Effortlessly.'}
           </div>
           {team && (
@@ -146,26 +168,28 @@ const Team = () => {
         <TeamView team={team} onDeleteTeam={handleDeleteTeam} onLeaveTeam={handleLeaveTeam} onKickMember={handleKickMember} />
       ) : (
         <div className="w-full flex-center gap-12">
-          {clickedOnCreateTeam && <CreateTeam setShow={setClickedOnCreateTeam} submitHandler={handleCreateTeam} hackathonID={hackathon.id} />}
+          {clickedOnCreateTeam && tracks && tracks.length > 0 && (
+            <CreateTeam setShow={setClickedOnCreateTeam} submitHandler={handleCreateTeam} hackathonID={hackathon.id} tracks={tracks} />
+          )}
           {clickedOnJoinTeam && <JoinTeam setShow={setClickedOnJoinTeam} submitHandler={handleJoinTeam} />}
 
           <div
             onClick={() => setClickedOnCreateTeam(true)}
-            className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col"
+            className="w-90 h-52 p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col"
           >
             <div className="text-4xl font-semibold">Create Team</div>
-            <div className="text-lg">Initiate brilliance! Create a team to transform your visionary ideas into actionable innovation</div>
+            <div className="text-sm">Initiate brilliance! Create a team to transform your visionary ideas into actionable innovation</div>
           </div>
           <div
             onClick={() => setClickedOnJoinTeam(true)}
-            className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col"
+            className="w-90 h-52 p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col"
           >
             <div className="text-4xl font-semibold">Join Team</div>
-            <div className="text-lg">Contribute to success! Join a team to merge your skills with theirs and drive innovative solutions.</div>
+            <div className="text-sm">Contribute to success! Join a team to merge your skills with theirs and drive innovative solutions.</div>
           </div>
-          <div className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col">
+          <div className="w-90 h-52 p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col">
             <div className="text-4xl font-semibold">Explore Channels</div>
-            <div className="text-lg">Need some inspiration? Explore channels to find resources, tips, or maybe even your next teammate</div>
+            <div className="text-sm">Need some inspiration? Explore channels to find resources, tips, or maybe even your next teammate</div>
           </div>
         </div>
       )}
