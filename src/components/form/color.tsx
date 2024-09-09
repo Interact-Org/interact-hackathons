@@ -1,5 +1,5 @@
 import React from 'react';
-import { CirclePicker, ColorResult, HuePicker, SliderPicker, TwitterPicker } from 'react-color';
+import { ColorResult, TwitterPicker } from 'react-color';
 
 interface Props {
   label?: string;
