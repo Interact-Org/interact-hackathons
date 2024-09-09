@@ -59,7 +59,7 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
         )}
         <div className="flex items-center gap-5">
           <div>
-            Members {team.memberships.length}/{hackathon.maxTeamSize}
+            Members {team.memberships?.length}/{hackathon.maxTeamSize}
           </div>
           {user.id != team.userID && onLeaveTeam && (
             <Button variant={'destructive'} onClick={onLeaveTeam}>

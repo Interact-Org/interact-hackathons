@@ -54,8 +54,10 @@ const Team = () => {
         const now = moment();
         if (!now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
           window.location.replace('/participant/live');
-        else getTeam();
-        getTracks();
+        else {
+          getTeam();
+          getTracks();
+        }
       }
     }
   }, []);
