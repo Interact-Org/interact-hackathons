@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import TextArea from '@/components/form/textarea';
 
 const TeamScores = () => {
   const [activeRound, setActiveRound] = useState(0);
@@ -36,20 +37,31 @@ const TeamScores = () => {
 
       <div className="w-full grid grid-cols-2 gap-4">
         {scoreMetricData.map((data, index) => (
-          <div key={index} className="w-full p-3 bg-white rounded-md">
-            <h1 className="text-2xl font-semibold">{data.title}</h1>
-            <p className="text-xs mb-4">{data.description}</p>
+          <div key={index} className="w-full p-3 bg-white rounded-md flex flex-col">
+            <span>
+              <h1 className="text-2xl font-semibold">{data.title}</h1>
+              <p className="text-xs mb-4">{data.description}</p>
+            </span>
 
-            {(data.type === 'text' || data.type === 'number') && (
+            {data.type === 'number' && (
               <Input
-                type={data.type === 'text' ? 'text' : 'number'}
+                type="number"
                 className="w-full p-2 border border-gray-300 rounded-md"
-                placeholder={data.type === 'text' ? 'Enter judgement' : 'Enter score'}
+                placeholder="Enter score"
                 value={scores[data.title] || ''}
                 onChange={e => handleInputChange(data.title, e.target.value)}
               />
             )}
 
+            {data.type === 'text' && (
+              <TextArea
+                className="w-full p-2 border border-gray-300 rounded-md resize-none"
+                placeholder="Enter judgement"
+                maxLength={300}
+                val={scores[data.title] || ''}
+                setVal={val => handleInputChange(data.title, val)}
+              />
+            )}
             {data.type === 'select' && data.options && data.options.length > 0 && (
               <Select onValueChange={value => handleInputChange(data.title, value)}>
                 <SelectTrigger className="w-full">
