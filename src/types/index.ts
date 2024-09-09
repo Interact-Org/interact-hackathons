@@ -839,6 +839,7 @@ export interface HackathonRound {
 }
 
 export interface HackathonRoundScoreMetric {
+  id: string;
   hackathonRoundID: string;
   title: string;
   description?: string;

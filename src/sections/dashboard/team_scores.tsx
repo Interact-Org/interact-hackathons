@@ -1,30 +1,89 @@
 import { Input } from '@/components/ui/input';
-import { HackathonRoundScoreMetric } from '@/types';
+import { HackathonRound, HackathonRoundScoreMetric, HackathonRoundTeamScoreCard } from '@/types';
 import React, { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import TextArea from '@/components/form/textarea';
+import { useSelector } from 'react-redux';
+import { currentHackathonSelector } from '@/slices/hackathonSlice';
+import { ORG_URL } from '@/config/routes';
+import getHandler from '@/handlers/get_handler';
+import Toaster from '@/utils/toaster';
+import { SERVER_ERROR } from '@/config/errors';
+import postHandler from '@/handlers/post_handler';
 
-const TeamScores = () => {
+const TeamScores = ({ teamID }: { teamID: string }) => {
   const [activeRound, setActiveRound] = useState(0);
-  const rounds = 5;
+  const [rounds, setRounds] = useState<HackathonRound[]>([]);
+  const [scores, setScores] = useState<HackathonRoundTeamScoreCard[]>([]);
+  const hackathon = useSelector(currentHackathonSelector);
 
-  const [scores, setScores] = useState<{ [key: string]: any }>({});
+  const getRounds = async () => {
+    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/rounds`;
+    const res = await getHandler(URL);
+    if (res.statusCode === 200) {
+      setRounds(res.data.rounds);
+    } else {
+      Toaster.error(res.data?.message || SERVER_ERROR);
+    }
+  };
+
+  useEffect(() => {
+    getRounds();
+    getScores();
+  }, []);
+
+  const [inputScores, setInputScores] = useState<{ [key: string]: any }>({});
 
   const handleInputChange = (id: string, value: any) => {
-    setScores(prevScores => ({
+    setInputScores(prevScores => ({
       ...prevScores,
       [id]: value,
     }));
   };
+
+  const getScores = async () => {
+    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/score/${teamID}`;
+    const res = await getHandler(URL);
+    if (res.statusCode === 200) {
+      setScores(res.data.scores);
+    } else {
+      Toaster.error(res.data?.message || SERVER_ERROR);
+    }
+  };
+
   useEffect(() => {
-    console.log(scores);
-  }, [scores]);
+    const currentRound = scores[activeRound];
+    if (currentRound) {
+      if (currentRound.overallScore) handleInputChange('overallScore', currentRound.overallScore);
+      currentRound.scores?.map(metric => {
+        handleInputChange(metric.hackathonRoundScoreMetricID, metric.score);
+      });
+    }
+  }, [scores, activeRound]);
+
+  const handleSubmit = async (hackathonRoundID: string, score: string | number | boolean, hackathonRoundScoreMetricID?: string) => {
+    const formData = {
+      hackathonRoundID,
+      hackathonTeamID: teamID,
+      hackathonRoundScoreMetricID,
+      score: String(score),
+    };
+
+    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/score`;
+    const res = await postHandler(URL, formData);
+    if (res.statusCode === 200) {
+      Toaster.success('Score Updated');
+    } else {
+      Toaster.error(res.data?.message || SERVER_ERROR);
+    }
+  };
+
   return (
     <div className="w-full p-4 flex flex-col gap-8">
       <div className="w-fit bg-white p-1 rounded-md mx-auto">
-        {Array.from({ length: rounds }, (_, index) => (
+        {Array.from({ length: rounds.length }, (_, index) => (
           <button
             key={index}
             className={`px-6 py-1 text-sm font-semibold rounded-sm ${activeRound === index ? 'bg-blue-500 text-white' : 'bg-white'}`}
@@ -36,39 +95,39 @@ const TeamScores = () => {
       </div>
 
       <div className="w-full grid grid-cols-2 gap-4">
-        {scoreMetricData.map((data, index) => (
-          <div key={index} className="w-full p-3 bg-white rounded-md flex flex-col">
+        {rounds[activeRound]?.metrics.map((metric, index) => (
+          <div key={index} className="w-full p-3 bg-white rounded-md flex flex-col gap-2">
             <span>
-              <h1 className="text-2xl font-semibold">{data.title}</h1>
-              <p className="text-xs mb-4">{data.description}</p>
+              <h1 className="text-2xl font-semibold">{metric.title}</h1>
+              <p className="text-xs mb-4">{metric.description}</p>
             </span>
 
-            {data.type === 'number' && (
+            {metric.type === 'number' && (
               <Input
                 type="number"
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Enter score"
-                value={scores[data.title] || ''}
-                onChange={e => handleInputChange(data.title, e.target.value)}
+                value={Number(inputScores[metric.id]) || ''}
+                onChange={e => handleInputChange(metric.id, e.target.value)}
               />
             )}
 
-            {data.type === 'text' && (
+            {metric.type === 'text' && (
               <TextArea
                 className="w-full p-2 border border-gray-300 rounded-md resize-none"
                 placeholder="Enter judgement"
                 maxLength={300}
-                val={scores[data.title] || ''}
-                setVal={val => handleInputChange(data.title, val)}
+                val={inputScores[metric.id] || ''}
+                setVal={val => handleInputChange(metric.id, val)}
               />
             )}
-            {data.type === 'select' && data.options && data.options.length > 0 && (
-              <Select onValueChange={value => handleInputChange(data.title, value)}>
+            {metric.type === 'select' && metric.options && metric.options.length > 0 && (
+              <Select onValueChange={value => handleInputChange(metric.id, value)}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Option" />
                 </SelectTrigger>
                 <SelectContent>
-                  {data.options.map((option, index) => (
+                  {metric.options.map((option, index) => (
                     <SelectItem key={index} value={option}>
                       {option}
                     </SelectItem>
@@ -76,10 +135,15 @@ const TeamScores = () => {
                 </SelectContent>
               </Select>
             )}
+            <Button
+              onClick={() => handleSubmit(metric.hackathonRoundID, inputScores[metric.id], metric.id)}
+              className="bg-primary_text/90 hover:bg-primary_text px-12"
+            >
+              Submit
+            </Button>
           </div>
         ))}
       </div>
-
       <div className="w-full p-3 bg-white text-primary_text rounded-md flex justify-between gap-4">
         <span className="flex items-center gap-2">
           <Trophy size={32} />
@@ -88,46 +152,19 @@ const TeamScores = () => {
             type="number"
             className="bg-white text-black w-60 ml-8"
             placeholder="Enter Score"
-            value={scores['overallScore'] || ''}
+            value={inputScores['overallScore'] || ''}
             onChange={e => handleInputChange('overallScore', e.target.value)}
           />
         </span>
-        <Button className="bg-primary_text/90 hover:bg-primary_text px-12">Submit</Button>
+        <Button
+          onClick={() => handleSubmit(rounds[activeRound].id, inputScores['overallScore'])}
+          className="bg-primary_text/90 hover:bg-primary_text px-12"
+        >
+          Submit
+        </Button>
       </div>
     </div>
   );
 };
 
 export default TeamScores;
-
-const scoreMetricData: HackathonRoundScoreMetric[] = [
-  {
-    hackathonRoundID: 'tech',
-    title: 'Tech',
-    description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam similique minus cumque culpa tenetur repellat veritatis inventore libero harum magni.',
-    type: 'text',
-  },
-  {
-    hackathonRoundID: 'design',
-    title: 'Design',
-    description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam similique minus cumque culpa tenetur repellat veritatis inventore libero harum magni.',
-    type: 'select',
-    options: ['Good', 'Average', 'Bad'],
-  },
-  {
-    hackathonRoundID: 'presentation',
-    title: 'Presentation',
-    description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam similique minus cumque culpa tenetur repellat veritatis inventore libero harum magni.',
-    type: 'number',
-  },
-  {
-    hackathonRoundID: 'management',
-    title: 'Management',
-    description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam similique minus cumque culpa tenetur repellat veritatis inventore libero harum magni.',
-    type: 'text',
-  },
-];

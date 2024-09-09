@@ -180,7 +180,7 @@ const Index = () => {
               </TableHeader>
               <TableBody>
                 {teams.map((team, index) => (
-                  <TableRow key={index}>
+                  <TableRow onClick={() => window.location.assign('/admin/live/' + team.id)} key={index}>
                     <TableCell className="font-medium">{team.title}</TableCell>
                     <TableCell>{team.project?.title}</TableCell>
                     <TableCell>{team.track}</TableCell>
