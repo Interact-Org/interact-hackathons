@@ -11,6 +11,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Tasks from '@/screens/participants/tasks';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { useSelector } from 'react-redux';
+import { getHackathonRole } from '@/utils/funcs/hackathons';
 
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam>(initialHackathonTeam);
@@ -34,7 +35,11 @@ const Live = () => {
 
   useEffect(() => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
-    else getTeam();
+    else {
+      const role = getHackathonRole();
+      if (role != 'participant') window.location.replace('/');
+      else getTeam();
+    }
   }, []);
 
   return (

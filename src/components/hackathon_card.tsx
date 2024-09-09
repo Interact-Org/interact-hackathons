@@ -47,7 +47,6 @@ const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
     <Link
       onClick={() => dispatch(setCurrentHackathon(hackathon))}
       href={URL}
-      target={URL == '#' ? '_self' : '_blank'}
       className="w-96 rounded-xl hover:shadow-xl transition-ease-out-500 animate-fade_third"
     >
       <div className="w-full relative group">
