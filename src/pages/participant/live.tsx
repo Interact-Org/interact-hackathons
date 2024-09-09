@@ -46,14 +46,14 @@ const Live = ({ hid }: Props) => {
             <div className="text-[#4B9EFF]">{team ? team.title : 'Formation'}</div>
           </div>
           <div className="w-fit text-2xl font-medium">Round 1 is Live!</div>
-          <div className="w-fit flex-center gap-8 mt-8">
+          <div className="w-fit flex-center gap-6 mt-8">
             {['Team', 'Project', 'Tasks'].map((tab, i) => (
               <div
                 key={i}
                 onClick={() => setIndex(i)}
                 className={`${
                   index == i ? 'bg-[#4B9EFF] text-white ' : 'bg-white text-primary_black'
-                } rounded-3xl py-2 px-8 font-medium cursor-pointer transition-ease-300`}
+                } text-lg rounded-3xl py-2 px-10 font-medium cursor-pointer transition-ease-300`}
               >
                 {tab}
               </div>

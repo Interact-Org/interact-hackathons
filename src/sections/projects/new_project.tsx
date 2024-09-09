@@ -3,7 +3,7 @@ import Links from '@/components/form/links';
 import Select from '@/components/form/select';
 import Tags from '@/components/form/tags';
 import TextArea from '@/components/form/textarea';
-// import CoverPic from '@/components/utils/new_cover';
+import CoverPic from '@/components/utils/new_cover';
 import { SERVER_ERROR } from '@/config/errors';
 import postHandler from '@/handlers/post_handler';
 import { userSelector } from '@/slices/userSlice';
@@ -125,9 +125,9 @@ const NewProject = ({ setShow, setTeam, team }: Props) => {
     <ModalWrapper setShow={setShow} width="2/3" height="4/5" blur={true} modalStyles={{ top: '50%' }}>
       <div className="w-full h-full bg-white dark:bg-[#ffe1fc22] flex max-lg:flex-col justify-between rounded-lg p-2 gap-8 max-lg:gap-4 dark:text-white font-primary border-primary_btn  dark:border-dark_primary_btn">
         <X onClick={() => setShow(false)} className="lg:hidden absolute top-2 right-2 cursor-pointer" weight="bold" size={32} />
-        {/* <div className="w-80 max-lg:w-full lg:sticky lg:top-0">
+        <div className="w-80 max-lg:w-full lg:sticky lg:top-0">
           <CoverPic setSelectedFile={setImage} initialImage={randomImage} />
-        </div> */}
+        </div>
         <div className="w-[calc(100%-320px)] max-lg:w-full h-full flex flex-col justify-between gap-2">
           <div className="w-full h-fit flex flex-col gap-6">
             <div className="w-full max-lg:w-full text-primary_black flex flex-col gap-4 pb-8 max-lg:pb-4">
