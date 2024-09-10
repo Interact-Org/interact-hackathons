@@ -129,7 +129,7 @@ const Teams = () => {
                     <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
                       <PictureList users={team.memberships.map(membership => membership.user)} size={6} gap={7} />
                     </TableCell>
-                    <TableCell>{team.track}</TableCell>
+                    <TableCell>{team.track?.title}</TableCell>
                     <TableCell>{moment(team.createdAt).format('hh:mm a DD MMMM')}</TableCell>
                   </TableRow>
                 ))}

@@ -32,7 +32,7 @@ export default function TeamActions({ teamId, data }: Props) {
     defaultValues: {
       name: data?.title || '',
       project: data?.project?.title || '',
-      track: data?.track || '',
+      track: data?.trackID || '',
       // scores: data?.scores || 0,
     },
   });

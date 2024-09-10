@@ -29,7 +29,7 @@ const TeamProjectsTable = ({ teams, fetcher, hasMore }: Props) => {
           >
             <div className="w-[20%] max-md:w-[25%] flex-center font-medium max-md:text-sm">{team.title}</div>
             <div className="w-[20%] max-md:w-[25%] flex-center">{team.project?.title}</div>
-            <div className="w-[20%] max-md:w-[25%] flex-center">{team.track}</div>
+            <div className="w-[20%] max-md:w-[25%] flex-center">{team.track?.title}</div>
             <div className="w-[25%] max-md:w-[25%] flex-center">
               {team.memberships.map(membership => (
                 <Image
