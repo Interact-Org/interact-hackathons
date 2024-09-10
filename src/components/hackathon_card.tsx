@@ -47,7 +47,7 @@ const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
     <Link
       onClick={() => dispatch(setCurrentHackathon(hackathon))}
       href={URL}
-      className="w-96 rounded-xl hover:shadow-xl transition-ease-out-500 animate-fade_third"
+      className="w-full rounded-xl hover:shadow-xl transition-ease-out-500 animate-fade_third border-[2px] border-[#dedede]"
     >
       <div className="w-full relative group">
         <div className="flex gap-1 top-2 right-2 absolute bg-white text-gray-500 text-xxs px-2 py-1 rounded-lg">
@@ -59,7 +59,7 @@ const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
           height={200}
           src={`${EVENT_PIC_URL}/${hackathon.coverPic}`}
           alt=""
-          className="w-full h-56 object-cover rounded-t-xl"
+          className="w-full h-44 object-cover rounded-t-xl"
           placeholder="blur"
           blurDataURL={hackathon.blurHash || 'no-hash'}
         />
