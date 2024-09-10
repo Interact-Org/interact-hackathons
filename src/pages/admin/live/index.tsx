@@ -14,6 +14,8 @@ import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { ORG_URL } from '@/config/routes';
 import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
+import { currentOrgIDSelector } from '@/slices/orgSlice';
+import EditDetailsBtn from '@/components/buttons/edit_details_btn';
 
 interface Filter {
   name: string;
@@ -31,9 +33,9 @@ const Index = () => {
   const [isEliminated, setIsEliminated] = useState(false);
   const [overallScore, setOverallScore] = useState(0);
   const [order, setOrder] = useState('latest');
-
+  const [rounds, setRounds] = useState<HackathonRound[]>([]);
   const hackathon = useSelector(currentHackathonSelector);
-
+  const currentOrgID = useSelector(currentOrgIDSelector);
   const getCurrentRound = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
     const res = await getHandler(URL);
@@ -44,7 +46,16 @@ const Index = () => {
       else Toaster.error(SERVER_ERROR);
     }
   };
-
+  const getRounds = async () => {
+    const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/rounds`;
+    const res = await getHandler(URL);
+    if (res.statusCode == 200) {
+      setRounds(res.data.rounds);
+    } else {
+      if (res.data.message) Toaster.error(res.data.message);
+      else Toaster.error(SERVER_ERROR);
+    }
+  };
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${page}&limit=${20}&search=${search}${
       overallScore != 0 ? `&overall_score=${overallScore}` : ''
@@ -72,7 +83,7 @@ const Index = () => {
     const abortController = new AbortController();
     if (oldAbortController) oldAbortController.abort();
     oldAbortController = abortController;
-
+    console.log(hackathon);
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
       setPage(1);
@@ -81,6 +92,7 @@ const Index = () => {
       setLoading(true);
       fetchTeams(abortController, 1);
       getCurrentRound();
+      getRounds();
     }
 
     return () => {
@@ -119,6 +131,9 @@ const Index = () => {
                         <>Next Judging Round Starts {moment(currentRound.judgingStartTime).fromNow()}.</>
                       )
                     )}
+                  </div>
+                  <div className="w-full flex items-center gap-4">
+                    <EditDetailsBtn rounds={rounds} />
                   </div>
                 </section>
               )}
