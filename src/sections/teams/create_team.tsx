@@ -7,6 +7,7 @@ import { set } from 'nprogress';
 import React, { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Toaster from '@/utils/toaster';
+
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   submitHandler: (formData: any) => void;
@@ -18,6 +19,11 @@ const CreateTeam = ({ setShow, submitHandler, hackathonID, tracks }: Props) => {
   const [title, setTitle] = useState('');
   const [track, setTrack] = useState('');
   const [role, setRole] = useState('');
+  const [schoolOfTeamMembers, setSchoolOfTeamMembers] = useState('');
+  const [facultyEmpID, setFacultyEmpID] = useState('');
+  const [facultyName, setFacultyName] = useState('');
+  const [facultySchool, setFacultySchool] = useState('');
+
   return (
     <ModalWrapper setShow={setShow} top="1/2">
       <div className="w-full flex flex-col gap-3">
@@ -56,12 +62,49 @@ const CreateTeam = ({ setShow, submitHandler, hackathonID, tracks }: Props) => {
             ))}
           </SelectContent>
         </Select>
+        <Input
+          value={schoolOfTeamMembers}
+          onChange={e => {
+            setSchoolOfTeamMembers(e.target.value);
+          }}
+          placeholder="Enter School of Team Members"
+        />
+        <Input
+          value={facultyEmpID}
+          onChange={e => {
+            setFacultyEmpID(e.target.value);
+          }}
+          placeholder="Enter Faculty Employee ID"
+        />
+        <Input
+          value={facultyName}
+          onChange={e => {
+            setFacultyName(e.target.value);
+          }}
+          placeholder="Enter Faculty Name"
+        />
+        <Input
+          value={facultySchool}
+          onChange={e => {
+            setFacultySchool(e.target.value);
+          }}
+          placeholder="Enter Faculty School"
+        />
         <div className="w-full flex justify-center">
           <PrimaryButton
             label="Create Team"
             onClick={() => {
-              if (title && track && role) {
-                submitHandler({ title, trackID: track, hackathonID, role });
+              if (title && track && role && schoolOfTeamMembers && facultyEmpID && facultyName && facultySchool) {
+                submitHandler({
+                  title,
+                  trackID: track,
+                  hackathonID,
+                  role,
+                  schoolOfTeamMembers,
+                  facultyEmpID,
+                  facultyName,
+                  facultySchool,
+                });
               } else {
                 Toaster.error('Please fill in all the fields');
               }

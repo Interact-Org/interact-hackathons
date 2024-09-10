@@ -824,6 +824,10 @@ export interface HackathonTeam {
   noComments: number;
   createdAt: Date;
   comments: Comment[];
+  schoolOfTeamMembers?: string;
+  facultyEmpID?: string;
+  facultyName?: string;
+  facultySchool?: string;
 }
 
 export interface HackathonTeamMembership {

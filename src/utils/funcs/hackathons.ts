@@ -34,5 +34,5 @@ export const getHackathonRole = (hackathonParam?: Hackathon): 'admin' | 'org' | 
   if (user.organizationMemberships?.map(m => m.organizationID).includes(hackathon.organizationID)) return 'org';
   if (user.registeredEvents?.includes(hackathon.eventID)) return 'participant';
 
-  return 'none';
+  return 'participant';
 };
