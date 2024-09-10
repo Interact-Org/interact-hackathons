@@ -1,6 +1,6 @@
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
-import { HackathonTeam } from '@/types';
+import { HackathonRound, HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { ORG_URL } from '@/config/routes';
 import BaseWrapper from '@/wrappers/base';
+import moment from 'moment';
 
 interface Filter {
   name: string;
@@ -21,6 +22,7 @@ interface Filter {
 
 const Index = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
+  const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
@@ -31,6 +33,17 @@ const Index = () => {
   const [order, setOrder] = useState('latest');
 
   const hackathon = useSelector(currentHackathonSelector);
+
+  const getCurrentRound = async () => {
+    const URL = `/hackathons/${hackathon.id}/participants/round`;
+    const res = await getHandler(URL);
+    if (res.statusCode == 200) {
+      setCurrentRound(res.data.round);
+    } else {
+      if (res.data.message) Toaster.error(res.data.message);
+      else Toaster.error(SERVER_ERROR);
+    }
+  };
 
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${page}&limit=${20}&search=${search}${
@@ -67,6 +80,7 @@ const Index = () => {
       setHasMore(true);
       setLoading(true);
       fetchTeams(abortController, 1);
+      getCurrentRound();
     }
 
     return () => {
@@ -85,23 +99,33 @@ const Index = () => {
         <div className="w-[95%] mx-auto h-full flex flex-col gap-8">
           <div className="--meta-info-container  w-full h-fit py-4">
             <div className="w-full flex items-start justify-between gap-6">
-              <section className="--heading w-1/2 h-full text-6xl font-bold leading-[4.5rem]">
-                <h1
-                  style={{
-                    background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  ROUND 2 IS LIVE!
-                  <br />
-                  ENDS IN 18:47
-                </h1>
-                <h1 className="text-5xl w-3/4">NEXT JUDING ROUND STARTS IN 20:21</h1>
-              </section>
+              {currentRound && (
+                <section className="--heading w-1/2 h-full text-6xl font-bold leading-[4.5rem] flex flex-col gap-4">
+                  <h1
+                    style={{
+                      background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  >
+                    Round {currentRound.index + 1} is Live!
+                  </h1>
+                  <div className="text-3xl"> Ends {moment(currentRound.endTime).fromNow()}.</div>
+                  <div className="text-4xl w-3/4">
+                    {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.judgingEndTime)) ? (
+                      <>Judging is Live! Ends {moment(currentRound.judgingEndTime).fromNow()}.</>
+                    ) : (
+                      moment(currentRound.judgingStartTime).isAfter(moment()) && (
+                        <>Next Judging Round Starts {moment(currentRound.judgingStartTime).fromNow()}.</>
+                      )
+                    )}
+                  </div>
+                </section>
+              )}
+
               <aside className="--analytics w-1/2 h-full">
                 <div className="w-full h-full">
-                  <LiveRoundAnalytics />
+                  <LiveRoundAnalytics round={currentRound} />
                 </div>
               </aside>
             </div>

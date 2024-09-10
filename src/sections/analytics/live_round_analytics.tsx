@@ -8,6 +8,7 @@ import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts';
 import getHandler from '@/handlers/get_handler';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
+import { HackathonRound } from '@/types';
 
 const chartData2 = [{ month: 'january', desktop: 1260, mobile: 570 }];
 
@@ -22,74 +23,53 @@ const chartConfig2 = {
   },
 } satisfies ChartConfig;
 
-const analyticsData = {
-  users_left: {
-    heading: 'Users Left',
-    value: '2,890',
-    increase: true,
-    trend: '34.2% of last round',
-    Icon: <UsersThree size={36} className="bg-primary_text text-white p-2 rounded-md " />,
-  },
-  engagement_rate: {
-    heading: 'Engagement Rate',
-    value: '2.579',
-    increase: true,
-    trend: '+4.2%.',
-  },
-  total_users: {
-    heading: 'Total Users',
-    value: '10,293',
-    increase: true,
-    trend: '4.2% greater than the avg.',
-    Icon: <UsersThree size={36} className="bg-primary_text text-white p-2 rounded-md " />,
-  },
-  team_left: {
-    heading: 'Teams Left',
-    value: '2,890',
-    increase: false,
-    trend: '43% of last around',
-    Icon: <UsersFour size={36} className="bg-primary_text text-white p-2 rounded-md " />,
-  },
-  total_teams: {
-    heading: 'Total Teams',
-    value: '532',
-    increase: false,
-    trend: '1.3% less than avg.',
-    Icon: <UsersFour size={36} className="bg-primary_text text-white p-2 rounded-md " />,
-  },
-  timeLeft: {
-    heading: 'Time Left',
-    endDate: new Date('2024-09-09T10:30:00').toString(),
-  },
-};
-
-const chartData = [
-  { month: 'January', desktop: 186, mobile: 80 },
-  { month: 'February', desktop: 305, mobile: 200 },
-  { month: 'March', desktop: 237, mobile: 120 },
-  { month: 'April', desktop: 73, mobile: 190 },
-  { month: 'May', desktop: 209, mobile: 130 },
-  { month: 'June', desktop: 214, mobile: 140 },
-];
-
-const chartConfig = {
-  desktop: {
-    label: 'Desktop',
-    color: '#2563eb',
-  },
-  mobile: {
-    label: 'Mobile',
-    color: '#60a5fa',
-  },
-} satisfies ChartConfig;
-
-export default function LiveRoundAnalytics() {
-  const totalVisitors = chartData2[0].desktop + chartData2[0].mobile;
+export default function LiveRoundAnalytics({ round }: { round: HackathonRound | null }) {
   const [timeLeft, setTimeLeft] = useState('');
   const [totalTeams, setTotalTeams] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalTeamsLeft, setTotalTeamsLeft] = useState(0);
   const [totalUsersLeft, setTotalUsersLeft] = useState(0);
+
+  const analyticsData = {
+    users_left: {
+      heading: 'Users Left',
+      value: '2,890',
+      increase: true,
+      trend: '34.2% of last round',
+      Icon: <UsersThree size={36} className="bg-primary_text text-white p-2 rounded-md " />,
+    },
+    engagement_rate: {
+      heading: 'Engagement Rate',
+      value: '2.579',
+      increase: true,
+      trend: '+4.2%.',
+    },
+    total_users: {
+      heading: 'Total Users',
+      value: '10,293',
+      increase: true,
+      trend: '4.2% greater than the avg.',
+      Icon: <UsersThree size={36} className="bg-primary_text text-white p-2 rounded-md " />,
+    },
+    team_left: {
+      heading: 'Teams Left',
+      value: '2,890',
+      increase: false,
+      trend: '43% of last around',
+      Icon: <UsersFour size={36} className="bg-primary_text text-white p-2 rounded-md " />,
+    },
+    total_teams: {
+      heading: 'Total Teams',
+      value: '532',
+      increase: false,
+      trend: '1.3% less than avg.',
+      Icon: <UsersFour size={36} className="bg-primary_text text-white p-2 rounded-md " />,
+    },
+    timeLeft: {
+      heading: 'Time Left',
+      endDate: round?.endTime || new Date(),
+    },
+  };
 
   useEffect(() => {
     const endTime = new Date(analyticsData.timeLeft.endDate);
@@ -159,13 +139,13 @@ export default function LiveRoundAnalytics() {
           </span>
           <h1 className="text-xl font-semibold">{analyticsData.engagement_rate.value}</h1>
         </div>
-        <ChartContainer config={chartConfig} className="h-[70px] w-full">
+        {/* <ChartContainer config={chartConfig} className="h-[70px] w-full">
           <BarChart accessibilityLayer data={chartData}>
             <ChartTooltip content={<ChartTooltipContent />} />
             <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
             <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
           </BarChart>
-        </ChartContainer>
+        </ChartContainer> */}
       </AnalyticBox>
       <AnalyticBox className="flex flex-col gap-5 justify-between">
         <div className="flex items-start justify-between">

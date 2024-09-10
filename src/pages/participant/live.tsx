@@ -3,7 +3,7 @@ import getHandler from '@/handlers/get_handler';
 import EditProject from '@/sections/projects/edit_project';
 import NewProject from '@/sections/projects/new_project';
 import TeamView from '@/screens/participants/team_view';
-import { HackathonTeam } from '@/types';
+import { HackathonRound, HackathonTeam } from '@/types';
 import { initialHackathonTeam } from '@/types/initials';
 import Toaster from '@/utils/toaster';
 import { Pen } from '@phosphor-icons/react';
@@ -17,10 +17,22 @@ import BaseWrapper from '@/wrappers/base';
 
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam>(initialHackathonTeam);
+  const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
   const [index, setIndex] = useState(0);
   const [clickedOnProject, setClickedOnProject] = useState(false);
 
   const hackathon = useSelector(currentHackathonSelector);
+
+  const getCurrentRound = async () => {
+    const URL = `/hackathons/${hackathon.id}/participants/round`;
+    const res = await getHandler(URL);
+    if (res.statusCode == 200) {
+      setCurrentRound(res.data.round);
+    } else {
+      if (res.data.message) Toaster.error(res.data.message);
+      else Toaster.error(SERVER_ERROR);
+    }
+  };
 
   const getTeam = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/teams`;
@@ -48,6 +60,7 @@ const Live = () => {
         //   window.location.replace('/participant/team');
         // else
         getTeam();
+        getCurrentRound();
       }
     }
   }, []);
@@ -61,7 +74,7 @@ const Live = () => {
               <div className="text-[#607EE7]">Team</div>
               <div className="text-[#4B9EFF]">{team ? team.title : 'Formation'}</div>
             </div>
-            <div className="w-fit text-2xl font-medium">Round 1 is Live!</div>
+            {currentRound && <div className="w-fit text-2xl font-medium">Round {currentRound.index + 1} is Live!</div>}
             {team && (
               <div className="font-medium mt-2">
                 The Team Code is <span className="underline underline-offset-2">{team.token}</span>
