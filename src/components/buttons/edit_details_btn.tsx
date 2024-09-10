@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { PencilSimple, Plus, Trash, TrashSimple } from '@phosphor-icons/react';
-import { currentOrgIDSelector } from '@/slices/orgSlice';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,12 +18,16 @@ import { SERVER_ERROR } from '@/config/errors';
 import postHandler from '@/handlers/post_handler';
 import Toaster from '@/utils/toaster';
 import deleteHandler from '@/handlers/delete_handler';
+import { getInputFieldFormatTime } from '@/utils/funcs/time';
+
 const EditDetailsBtn = ({ rounds }: { rounds: HackathonRound[] }) => {
   const [metrics, setMetrics] = useState<HackathonRoundScoreMetric[]>([]);
   const hackathon = useSelector(currentHackathonSelector);
+
   const form = useForm<createRoundType>({
     resolver: zodResolver(createRoundSchema),
   });
+
   async function handleRoundCreation(values: createRoundType) {
     const data = {
       ...values,
@@ -40,10 +43,12 @@ const EditDetailsBtn = ({ rounds }: { rounds: HackathonRound[] }) => {
       else Toaster.error(SERVER_ERROR);
     }
   }
+
   async function handleDeleteRound(id: string) {
     const URL = `/org/${hackathon.organizationID}/hackathons/round/${id}`;
     const res = await deleteHandler(URL);
   }
+
   const addMetric = () => {
     setMetrics((prev: HackathonRoundScoreMetric[]) => [...prev, { id: '', hackathonRoundID: '', title: '', type: '', options: [] }]);
   };
@@ -55,6 +60,7 @@ const EditDetailsBtn = ({ rounds }: { rounds: HackathonRound[] }) => {
   };
 
   const [isIdeationRound, setIsIdeationRound] = useState(false);
+
   return (
     <Dialog>
       <DialogTrigger className="text-sm  flex items-center rounded-md bg-white hover:bg-slate-100 text-primary_text px-8 py-2 gap-3">
@@ -123,7 +129,7 @@ const EditDetailsBtn = ({ rounds }: { rounds: HackathonRound[] }) => {
                                 <FormItem className="w-full col-span-2">
                                   <FormLabel className="text-sm md:text-base font-semibold">Round Title</FormLabel>
                                   <FormControl>
-                                    <Input {...field} placeholder="Enter team name" className="bg-white w-full" />
+                                    <Input {...field} placeholder="Enter title" className="bg-white w-full" />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -257,20 +263,21 @@ const EditDetailsBtn = ({ rounds }: { rounds: HackathonRound[] }) => {
 export default EditDetailsBtn;
 
 function EditRoundBtn({ roundData }: { roundData: HackathonRound }) {
-  const hackathon = useSelector(currentHackathonSelector);
   const form = useForm<createRoundType>({
     resolver: zodResolver(createRoundSchema),
     defaultValues: {
       title: roundData.title || '',
-      startTime: roundData.startTime.toISOString(),
-      endTime: roundData.endTime.toISOString(),
-      judgingStartTime: roundData.judgingStartTime.toISOString(),
-      judgingEndTime: roundData.judgingEndTime.toISOString(),
+      startTime: getInputFieldFormatTime(roundData.startTime),
+      endTime: getInputFieldFormatTime(roundData.endTime),
+      judgingStartTime: getInputFieldFormatTime(roundData.judgingStartTime),
+      judgingEndTime: getInputFieldFormatTime(roundData.judgingEndTime),
     },
   });
+
   async function handleRoundEdit() {
     //code
   }
+
   return (
     <>
       <Dialog>
@@ -281,7 +288,7 @@ function EditRoundBtn({ roundData }: { roundData: HackathonRound }) {
         </DialogTrigger>
         <DialogContent className="min-w-[50%] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Create new round</DialogTitle>
+            <DialogTitle>Edit round</DialogTitle>
           </DialogHeader>
           <div className="w-full">
             <Form {...form}>

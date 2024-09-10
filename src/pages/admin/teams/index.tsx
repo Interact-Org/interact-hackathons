@@ -13,6 +13,8 @@ import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { ORG_URL } from '@/config/routes';
 import BaseWrapper from '@/wrappers/base';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { Loader } from 'lucide-react';
 
 const Teams = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -111,30 +113,32 @@ const Teams = () => {
               setOrder={setOrder}
             />
             <section className="--team-table">
-              <Table className="bg-white rounded-md">
-                <TableHeader className="uppercase">
-                  <TableRow>
-                    <TableHead className="min-w-[100px] w-1/4">Team Name</TableHead>
-                    <TableHead>Created By</TableHead>
-                    <TableHead>Members</TableHead>
-                    <TableHead>Track</TableHead>
-                    <TableHead>Created At</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {teams.map(team => (
-                    <TableRow key={team.id}>
-                      <TableCell className="font-medium">{team.title}</TableCell>
-                      <TableCell>{team.user.name}</TableCell>
-                      <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
-                        <PictureList users={team.memberships.map(membership => membership.user)} size={6} gap={7} />
-                      </TableCell>
-                      <TableCell>{team.track?.title}</TableCell>
-                      <TableCell>{moment(team.createdAt).format('hh:mm a DD MMMM')}</TableCell>
+              <InfiniteScroll className="w-full" dataLength={teams.length} next={fetchTeams} hasMore={hasMore} loader={<></>}>
+                <Table className="bg-white rounded-md">
+                  <TableHeader className="uppercase">
+                    <TableRow>
+                      <TableHead className="min-w-[100px] w-1/4">Team Name</TableHead>
+                      <TableHead>Created By</TableHead>
+                      <TableHead>Members</TableHead>
+                      <TableHead>Track</TableHead>
+                      <TableHead>Created At</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {teams.map(team => (
+                      <TableRow key={team.id}>
+                        <TableCell className="font-medium">{team.title}</TableCell>
+                        <TableCell>{team.user.name}</TableCell>
+                        <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
+                          <PictureList users={team.memberships.map(membership => membership.user)} size={6} gap={7} />
+                        </TableCell>
+                        <TableCell>{team.track?.title}</TableCell>
+                        <TableCell>{moment(team.createdAt).format('hh:mm a DD MMMM')}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </InfiniteScroll>
             </section>
           </div>
         </div>

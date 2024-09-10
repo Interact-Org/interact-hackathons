@@ -14,8 +14,9 @@ import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { ORG_URL } from '@/config/routes';
 import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
-import { currentOrgIDSelector } from '@/slices/orgSlice';
 import EditDetailsBtn from '@/components/buttons/edit_details_btn';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import Loader from '@/components/common/loader';
 
 interface Filter {
   name: string;
@@ -35,17 +36,19 @@ const Index = () => {
   const [order, setOrder] = useState('latest');
   const [rounds, setRounds] = useState<HackathonRound[]>([]);
   const hackathon = useSelector(currentHackathonSelector);
-  const currentOrgID = useSelector(currentOrgIDSelector);
+
   const getCurrentRound = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
-      setCurrentRound(res.data.round);
+      const round = res.data.round;
+      setCurrentRound(round);
     } else {
       if (res.data.message) Toaster.error(res.data.message);
       else Toaster.error(SERVER_ERROR);
     }
   };
+
   const getRounds = async () => {
     const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/rounds`;
     const res = await getHandler(URL);
@@ -56,6 +59,7 @@ const Index = () => {
       else Toaster.error(SERVER_ERROR);
     }
   };
+
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${page}&limit=${20}&search=${search}${
       overallScore != 0 ? `&overall_score=${overallScore}` : ''
@@ -83,7 +87,6 @@ const Index = () => {
     const abortController = new AbortController();
     if (oldAbortController) oldAbortController.abort();
     oldAbortController = abortController;
-    console.log(hackathon);
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
       setPage(1);
@@ -162,41 +165,43 @@ const Index = () => {
               setOrder={setOrder}
             />{' '}
             <section className="--team-table">
-              <Table className="bg-white rounded-md">
-                <TableCaption>A list of all the participating teams</TableCaption>
-                <TableHeader className="uppercase">
-                  <TableRow>
-                    <TableHead>Team Name</TableHead>
-                    <TableHead>Project</TableHead>
-                    <TableHead>Track</TableHead>
-                    <TableHead>Members</TableHead>
-                    <TableHead>Elimination Status</TableHead>
-                    <TableHead>Scores</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {teams.map((team, index) => (
-                    <TableRow onClick={() => window.location.assign('/admin/live/' + team.id)} key={index}>
-                      <TableCell className="font-medium">{team.title}</TableCell>
-                      <TableCell>{team.project?.title}</TableCell>
-                      <TableCell>{team.track?.title}</TableCell>
-                      <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
-                        {team.memberships.map((membership, index) => (
-                          <AvatarBox key={index} name={membership.user.name} />
-                        ))}
-                      </TableCell>
-                      <TableCell>
-                        <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
-                      </TableCell>
-                      <TableCell>{1}</TableCell>
-                      <TableCell>
-                        <TeamActions teamId={team.id} data={team} />
-                      </TableCell>
+              <InfiniteScroll className="w-full" dataLength={teams.length} next={fetchTeams} hasMore={hasMore} loader={<></>}>
+                <Table className="bg-white rounded-md">
+                  <TableCaption>A list of all the participating teams</TableCaption>
+                  <TableHeader className="uppercase">
+                    <TableRow>
+                      <TableHead>Team Name</TableHead>
+                      <TableHead>Project</TableHead>
+                      <TableHead>Track</TableHead>
+                      <TableHead>Members</TableHead>
+                      <TableHead>Elimination Status</TableHead>
+                      <TableHead>Scores</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody className="w-full">
+                    {teams.map((team, index) => (
+                      <TableRow onClick={() => window.location.assign('/admin/live/' + team.id)} key={index}>
+                        <TableCell className="font-medium">{team.title}</TableCell>
+                        <TableCell>{team.project?.title}</TableCell>
+                        <TableCell>{team.track?.title}</TableCell>
+                        <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
+                          {team.memberships.map((membership, index) => (
+                            <AvatarBox key={index} name={membership.user.name} />
+                          ))}
+                        </TableCell>
+                        <TableCell>
+                          <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
+                        </TableCell>
+                        <TableCell>{1}</TableCell>
+                        <TableCell>
+                          <TeamActions teamId={team.id} data={team} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </InfiniteScroll>
             </section>
           </div>
         </div>
