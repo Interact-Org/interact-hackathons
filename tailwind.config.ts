@@ -70,6 +70,9 @@ const config: Config = {
         sidebar: '#ffffff',
         dark_sidebar: '#43434385',
       },
+      backgroundImage: {
+        onboarding: "url('/assets/onboarding.webp')",
+      },
       fontFamily: {
         primary: ['var(--inter-font)'],
         title: ['var(--fraunces-font)'],
