@@ -53,7 +53,7 @@ const TimeProgressGraph = ({ time1, time2, innerRadius = 80, outerRadius = 120, 
     },
   } satisfies ChartConfig;
 
-  const variants = ['h-[140px]', 'h-[150px]', 'h-[160px]', 'h-[170px]'];
+  const variants = ['h-[130px]', 'h-[140px]', 'h-[150px]', 'h-[160px]', 'h-[170px]'];
 
   return (
     <AnalyticBox className={`h-[${height}px] overflow-hidden relative`}>

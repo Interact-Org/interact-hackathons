@@ -123,9 +123,12 @@ const Index = () => {
                     Round {currentRound.index + 1} is Live!
                   </h1>
                   <div className="text-3xl"> Ends {moment(currentRound.endTime).fromNow()}.</div>
-                  <div className="text-4xl w-3/4">
+                  <div className="text-5xl w-3/4">
                     {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.judgingEndTime)) ? (
-                      <>Judging is Live! Ends {moment(currentRound.judgingEndTime).fromNow()}.</>
+                      <div className="w-full flex flex-col gap-4">
+                        <div className="text-[#003a7c]">Judging is Live!</div>
+                        <div className="text-3xl">Ends {moment(currentRound.judgingEndTime).fromNow()}.</div>
+                      </div>
                     ) : (
                       moment(currentRound.judgingStartTime).isAfter(moment()) && (
                         <>Next Judging Round Starts {moment(currentRound.judgingStartTime).fromNow()}.</>

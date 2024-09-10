@@ -90,7 +90,7 @@ export default function LiveRoundAnalytics({ round }: { round: HackathonRound | 
           <p>{analyticsData.total_teams.trend}</p>
         </span> */}
       </AnalyticBox>
-      <TimeProgressGraph time1={moment(round?.startTime)} time2={moment(round?.endTime)} height={140} />
+      <TimeProgressGraph time1={moment(round?.startTime)} time2={moment(round?.endTime)} height={130} />
     </div>
   );
 }
