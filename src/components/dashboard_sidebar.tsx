@@ -1,5 +1,5 @@
 import { UsersThree } from '@phosphor-icons/react';
-import { PencilRuler, Trophy } from 'lucide-react';
+import { PencilRuler } from 'lucide-react';
 import React, { Dispatch, SetStateAction } from 'react';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -42,7 +42,7 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
   const role = getHackathonRole();
 
   return (
-    <div className="w-[15%] sticky top-8 left-0 bg-white h-[calc(100vh-2rem)] p-3 flex flex-col justify-between">
+    <div className="w-[15%] sticky top-8 left-0 bg-white h-base p-3 flex flex-col justify-between">
       <div className="w-full">
         <section className="--team-details flex flex-col gap-2 pb-4 border-b-[2px] border-primary_text">
           <h1 className="text-2xl font-semibold">{team.title}</h1>

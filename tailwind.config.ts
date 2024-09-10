@@ -27,6 +27,7 @@ const config: Config = {
         base_md: 'calc(100vh - 64px - 48px)',
       },
       minHeight: {
+        base: 'calc(100vh - 64px)',
         base_md: 'calc(100vh - 64px - 48px)',
       },
       spacing: {
@@ -68,6 +69,9 @@ const config: Config = {
         dark_main: '#070615be',
         sidebar: '#ffffff',
         dark_sidebar: '#43434385',
+      },
+      backgroundImage: {
+        onboarding: "url('/assets/onboarding.webp')",
       },
       fontFamily: {
         primary: ['var(--inter-font)'],
