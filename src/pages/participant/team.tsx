@@ -62,6 +62,10 @@ const Team = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (team) window.location.replace('/participant/live');
+  }, [team]);
+
   const handleCreateTeam = async (formData: any) => {
     const URL = `/hackathons/${hackathon.id}/participants/teams`;
     const res = await postHandler(URL, formData);
