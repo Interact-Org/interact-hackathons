@@ -22,16 +22,19 @@ const Teams = () => {
   const [hasMore, setHasMore] = useState(true);
   const [search, setSearch] = useState('');
   const [track, setTrack] = useState('');
-  const [isEliminated, setIsEliminated] = useState(false);
+  const [eliminated, setEliminated] = useState('');
   const [overallScore, setOverallScore] = useState(0);
   const [order, setOrder] = useState('latest');
 
   const hackathon = useSelector(currentHackathonSelector);
 
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
-    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${page}&limit=${20}&search=${search}${
-      track != '' ? `&track=${track}` : ''
-    }${overallScore != 0 ? `&overall_score=${overallScore}` : ''}&order=${order}`;
+    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${
+      initialPage ? initialPage : page
+    }&limit=${20}&search=${search}${track != '' && track != 'none' ? `&track_id=${track}` : ''}${
+      overallScore != 0 ? `&overall_score=${overallScore}` : ''
+    }${eliminated != '' && eliminated != 'none' ? `&is_eliminated=${eliminated == 'eliminated' ? 'true' : 'false'}` : ''}&order=${order}`;
+
     const res = await getHandler(URL, abortController?.signal);
     if (res.statusCode == 200) {
       if (initialPage == 1) {
@@ -62,15 +65,13 @@ const Teams = () => {
       setTeams([]);
       setHasMore(true);
       setLoading(true);
-
-      abortController.abort();
       fetchTeams(abortController, 1);
     }
 
     return () => {
       abortController.abort();
     };
-  }, [search, track, isEliminated, overallScore, order]);
+  }, [search, track, eliminated, overallScore, order]);
 
   useEffect(() => {
     const role = getHackathonRole();
@@ -106,8 +107,8 @@ const Teams = () => {
               setSearch={setSearch}
               track={track}
               setTrack={setTrack}
-              isEliminated={isEliminated}
-              setIsEliminated={setIsEliminated}
+              eliminated={eliminated}
+              setEliminated={setEliminated}
               overallScore={overallScore}
               setOverallScore={setOverallScore}
               order={order}

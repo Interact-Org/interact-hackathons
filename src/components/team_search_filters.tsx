@@ -14,8 +14,8 @@ interface TeamSearchFiltersProps {
   setSearch: (value: string) => void;
   track: string;
   setTrack: (value: string) => void;
-  isEliminated: boolean;
-  setIsEliminated: (value: boolean) => void;
+  eliminated: string;
+  setEliminated: (value: string) => void;
   overallScore: number;
   setOverallScore: (value: number) => void;
   order: string;
@@ -27,13 +27,14 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
   setSearch,
   track,
   setTrack,
-  isEliminated,
-  setIsEliminated,
+  eliminated,
+  setEliminated,
   overallScore,
   setOverallScore,
   order,
   setOrder,
 }) => {
+  const [tempSearch, setTempSearch] = useState(search);
   const [tracks, setTracks] = useState<HackathonTrack[]>([]);
 
   const hackathon = useSelector(currentHackathonSelector);
@@ -53,14 +54,21 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
     getTracks();
   }, []);
 
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      setSearch(tempSearch);
+    }
+  };
+
   return (
     <section className="--search-filters flex flex-col md:flex-row items-center md:justify-between gap-4">
       <div className="--search-box w-full flex-grow relative h-8 md:h-10">
         <Input
           className="bg-white border-[2px] border-[#dedede] focus-visible:border-primary_text ring-0 focus-visible:ring-0 pl-10 h-10"
           placeholder="Search"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
+          value={tempSearch}
+          onChange={el => setTempSearch(el.target.value)}
+          onKeyUp={handleKeyUp}
         />
         <MagnifyingGlass size={16} className="absolute top-1/2 -translate-y-1/2 left-4" />
       </div>
@@ -68,11 +76,14 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
         <Select value={track} onValueChange={setTrack}>
           <SelectTrigger className="w-[49%] md:w-32 min-w-fit bg-white h-10 border-[2px] border-[#dedede]">
             <Newspaper size={16} />
-            <SelectValue placeholder="Track" />
+            <SelectValue placeholder="Tracks" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem key={-1} value={'none'}>
+              All Tracks
+            </SelectItem>
             {tracks?.map(track => (
-              <SelectItem key={track.id} value={track.title}>
+              <SelectItem key={track.id} value={track.id}>
                 {track.title}
               </SelectItem>
             ))}
@@ -89,7 +100,7 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
           </SelectContent>
         </Select>
 
-        <div className="flex items-center gap-2 w-[49%] md:w-fit mt-2 md:mt-0">
+        {/* <div className="flex items-center gap-2">
           <label htmlFor="overall-score" className="text-sm">
             Score
           </label>
@@ -100,20 +111,19 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
             onChange={e => setOverallScore(Number(e.target.value))}
             className="w-20 h-8 md:h-10 border-[2px] border-[#dedede] text-center"
           />
-        </div>
+        </div> */}
 
-        <div className="flex items-center gap-2 w-[49%] md:w-fit mt-2 md:mt-0">
-          <label htmlFor="elimination-checkbox" className="text-sm">
-            Eliminated
-          </label>
-          <input
-            id="elimination-checkbox"
-            type="checkbox"
-            checked={isEliminated}
-            onChange={() => setIsEliminated(!isEliminated)}
-            className="w-4 h-4 border-gray-300 rounded focus:ring-primary_text"
-          />
-        </div>
+
+        <Select value={eliminated} onValueChange={setEliminated}>
+          <SelectTrigger className="w-[49%] md:w-32 min-w-fit bg-white h-10 border-[2px] border-[#dedede]">
+            <SelectValue placeholder="Elimination Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">All</SelectItem>
+            <SelectItem value="eliminated">Eliminated</SelectItem>
+            <SelectItem value="not_eliminated">Not Eliminated</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </section>
   );
