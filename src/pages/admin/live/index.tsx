@@ -16,7 +16,6 @@ import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
 import EditDetailsBtn from '@/components/buttons/edit_details_btn';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import Loader from '@/components/common/loader';
 
 interface Filter {
   name: string;
@@ -31,7 +30,7 @@ const Index = () => {
   const [hasMore, setHasMore] = useState(true);
   const [search, setSearch] = useState('');
   const [track, setTrack] = useState('');
-  const [isEliminated, setIsEliminated] = useState(false);
+  const [eliminated, setEliminated] = useState('');
   const [overallScore, setOverallScore] = useState(0);
   const [order, setOrder] = useState('latest');
   const [rounds, setRounds] = useState<HackathonRound[]>([]);
@@ -61,9 +60,12 @@ const Index = () => {
   };
 
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
-    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${page}&limit=${20}&search=${search}${
+    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${
+      initialPage ? initialPage : page
+    }&limit=${20}&search=${search}${track != '' && track != 'none' ? `&track_id=${track}` : ''}${
       overallScore != 0 ? `&overall_score=${overallScore}` : ''
-    }&order=${order}`;
+    }${eliminated != '' && eliminated != 'none' ? `&is_eliminated=${eliminated == 'eliminated' ? 'true' : 'false'}` : ''}&order=${order}`;
+
     const res = await getHandler(URL, abortController?.signal);
     if (res.statusCode == 200) {
       if (initialPage == 1) {
@@ -101,7 +103,7 @@ const Index = () => {
     return () => {
       abortController.abort();
     };
-  }, [search, track, isEliminated, overallScore, order]);
+  }, [search, track, eliminated, overallScore, order]);
 
   useEffect(() => {
     const role = getHackathonRole();
@@ -138,9 +140,9 @@ const Index = () => {
                       )
                     )}
                   </div>
-                  <div className="w-full flex items-center gap-4 mt-4">
+                  {/* <div className="w-full flex items-center gap-4 mt-4">
                     <EditDetailsBtn rounds={rounds} />
-                  </div>
+                  </div> */}
                 </section>
               )}
 
@@ -157,8 +159,8 @@ const Index = () => {
               setSearch={setSearch}
               track={track}
               setTrack={setTrack}
-              isEliminated={isEliminated}
-              setIsEliminated={setIsEliminated}
+              eliminated={eliminated}
+              setEliminated={setEliminated}
               overallScore={overallScore}
               setOverallScore={setOverallScore}
               order={order}
