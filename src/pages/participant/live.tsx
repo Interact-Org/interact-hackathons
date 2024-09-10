@@ -67,27 +67,37 @@ const Live = () => {
 
   return (
     <BaseWrapper>
-      <div className="w-full min-h-screen bg-[#E1F1FF] p-12 flex flex-col gap-16">
+      <div className="w-full min-h-screen bg-[#E1F1FF] p-6 md:p-12 flex flex-col gap-10 md:gap-16">
         <div className="w-full flex gap-8">
           <div className="w-full flex-center flex-col gap-2">
-            <div className="w-full text-8xl flex-center flex-col font-bold">
+            <div className="w-full text-4xl md:text-6xl lg:text-8xl flex-center flex-col font-bold">
               <div className="text-[#607EE7]">Team</div>
               <div className="text-[#4B9EFF]">{team ? team.title : 'Formation'}</div>
             </div>
-            {currentRound && <div className="w-fit text-2xl font-medium">Round {currentRound.index + 1} is Live!</div>}
+            {currentRound && <div className="w-fit text-xl md:text-2xl font-medium">Round {currentRound.index + 1} is Live!</div>}
             {team && (
               <div className="font-medium mt-2">
-                The Team Code is <span className="underline underline-offset-2">{team.token}</span>
+                The Team Code is{' '}
+                <span className="underline underline-offset-2">
+                  <span
+                    onClick={() => {
+                      navigator.clipboard.writeText(team.token);
+                      Toaster.success('Team Code Copied to Clipboard');
+                    }}
+                  >
+                    {team.token}
+                  </span>
+                </span>
               </div>
             )}
-            <div className="w-fit flex-center gap-6 mt-8">
+            <div className="w-fit flex-center gap-0 md:gap-6 mt-4 md:mt-8 rounded-lg overflow-hidden md:rounded-none md:overflow-auto">
               {(team.projectID ? ['Team', 'Project', 'Tasks'] : ['Team', 'Project']).map((tab, i) => (
                 <div
                   key={i}
                   onClick={() => setIndex(i)}
                   className={`${
                     index == i ? 'bg-[#4B9EFF] text-white ' : 'bg-white text-primary_black'
-                  } text-lg rounded-3xl py-2 px-10 font-medium cursor-pointer transition-ease-300`}
+                  } text-sm md:text-lg md:rounded-3xl py-2 px-10 font-medium cursor-pointer transition-ease-300`}
                 >
                   {tab}
                 </div>

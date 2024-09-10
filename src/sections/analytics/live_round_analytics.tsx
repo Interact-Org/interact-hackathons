@@ -30,7 +30,7 @@ export default function LiveRoundAnalytics({ round }: { round: HackathonRound | 
     fetchAnalyticsData();
   }, []);
   return (
-    <div className="w-full grid grid-cols-3 gap-4">
+    <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
       <AnalyticBox className="flex flex-col justify-between">
         <div className="flex items-start justify-between">
           <span>
@@ -59,7 +59,7 @@ export default function LiveRoundAnalytics({ round }: { round: HackathonRound | 
           <p>{analyticsData.total_users.trend}</p>
         </span> */}
       </AnalyticBox>
-      <AnalyticBox>
+      <AnalyticBox className="hidden md:block">
         <div className="text-sm font-semibold text-primary_btn">Round {(round?.index || 0) + 1} is Live!</div>
       </AnalyticBox>
       <AnalyticBox className="flex flex-col gap-5 justify-between">
@@ -90,7 +90,7 @@ export default function LiveRoundAnalytics({ round }: { round: HackathonRound | 
           <p>{analyticsData.total_teams.trend}</p>
         </span> */}
       </AnalyticBox>
-      <TimeProgressGraph time1={moment(round?.startTime)} time2={moment(round?.endTime)} height={130} />
+      <TimeProgressGraph time1={moment(round?.startTime)} time2={moment(round?.endTime)} height={130} className="hidden md:block" />
     </div>
   );
 }

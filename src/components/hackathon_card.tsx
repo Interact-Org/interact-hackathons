@@ -59,7 +59,7 @@ const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
           height={200}
           src={`${EVENT_PIC_URL}/${hackathon.coverPic}`}
           alt=""
-          className="w-full h-44 object-cover rounded-t-xl"
+          className="w-full h-32 md:h-44 object-cover rounded-t-xl"
           placeholder="blur"
           blurDataURL={hackathon.blurHash || 'no-hash'}
         />
@@ -68,17 +68,17 @@ const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
         <div className="absolute top-10 left-2 bg-white text-gray-500 text-xxs px-2 py-1 rounded-lg">{hackathon.location}</div>
       </div>
 
-      <div className="w-full h-20 bg-white rounded-b-xl flex p-4">
+      <div className="w-full h-16 md:h-20 bg-white rounded-b-xl flex p-2 md:p-4">
         <div className="w-1/6 flex items-start justify-start mt-1">
-          <div className="w-fit flex flex-col items-end">
+          <div className="w-fit flex flex-col items-center md:items-end">
             <div className="w-fit text-xs uppercase transition-ease-out-500">{moment(hackathon.startTime).format('MMM')}</div>
-            <div className="w-fit text-3xl font-semibold transition-ease-out-500">{moment(hackathon.startTime).format('DD')}</div>
+            <div className="w-fit text-xl md:text-3xl font-semibold transition-ease-out-500">{moment(hackathon.startTime).format('DD')}</div>
           </div>
         </div>
 
-        <div className="w-5/6 h-20 flex flex-col transition-ease-out-500">
-          <div className="font-medium text-lg line-clamp-1">{hackathon.title}</div>
-          <div className="text-sm text-gray-500 line-clamp-2 transition-ease-out-500">{hackathon.tagline}</div>
+        <div className="w-5/6 h-16 md:h-20 flex flex-col transition-ease-out-500">
+          <div className="font-medium text-base md:text-lg line-clamp-1">{hackathon.title}</div>
+          <div className="text-xs md:text-sm text-gray-500 line-clamp-2 transition-ease-out-500">{hackathon.tagline}</div>
         </div>
       </div>
     </Link>

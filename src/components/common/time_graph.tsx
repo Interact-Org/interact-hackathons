@@ -10,9 +10,10 @@ interface Props {
   innerRadius?: number;
   outerRadius?: number;
   height?: number;
+  className?: string;
 }
 
-const TimeProgressGraph = ({ time1, time2, innerRadius = 80, outerRadius = 120, height = 150 }: Props) => {
+const TimeProgressGraph = ({ time1, time2, innerRadius = 80, outerRadius = 120, height = 150, className }: Props) => {
   const [timeLeft, setTimeLeft] = useState('');
 
   const totalTime = moment(time2).diff(moment(time1), 'seconds');
@@ -56,8 +57,8 @@ const TimeProgressGraph = ({ time1, time2, innerRadius = 80, outerRadius = 120, 
   const variants = ['h-[130px]', 'h-[140px]', 'h-[150px]', 'h-[160px]', 'h-[170px]'];
 
   return (
-    <AnalyticBox className={`h-[${height}px] overflow-hidden relative`}>
-      <ChartContainer config={chartConfig} className="w-full aspect-square">
+    <AnalyticBox className={`h-[${height}px] overflow-hidden relative ${className}`}>
+      <ChartContainer config={chartConfig} className="w-full aspect-square relative scale-75 md:scale-90 -top-12 md:-top-6">
         <RadialBarChart
           data={chartData}
           startAngle={180}

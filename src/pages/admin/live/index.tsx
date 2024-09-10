@@ -108,11 +108,11 @@ const Index = () => {
   return (
     <BaseWrapper>
       <div className="w-full bg-[#E1F1FF] min-h-screen">
-        <div className="w-[95%] mx-auto h-full flex flex-col gap-8">
+        <div className="w-[95%] mx-auto h-full flex flex-col gap-2 md:gap-4 lg:gap-8">
           <div className="--meta-info-container  w-full h-fit py-4">
-            <div className="w-full flex items-start justify-between gap-6">
+            <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">
               {currentRound && (
-                <section className="--heading w-1/2 h-full text-6xl font-bold leading-[4.5rem] flex flex-col gap-4">
+                <section className="--heading w-full md:w-1/2 h-full text-3xl md:text-4xl lg:text-6xl font-bold lg:leading-[4.5rem]">
                   <h1
                     style={{
                       background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
@@ -135,13 +135,13 @@ const Index = () => {
                       )
                     )}
                   </div>
-                  <div className="w-full flex items-center gap-4">
+                  <div className="w-full flex items-center gap-4 mt-4">
                     <EditDetailsBtn rounds={rounds} />
                   </div>
                 </section>
               )}
 
-              <aside className="--analytics w-1/2 h-full">
+              <aside className="--analytics w-full md:w-1/2 h-full">
                 <div className="w-full h-full">
                   <LiveRoundAnalytics round={currentRound} />
                 </div>
@@ -164,12 +164,12 @@ const Index = () => {
             <section className="--team-table">
               <Table className="bg-white rounded-md">
                 <TableCaption>A list of all the participating teams</TableCaption>
-                <TableHeader className="uppercase">
+                <TableHeader className="uppercase text-xs md:text-sm">
                   <TableRow>
                     <TableHead>Team Name</TableHead>
                     <TableHead>Project</TableHead>
                     <TableHead>Track</TableHead>
-                    <TableHead>Members</TableHead>
+                    <TableHead className="hidden md:block">Members</TableHead>
                     <TableHead>Elimination Status</TableHead>
                     <TableHead>Scores</TableHead>
                     <TableHead>Actions</TableHead>
@@ -181,7 +181,7 @@ const Index = () => {
                       <TableCell className="font-medium">{team.title}</TableCell>
                       <TableCell>{team.project?.title}</TableCell>
                       <TableCell>{team.track?.title}</TableCell>
-                      <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
+                      <TableCell className="min-w-[150px] max-w-[300px] hidden md:flex items-center gap-2 flex-wrap">
                         {team.memberships.map((membership, index) => (
                           <AvatarBox key={index} name={membership.user.name} />
                         ))}
