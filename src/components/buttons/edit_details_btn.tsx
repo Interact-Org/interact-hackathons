@@ -40,8 +40,8 @@ const EditDetailsBtn = ({ rounds }: { rounds: HackathonRound[] }) => {
       else Toaster.error(SERVER_ERROR);
     }
   }
-  async function handleDeleteRound() {
-    const URL = `/org/:orgID/hackathons/round/:roundID`;
+  async function handleDeleteRound(id: string) {
+    const URL = `/org/${hackathon.organizationID}/hackathons/round/${id}`;
     const res = await deleteHandler(URL);
   }
   const addMetric = () => {
@@ -87,10 +87,13 @@ const EditDetailsBtn = ({ rounds }: { rounds: HackathonRound[] }) => {
                   <TableCell>{round.judgingStartTime.toLocaleString()}</TableCell>
                   <TableCell>{round.judgingEndTime.toLocaleString()}</TableCell>
                   <TableCell>
-                    <Button variant={'ghost'}>
-                      <PencilSimple size={16} />
-                    </Button>{' '}
-                    <Button variant={'destructive'}>
+                    <EditRoundBtn roundData={round} />
+                    <Button
+                      variant={'destructive'}
+                      onClick={() => {
+                        handleDeleteRound(round.id);
+                      }}
+                    >
                       <Trash size={16} />
                     </Button>
                   </TableCell>
@@ -131,9 +134,9 @@ const EditDetailsBtn = ({ rounds }: { rounds: HackathonRound[] }) => {
                               control={form.control}
                               render={({ field }) => (
                                 <FormItem className="w-full">
-                                  <FormLabel className="text-sm md:text-base font-semibold">Round Title</FormLabel>
+                                  <FormLabel className="text-sm md:text-base font-semibold">Start Time</FormLabel>
                                   <FormControl>
-                                    <Input {...field} placeholder="Enter team name" type="datetime-local" className="bg-white w-full" />
+                                    <Input {...field} type="datetime-local" className="bg-white w-full" />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -144,9 +147,9 @@ const EditDetailsBtn = ({ rounds }: { rounds: HackathonRound[] }) => {
                               control={form.control}
                               render={({ field }) => (
                                 <FormItem className="w-full">
-                                  <FormLabel className="text-sm md:text-base font-semibold">Round Title</FormLabel>
+                                  <FormLabel className="text-sm md:text-base font-semibold">End Time</FormLabel>
                                   <FormControl>
-                                    <Input {...field} placeholder="Enter team name" type="datetime-local" className="bg-white w-full" />
+                                    <Input {...field} type="datetime-local" className="bg-white w-full" />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -157,9 +160,9 @@ const EditDetailsBtn = ({ rounds }: { rounds: HackathonRound[] }) => {
                               control={form.control}
                               render={({ field }) => (
                                 <FormItem className="w-full">
-                                  <FormLabel className="text-sm md:text-base font-semibold">Round Title</FormLabel>
+                                  <FormLabel className="text-sm md:text-base font-semibold">Judging Start Time</FormLabel>
                                   <FormControl>
-                                    <Input {...field} placeholder="Enter team name" type="datetime-local" className="bg-white w-full" />
+                                    <Input {...field} type="datetime-local" className="bg-white w-full" />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -170,9 +173,9 @@ const EditDetailsBtn = ({ rounds }: { rounds: HackathonRound[] }) => {
                               control={form.control}
                               render={({ field }) => (
                                 <FormItem className="w-full">
-                                  <FormLabel className="text-sm md:text-base font-semibold">Round Title</FormLabel>
+                                  <FormLabel className="text-sm md:text-base font-semibold">Judging End Time</FormLabel>
                                   <FormControl>
-                                    <Input {...field} placeholder="Enter team name" type="datetime-local" className="bg-white w-full" />
+                                    <Input {...field} type="datetime-local" className="bg-white w-full" />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -252,3 +255,110 @@ const EditDetailsBtn = ({ rounds }: { rounds: HackathonRound[] }) => {
 };
 
 export default EditDetailsBtn;
+
+function EditRoundBtn({ roundData }: { roundData: HackathonRound }) {
+  const hackathon = useSelector(currentHackathonSelector);
+  const form = useForm<createRoundType>({
+    resolver: zodResolver(createRoundSchema),
+    defaultValues: {
+      title: roundData.title || '',
+      startTime: roundData.startTime.toISOString(),
+      endTime: roundData.endTime.toISOString(),
+      judgingStartTime: roundData.judgingStartTime.toISOString(),
+      judgingEndTime: roundData.judgingEndTime.toISOString(),
+    },
+  });
+  async function handleRoundEdit() {
+    //code
+  }
+  return (
+    <>
+      <Dialog>
+        <DialogTrigger>
+          <div className="p-2 w-fit">
+            <PencilSimple size={16} />
+          </div>
+        </DialogTrigger>
+        <DialogContent className="min-w-[50%] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Create new round</DialogTitle>
+          </DialogHeader>
+          <div className="w-full">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleRoundEdit)} className="w-full lg:grid lg:grid-cols-2 gap-4 mb-12">
+                <FormField
+                  name="title"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="w-full col-span-2">
+                      <FormLabel className="text-sm md:text-base font-semibold">Round Title</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Enter team name" className="bg-white w-full" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="startTime"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm md:text-base font-semibold">Start Time</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="datetime-local" className="bg-white w-full" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="endTime"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm md:text-base font-semibold">End Time</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="datetime-local" className="bg-white w-full" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="judgingStartTime"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm md:text-base font-semibold">Judging Start Time</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="datetime-local" className="bg-white w-full" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="judgingEndTime"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm md:text-base font-semibold">Judging End Time</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="datetime-local" className="bg-white w-full" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full col-span-2">
+                  Apply Changes
+                </Button>
+              </form>
+            </Form>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
