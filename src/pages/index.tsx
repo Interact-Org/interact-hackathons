@@ -39,10 +39,12 @@ const Index = () => {
 
     if (action == 'sync') userStateSynchronizer(); //TODO remove form params after promise is successful
   }, [window.location.search]);
+
   function handleLogout() {
     Cookies.remove('token');
     Cookies.remove('refresh_token');
     Cookies.remove('id');
+    window.location.replace('/login');
   }
   return (
     <div className="w-full bg-[#E1F1FF] min-h-screen">
