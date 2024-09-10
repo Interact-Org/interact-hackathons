@@ -83,21 +83,20 @@ const Teams = () => {
       <div className="w-full bg-[#E1F1FF] min-h-screen">
         <div className="w-[95%] mx-auto h-full flex flex-col gap-8">
           <div className="--meta-info-container  w-full h-fit py-4">
-            <div className="w-full flex items-start justify-between gap-6">
-              <section className="--heading w-1/2 h-full font-bold leading-[4.5rem] flex flex-col gap-4">
+            <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">
+              <section className="--heading w-full md:w-1/2 h-full text-3xl md:text-4xl lg:text-6xl font-bold lg:leading-[4.5rem]">
                 <h1
                   style={{
                     background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                   }}
-                  className="text-7xl"
                 >
                   Team Overview
                 </h1>
-                <h1 className="text-4xl">Manage, Monitor, and Analyze Participation</h1>
+                <h1 className="text-2xl lg:text-4xl">Manage, Monitor, and Analyze Participation</h1>
               </section>
-              <aside className="--analytics w-1/2 h-full">
+              <aside className="--analytics w-full md:w-1/2 h-full">
                 <TeamOverviewAnalytics />
               </aside>
             </div>
@@ -118,25 +117,25 @@ const Teams = () => {
             <section className="--team-table">
               <InfiniteScroll className="w-full" dataLength={teams.length} next={fetchTeams} hasMore={hasMore} loader={<></>}>
                 <Table className="bg-white rounded-md">
-                  <TableHeader className="uppercase">
+                  <TableHeader className="uppercase text-xs md:text-sm">
                     <TableRow>
                       <TableHead className="min-w-[100px] w-1/4">Team Name</TableHead>
-                      <TableHead>Created By</TableHead>
+                      <TableHead className="hidden md:block">Created By</TableHead>
                       <TableHead>Members</TableHead>
                       <TableHead>Track</TableHead>
-                      <TableHead>Created At</TableHead>
+                      <TableHead className="hidden md:block">Created At</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {teams.map(team => (
                       <TableRow key={team.id}>
                         <TableCell className="font-medium">{team.title}</TableCell>
-                        <TableCell>{team.user.name}</TableCell>
+                        <TableCell className="hidden md:block">{team.user.name}</TableCell>
                         <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
                           <PictureList users={team.memberships.map(membership => membership.user)} size={6} gap={7} />
                         </TableCell>
                         <TableCell>{team.track?.title}</TableCell>
-                        <TableCell>{moment(team.createdAt).format('hh:mm a DD MMMM')}</TableCell>
+                        <TableCell className="hidden md:block">{moment(team.createdAt).format('hh:mm a DD MMMM')}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

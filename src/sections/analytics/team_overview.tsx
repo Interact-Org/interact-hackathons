@@ -52,8 +52,8 @@ const TeamOverviewAnalytics = () => {
   }, []);
 
   return (
-    <div className="w-full h-full grid grid-cols-2 gap-6">
-      <AnalyticBox>
+    <div className="w-full h-full grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-6">
+      <AnalyticBox className="hidden md:block">
         <div className="flex flex-col gap-0">
           <span className="flex items-center text-xs font-medium justify-between">
             <h1 className="uppercase text-black/70">Teams</h1>
@@ -68,7 +68,7 @@ const TeamOverviewAnalytics = () => {
           </BarChart>
         </ChartContainer>
       </AnalyticBox>
-      <AnalyticBox>
+      <AnalyticBox className="hidden md:block">
         <div className="flex flex-col gap-0">
           <span className="flex items-center text-xs font-medium justify-between">
             <h1 className="uppercase text-black/70">Participants</h1>

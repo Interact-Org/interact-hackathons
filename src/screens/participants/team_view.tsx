@@ -38,10 +38,10 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
     setInitialRender(false);
   }, [track]);
   return (
-    <div className="w-full p-6 bg-white rounded-xl shadow-lg transition hover:shadow-xl">
-      <div className="w-full flex items-center justify-between">
+    <div className="w-full mx-auto  p-3 md:p-6 bg-white rounded-xl shadow-lg transition hover:shadow-xl">
+      <div className="w-full flex flex-col md:flex-row items-center justify-between">
         {tracks && tracks.length > 0 && (
-          <div className="flex items-center gap-2">
+          <div className="w-full md:w-fit flex items-center gap-2">
             <p className="text-nowrap">Your Track: </p>
             <Select value={track} onValueChange={setTrack}>
               <SelectTrigger className="w-full min-w-40">
@@ -57,14 +57,14 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
             </Select>
           </div>
         )}
-        <div className="flex items-center gap-5">
+        <div className="w-full md:w-fit flex items-center justify-between md:justify-start gap-5 my-4 md:mt-2">
           <div>
             Members {team.memberships?.length}/{hackathon.maxTeamSize}
           </div>
           {user.id != team.userID && onLeaveTeam && (
             <Button variant={'destructive'} onClick={onLeaveTeam}>
-              Leave Team
-              <ArrowLineRight className="ml-2 cursor-pointer" size={20} />
+              <p className="hidden md:inline-block">Leave Team</p>
+              <ArrowLineRight className="md:ml-2 cursor-pointer" size={20} />
             </Button>
           )}
         </div>
@@ -77,7 +77,7 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
           <TableRow>
             <TableHead>Member</TableHead>
             <TableHead>Role</TableHead>
-            <TableHead>Joined At</TableHead>
+            <TableHead className="hidden md:block">Joined At</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -92,15 +92,15 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
                     height={50}
                     src={`${USER_PROFILE_PIC_URL}/${member.profilePic}`}
                     alt={member.username}
-                    className="w-8 h-8 rounded-full object-cover"
+                    className="w-8 h-8 rounded-full object-cover hidden md:block"
                   />
                   <div className="flex items-center gap-1">
-                    <div className="text-lg">{member.name}</div>
-                    <div className="text-gray-500">@{member.username}</div>
+                    <div className="text-sm md:text-lg">{member.name}</div>
+                    <div className="text-gray-500 hidden md:block">@{member.username}</div>
                   </div>
                 </TableCell>
                 <TableCell>{membership.role}</TableCell>
-                <TableCell>{moment(membership.createdAt).format('hh:mm a, DD MMMM')}</TableCell>
+                <TableCell className="hidden md:block">{moment(membership.createdAt).format('hh:mm a, DD MMMM')}</TableCell>
                 <TableCell>
                   <div className="w-full h-full flex justify-end gap-4">
                     {member.id != user.id &&
