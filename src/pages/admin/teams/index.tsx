@@ -14,7 +14,6 @@ import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { ORG_URL } from '@/config/routes';
 import BaseWrapper from '@/wrappers/base';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Loader } from 'lucide-react';
 
 const Teams = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -44,7 +43,7 @@ const Teams = () => {
       }
       setPage(prev => prev + 1);
       setLoading(false);
-    } else {
+    } else if (res.status != -1) {
       if (res.data.message) Toaster.error(res.data.message);
       else Toaster.error(SERVER_ERROR);
     }
@@ -63,6 +62,8 @@ const Teams = () => {
       setTeams([]);
       setHasMore(true);
       setLoading(true);
+
+      abortController.abort();
       fetchTeams(abortController, 1);
     }
 
@@ -82,17 +83,18 @@ const Teams = () => {
         <div className="w-[95%] mx-auto h-full flex flex-col gap-8">
           <div className="--meta-info-container  w-full h-fit py-4">
             <div className="w-full flex items-start justify-between gap-6">
-              <section className="--heading w-1/2 h-full text-6xl font-bold leading-[4.5rem]">
+              <section className="--heading w-1/2 h-full font-bold leading-[4.5rem] flex flex-col gap-4">
                 <h1
                   style={{
                     background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                   }}
+                  className="text-7xl"
                 >
                   Team Overview
                 </h1>
-                <h1>Manage, Monitor, and Analyze Participation</h1>
+                <h1 className="text-4xl">Manage, Monitor, and Analyze Participation</h1>
               </section>
               <aside className="--analytics w-1/2 h-full">
                 <TeamOverviewAnalytics />

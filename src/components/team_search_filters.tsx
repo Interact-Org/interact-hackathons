@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MagnifyingGlass, Newspaper } from '@phosphor-icons/react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from './ui/input';
+import { HackathonTrack } from '@/types';
+import getHandler from '@/handlers/get_handler';
+import { useSelector } from 'react-redux';
+import { currentHackathonSelector } from '@/slices/hackathonSlice';
+import Toaster from '@/utils/toaster';
+import { SERVER_ERROR } from '@/config/errors';
 
 interface TeamSearchFiltersProps {
   search: string;
@@ -28,6 +34,25 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
   order,
   setOrder,
 }) => {
+  const [tracks, setTracks] = useState<HackathonTrack[]>([]);
+
+  const hackathon = useSelector(currentHackathonSelector);
+
+  const getTracks = async () => {
+    const URL = `/hackathons/tracks/${hackathon.id}`;
+    const res = await getHandler(URL);
+    if (res.statusCode == 200) {
+      setTracks(res.data.tracks);
+    } else {
+      if (res.data.message) Toaster.error(res.data.message);
+      else Toaster.error(SERVER_ERROR);
+    }
+  };
+
+  useEffect(() => {
+    getTracks();
+  }, []);
+
   return (
     <section className="--search-filters flex items-center justify-between gap-4">
       <div className="--search-box w-full flex-grow relative h-10">
@@ -46,9 +71,11 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
             <SelectValue placeholder="Track" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Sustainable Development">Sustainable Development</SelectItem>
-            <SelectItem value="FinTech">FinTech</SelectItem>
-            <SelectItem value="EdTech">EdTech</SelectItem>
+            {tracks?.map(track => (
+              <SelectItem key={track.id} value={track.title}>
+                {track.title}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
 
