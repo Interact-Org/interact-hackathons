@@ -60,6 +60,11 @@ const Live = () => {
             <div className="text-[#4B9EFF]">{team ? team.title : 'Formation'}</div>
           </div>
           <div className="w-fit text-2xl font-medium">Round 1 is Live!</div>
+          {team && (
+            <div className="font-medium mt-2">
+              The Team Code is <span className="underline underline-offset-2">{team.token}</span>
+            </div>
+          )}
           <div className="w-fit flex-center gap-6 mt-8">
             {(team.projectID ? ['Team', 'Project', 'Tasks'] : ['Team', 'Project']).map((tab, i) => (
               <div
