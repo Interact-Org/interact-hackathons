@@ -42,10 +42,11 @@ const Live = () => {
       const role = getHackathonRole();
       if (role != 'participant') window.location.replace('/');
       else {
-        const now = moment();
-        if (now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
-          window.location.replace('/participant/team');
-        else getTeam();
+        // const now = moment();
+        // if (now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
+        //   window.location.replace('/participant/team');
+        // else
+        getTeam();
       }
     }
   }, []);
