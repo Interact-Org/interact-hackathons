@@ -1,10 +1,8 @@
 import PrimaryButton from '@/components/buttons/primary_btn';
 import { Input } from '@/components/ui/input';
 import { HackathonTrack } from '@/types';
-// import Input from '@/components/form/input';
 import ModalWrapper from '@/wrappers/modal';
-import { set } from 'nprogress';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Toaster from '@/utils/toaster';
 
