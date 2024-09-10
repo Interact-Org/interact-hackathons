@@ -175,7 +175,7 @@ const Index = () => {
                       <TableHead>Team Name</TableHead>
                       <TableHead>Project</TableHead>
                       <TableHead>Track</TableHead>
-                      <TableHead className="hidden md:block">Members</TableHead>
+                      <TableHead className="hidden md:static">Members</TableHead>
                       <TableHead>Elimination Status</TableHead>
                       <TableHead>Scores</TableHead>
                       <TableHead>Actions</TableHead>

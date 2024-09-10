@@ -12,7 +12,6 @@ import Tasks from '@/screens/participants/tasks';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { useSelector } from 'react-redux';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
-import moment from 'moment';
 import BaseWrapper from '@/wrappers/base';
 
 const Live = () => {
@@ -109,7 +108,7 @@ const Live = () => {
         {index == 1 && (
           <>
             {team?.projectID && project ? (
-              <div className="w-full relative bg-gradient-to-b from-[#F6F7F9] to-[#D8EAFF] flex flex-col gap-2 md:gap-4 rounded-xl text-primary_black p-p-4 md:8">
+              <div className="w-full relative bg-gradient-to-b from-[#F6F7F9] to-[#D8EAFF] flex flex-col gap-2 md:gap-4 rounded-xl text-primary_black p-4 md:8">
                 <Pen onClick={() => setClickedOnProject(true)} className="absolute top-4 right-4 cursor-pointer" size={24} />
                 {clickedOnProject && <EditProject setShow={setClickedOnProject} projectToEdit={project} setTeam={setTeam} />}
                 <div className="text-2xl md:text-3xl lg:text-5xl font-semibold">{project.title}</div>
