@@ -13,7 +13,6 @@ import { Project, Task, User } from '@/types';
 import { initialProject } from '@/types/initials';
 import { getUserFromState } from '@/utils/funcs/redux';
 import Toaster from '@/utils/toaster';
-import MainWrapper from '@/wrappers/main';
 import { ChartLine, WarningCircle, SortAscending, Plus } from '@phosphor-icons/react';
 import React, { useEffect, useState } from 'react';
 
