@@ -120,7 +120,7 @@ const Teams = () => {
                   <TableHeader className="uppercase text-xs md:text-sm">
                     <TableRow>
                       <TableHead className="min-w-[100px] w-1/4">Team Name</TableHead>
-                      <TableHead className="hidden md:block">Created By</TableHead>
+                      <TableHead>Created By</TableHead>
                       <TableHead>Members</TableHead>
                       <TableHead>Track</TableHead>
                       <TableHead className="hidden md:block">Created At</TableHead>
@@ -130,7 +130,7 @@ const Teams = () => {
                     {teams.map(team => (
                       <TableRow key={team.id}>
                         <TableCell className="font-medium">{team.title}</TableCell>
-                        <TableCell className="hidden md:block">{team.user.name}</TableCell>
+                        <TableCell>{team.user.name}</TableCell>
                         <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
                           <PictureList users={team.memberships.map(membership => membership.user)} size={6} gap={7} />
                         </TableCell>

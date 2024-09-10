@@ -10,19 +10,19 @@ export const ProjectDetails = ({ project }: { project: Project | undefined }) =>
   return (
     <div className="w-[90%] p-4 flex flex-col gap-8">
       {!project ? (
-        <>Idea Not Submitted Yet.</>
+        <p className="text-center font-semibold text-lg">Idea Not Submitted Yet.</p>
       ) : (
         <>
-          <h1 className="text-5xl font-bold">{project.title}</h1>
-          <p className="text-xl font-medium">{project.tagline}</p>
+          <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold">{project.title}</h1>
+          <p className="text-sm md:text-lg lg:text-xl font-medium">{project.tagline}</p>
           <div className="flex items-center gap-1 flex-wrap">
             {project.tags?.map((tag, index) => (
-              <span className="px-4 py-1 bg-white rounded-sm border-[1px] text-xs font-semibold border-[#dedede]" key={index}>
+              <span className="px-3 md:px-4 py-1 bg-white rounded-sm border-[1px] text-xs font-semibold border-[#dedede]" key={index}>
                 {tag}
               </span>
             ))}
           </div>
-          <p className="text-base">{project.description}</p>
+          <p className="text-sm md:text-base">{project.description}</p>
           <div className="flex items-center gap-2 ">
             {project.links?.map((link, index) => (
               <>

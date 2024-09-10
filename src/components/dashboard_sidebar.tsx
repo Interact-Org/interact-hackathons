@@ -42,13 +42,13 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
   const role = getHackathonRole();
 
   return (
-    <div className="w-[15%] sticky top-8 left-0 bg-white h-base p-3 flex flex-col justify-between">
+    <div className="w-[15%] sticky top-8 left-0 bg-white h-base p-3 md:flex flex-col justify-between">
       <div className="w-full">
-        <section className="--team-details flex flex-col gap-2 pb-4 border-b-[2px] border-primary_text">
+        <section className="--team-details hidden md:flex flex-col gap-2 pb-4 border-b-[2px] border-primary_text">
           <h1 className="text-2xl font-semibold">{team.title}</h1>
           <div className="flex flex-wrap gap-2 items-center justify-between">
             <h2 className="text-base font-semibold text-primary_text flex items-center w-full gap-1">
-              <PencilRuler size={24} /> <p className="text-primary_black truncate w-full ">{team.track?.title}</p>
+              <PencilRuler size={24} /> <p className="text-primary_black truncate w-full hidden md:block">{team.track?.title}</p>
             </h2>
             <h2 className="text-base font-semibold text-primary_text flex items-center gap-1">
               <UsersThree size={24} />
