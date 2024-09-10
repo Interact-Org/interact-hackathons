@@ -168,12 +168,12 @@ const Index = () => {
               <InfiniteScroll className="w-full" dataLength={teams.length} next={fetchTeams} hasMore={hasMore} loader={<></>}>
                 <Table className="bg-white rounded-md">
                   <TableCaption>A list of all the participating teams</TableCaption>
-                  <TableHeader className="uppercase">
+                  <TableHeader className="uppercase text-xs md:text-sm">
                     <TableRow>
                       <TableHead>Team Name</TableHead>
                       <TableHead>Project</TableHead>
                       <TableHead>Track</TableHead>
-                      <TableHead>Members</TableHead>
+                      <TableHead className="hidden md:block">Members</TableHead>
                       <TableHead>Elimination Status</TableHead>
                       <TableHead>Scores</TableHead>
                       <TableHead>Actions</TableHead>
@@ -185,7 +185,7 @@ const Index = () => {
                         <TableCell className="font-medium">{team.title}</TableCell>
                         <TableCell>{team.project?.title}</TableCell>
                         <TableCell>{team.track?.title}</TableCell>
-                        <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
+                        <TableCell className="min-w-[150px] max-w-[300px] hidden md:flex items-center gap-2 flex-wrap">
                           {team.memberships.map((membership, index) => (
                             <AvatarBox key={index} name={membership.user.name} />
                           ))}

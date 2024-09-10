@@ -109,18 +109,18 @@ const Live = () => {
         {index == 1 && (
           <>
             {team?.projectID && project ? (
-              <div className="w-full relative bg-gradient-to-b from-[#F6F7F9] to-[#D8EAFF] flex flex-col gap-4 rounded-xl text-primary_black p-8">
+              <div className="w-full relative bg-gradient-to-b from-[#F6F7F9] to-[#D8EAFF] flex flex-col gap-2 md:gap-4 rounded-xl text-primary_black p-p-4 md:8">
                 <Pen onClick={() => setClickedOnProject(true)} className="absolute top-4 right-4 cursor-pointer" size={24} />
                 {clickedOnProject && <EditProject setShow={setClickedOnProject} projectToEdit={project} setTeam={setTeam} />}
-                <div className="text-5xl font-semibold">{project.title}</div>
-                <div className="w-fit flex-center gap-4">
+                <div className="text-2xl md:text-3xl lg:text-5xl font-semibold">{project.title}</div>
+                <div className="w-fit flex-center gap-3 md:gap-4">
                   {project.tags?.map(tag => (
-                    <div key={tag} className="bg-white rounded-2xl py-2 px-6 text-sm">
+                    <div key={tag} className="bg-white rounded-2xl py-1 md:py-2 px-4 md:px-6 text-sm">
                       {tag}
                     </div>
                   ))}
                 </div>
-                <div className="text-lg">{project.description}</div>
+                <div className="text-sm md:text-base lg:text-lg">{project.description}</div>
                 <div className="w-fit flex-center gap-4">
                   {project.links?.map(link => (
                     <div key={link}>{link}</div>
@@ -131,7 +131,7 @@ const Live = () => {
               <>
                 <div
                   onClick={() => setClickedOnProject(true)}
-                  className="w-fit mx-auto text-3xl font-medium cursor-pointer hover:scale-105 transition-ease-300"
+                  className="w-fit mx-auto text-xl md:text-3xl font-medium cursor-pointer hover:scale-105 transition-ease-300"
                 >
                   Add your Project and Get Started!
                 </div>

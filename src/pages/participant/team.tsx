@@ -148,10 +148,10 @@ const Team = () => {
 
   return (
     <BaseWrapper>
-      <div className="w-full min-h-screen bg-[#E1F1FF] p-12 flex flex-col justify-center gap-16">
-        <div className="w-full flex gap-8">
-          <div className="w-2/5 flex-center flex-col gap-2">
-            <div className="w-full text-7xl flex-center text-center flex-col font-bold">
+      <div className="w-full min-h-screen bg-[#E1F1FF] py-4 md:p-12 flex flex-col md:justify-center gap-8 md:gap-16">
+        <div className="w-[95%] mx-auto flex flex-col md:flex-row gap-4 md:gap-8">
+          <div className="w-full md:w-2/5 flex-center flex-col gap-2">
+            <div className="w-full text-4xl md:text-5xl lg:text-7xl flex-center text-center flex-col font-bold">
               <h1
                 style={{
                   background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
@@ -160,11 +160,11 @@ const Team = () => {
                 }}
               >
                 Team
-                <br />
-                {team ? team.title : 'Formation'}
+                <br className="hidden md:block" />
+                {team ? team.title : ' Formation'}
               </h1>
             </div>
-            <div className="w-fit text-2xl text-center font-medium">
+            <div className="w-fit text-lg md:text-xl lg:text-2xl text-center font-medium">
               {team ? 'Team Formation is Live!' : 'Find, Create, and Join Teams Easily and Effortlessly.'}
             </div>
             {team && (
@@ -173,7 +173,7 @@ const Team = () => {
               </div>
             )}
           </div>
-          <div className="w-3/5 flex gap-4">
+          <div className="w-full md:w-3/5 flex gap-2 md:gap-4">
             <TeamOverviewAnalytics />
           </div>
         </div>
@@ -187,7 +187,7 @@ const Team = () => {
             tracks={tracks}
           />
         ) : (
-          <div className="w-full flex-center gap-12">
+          <div className="w-[95%] mx-auto mt-8 flex-center gap-4 md:gap-12">
             {clickedOnCreateTeam && tracks && tracks.length > 0 && (
               <CreateTeam setShow={setClickedOnCreateTeam} submitHandler={handleCreateTeam} hackathonID={hackathon.id} tracks={tracks} />
             )}
@@ -195,17 +195,21 @@ const Team = () => {
 
             <div
               onClick={() => setClickedOnCreateTeam(true)}
-              className="w-90 h-52 p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col"
+              className="w-full md:w-90 h-40 md:h-52 p-2 md:p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col"
             >
-              <div className="text-4xl font-semibold">Create Team</div>
-              <div className="text-sm">Initiate brilliance! Create a team to transform your visionary ideas into actionable innovation</div>
+              <div className="text-2xl  md:text-4xl font-semibold">Create Team</div>
+              <div className="text-xs md:text-sm">
+                Initiate brilliance! Create a team to transform your visionary ideas into actionable innovation
+              </div>
             </div>
             <div
               onClick={() => setClickedOnJoinTeam(true)}
-              className="w-90 h-52 p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col"
+              className="w-full md:w-90 h-40 md:h-52 p-2 md:p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col"
             >
-              <div className="text-4xl font-semibold">Join Team</div>
-              <div className="text-sm">Contribute to success! Join a team to merge your skills with theirs and drive innovative solutions.</div>
+              <div className="text-2xl md:text-4xl font-semibold">Join Team</div>
+              <div className="text-xs md:text-sm">
+                Contribute to success! Join a team to merge your skills with theirs and drive innovative solutions.
+              </div>
             </div>
             {/* <div className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col">
           <div className="text-4xl font-semibold">Explore Channels</div>
