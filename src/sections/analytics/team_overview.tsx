@@ -1,9 +1,11 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import { Bar, BarChart, Label, PolarRadiusAxis, RadialBar, RadialBarChart, XAxis } from 'recharts';
+import { Bar, BarChart, XAxis } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import getHandler from '@/handlers/get_handler';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
+import TimeProgressGraph from '@/components/common/time_graph';
+import moment from 'moment';
 
 const initialChartData = [
   { time: '5 Days Ago', noOfTeams: 0, noOfParticipants: 0 },
@@ -33,18 +35,6 @@ const TeamOverviewAnalytics = () => {
   const [totalPrize, setTotalPrize] = useState(0);
 
   const hackathon = useSelector(currentHackathonSelector);
-  const chartData2 = [{ desktop: 6, mobile: 3 }];
-
-  const chartConfig2 = {
-    desktop: {
-      label: 'Desktop',
-      color: 'rgba(0,0,0,0)',
-    },
-    mobile: {
-      label: 'Mobile',
-      color: '#60a5fa',
-    },
-  } satisfies ChartConfig;
 
   useEffect(() => {
     const fetchAnalyticsData = async () => {
@@ -93,32 +83,14 @@ const TeamOverviewAnalytics = () => {
           </BarChart>
         </ChartContainer>
       </AnalyticBox>
-      <AnalyticBox className="h-[150px] overflow-hidden">
-        <ChartContainer config={chartConfig2} className="mx-auto aspect-square w-full max-w-[250px] relative -top-8">
-          <RadialBarChart data={chartData2} endAngle={180} innerRadius={80} outerRadius={130}>
-            <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
-              <Label
-                content={({ viewBox }) => {
-                  if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
-                    return (
-                      <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle">
-                        <tspan x={viewBox.cx} y={(viewBox.cy || 0) - 16} className="fill-foreground text-2xl font-bold">
-                          3 Hrs
-                        </tspan>
-                        <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 4} className="fill-muted-foreground">
-                          Till Round 1
-                        </tspan>
-                      </text>
-                    );
-                  }
-                }}
-              />
-            </PolarRadiusAxis>
-            <RadialBar dataKey="desktop" stackId="a" cornerRadius={5} fill="var(--color-desktop)" className="stroke-transparent stroke-2" />
-            <RadialBar dataKey="mobile" fill="var(--color-mobile)" stackId="a" cornerRadius={5} className="stroke-transparent stroke-2" />
-          </RadialBarChart>
-        </ChartContainer>
-      </AnalyticBox>
+
+      <TimeProgressGraph
+        time1={moment(hackathon.teamFormationStartTime)}
+        time2={moment(hackathon.teamFormationEndTime)}
+        innerRadius={140}
+        outerRadius={200}
+        height={160}
+      />
 
       <div className="w-full grid grid-cols-2 gap-2">
         <AnalyticBox className="flex flex-col  justify-between">
@@ -130,9 +102,10 @@ const TeamOverviewAnalytics = () => {
         </AnalyticBox>
         <AnalyticBox className="flex flex-col gap-2 justify-between">
           <span>
-            {' '}
             <h2 className="text-sm font-semibold text-black">Prize Pool</h2>
-            <h1 className="text-4xl font-semibold">{totalPrize > 1000 ? `${Math.floor(totalPrize / 1000)}k` : totalPrize}</h1>
+            <h1 className="text-4xl font-semibold">
+              {totalPrize > 1000 ? `${Math.floor(totalPrize / 1000)}k` : totalPrize == 0 ? 'NA' : totalPrize}
+            </h1>
           </span>
           {/* <span className="text-xs text-primary_text font-medium">Cash+Goodies</span> */}
         </AnalyticBox>

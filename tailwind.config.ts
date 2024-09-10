@@ -27,6 +27,7 @@ const config: Config = {
         base_md: 'calc(100vh - 64px - 48px)',
       },
       minHeight: {
+        base: 'calc(100vh - 64px)',
         base_md: 'calc(100vh - 64px - 48px)',
       },
       spacing: {
