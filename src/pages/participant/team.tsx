@@ -16,6 +16,7 @@ import TeamOverviewAnalytics from '@/sections/analytics/team_overview';
 import moment from 'moment';
 import { Plus } from 'lucide-react';
 import patchHandler from '@/handlers/patch_handler';
+import BaseWrapper from '@/wrappers/base';
 
 const Team = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -146,72 +147,74 @@ const Team = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#E1F1FF] p-12 flex flex-col justify-center gap-16">
-      <div className="w-full flex gap-8">
-        <div className="w-2/5 flex-center flex-col gap-2">
-          <div className="w-full text-7xl flex-center text-center flex-col font-bold">
-            <h1
-              style={{
-                background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              Team
-              <br />
-              {team ? team.title : 'Formation'}
-            </h1>
-          </div>
-          <div className="w-fit text-2xl text-center font-medium">
-            {team ? 'Team Formation is Live!' : 'Find, Create, and Join Teams Easily and Effortlessly.'}
-          </div>
-          {team && (
-            <div className="font-medium mt-2">
-              The Team Code is <span className="underline underline-offset-2">{team.token}</span>
+    <BaseWrapper>
+      <div className="w-full min-h-screen bg-[#E1F1FF] p-12 flex flex-col justify-center gap-16">
+        <div className="w-full flex gap-8">
+          <div className="w-2/5 flex-center flex-col gap-2">
+            <div className="w-full text-7xl flex-center text-center flex-col font-bold">
+              <h1
+                style={{
+                  background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                Team
+                <br />
+                {team ? team.title : 'Formation'}
+              </h1>
             </div>
-          )}
+            <div className="w-fit text-2xl text-center font-medium">
+              {team ? 'Team Formation is Live!' : 'Find, Create, and Join Teams Easily and Effortlessly.'}
+            </div>
+            {team && (
+              <div className="font-medium mt-2">
+                The Team Code is <span className="underline underline-offset-2">{team.token}</span>
+              </div>
+            )}
+          </div>
+          <div className="w-3/5 flex gap-4">
+            <TeamOverviewAnalytics />
+          </div>
         </div>
-        <div className="w-3/5 flex gap-4">
-          <TeamOverviewAnalytics />
-        </div>
-      </div>
-      {team ? (
-        <TeamView
-          team={team}
-          onDeleteTeam={handleDeleteTeam}
-          onUpdateTeam={handleUpdateTeam}
-          onLeaveTeam={handleLeaveTeam}
-          onKickMember={handleKickMember}
-          tracks={tracks}
-        />
-      ) : (
-        <div className="w-full flex-center gap-12">
-          {clickedOnCreateTeam && tracks && tracks.length > 0 && (
-            <CreateTeam setShow={setClickedOnCreateTeam} submitHandler={handleCreateTeam} hackathonID={hackathon.id} tracks={tracks} />
-          )}
-          {clickedOnJoinTeam && <JoinTeam setShow={setClickedOnJoinTeam} submitHandler={handleJoinTeam} />}
+        {team ? (
+          <TeamView
+            team={team}
+            onDeleteTeam={handleDeleteTeam}
+            onUpdateTeam={handleUpdateTeam}
+            onLeaveTeam={handleLeaveTeam}
+            onKickMember={handleKickMember}
+            tracks={tracks}
+          />
+        ) : (
+          <div className="w-full flex-center gap-12">
+            {clickedOnCreateTeam && tracks && tracks.length > 0 && (
+              <CreateTeam setShow={setClickedOnCreateTeam} submitHandler={handleCreateTeam} hackathonID={hackathon.id} tracks={tracks} />
+            )}
+            {clickedOnJoinTeam && <JoinTeam setShow={setClickedOnJoinTeam} submitHandler={handleJoinTeam} />}
 
-          <div
-            onClick={() => setClickedOnCreateTeam(true)}
-            className="w-90 h-52 p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col"
-          >
-            <div className="text-4xl font-semibold">Create Team</div>
-            <div className="text-sm">Initiate brilliance! Create a team to transform your visionary ideas into actionable innovation</div>
+            <div
+              onClick={() => setClickedOnCreateTeam(true)}
+              className="w-90 h-52 p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col"
+            >
+              <div className="text-4xl font-semibold">Create Team</div>
+              <div className="text-sm">Initiate brilliance! Create a team to transform your visionary ideas into actionable innovation</div>
+            </div>
+            <div
+              onClick={() => setClickedOnJoinTeam(true)}
+              className="w-90 h-52 p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col"
+            >
+              <div className="text-4xl font-semibold">Join Team</div>
+              <div className="text-sm">Contribute to success! Join a team to merge your skills with theirs and drive innovative solutions.</div>
+            </div>
+            {/* <div className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col">
+          <div className="text-4xl font-semibold">Explore Channels</div>
+          <div className="text-lg">Need some inspiration? Explore channels to find resources, tips, or maybe even your next teammate</div>
+        </div> */}
           </div>
-          <div
-            onClick={() => setClickedOnJoinTeam(true)}
-            className="w-90 h-52 p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex-center flex-col"
-          >
-            <div className="text-4xl font-semibold">Join Team</div>
-            <div className="text-sm">Contribute to success! Join a team to merge your skills with theirs and drive innovative solutions.</div>
-          </div>
-          {/* <div className="w-90 h-60 p-4 text-center gap-6 text-white bg-[#a4cdfd] rounded-xl flex-center flex-col">
-            <div className="text-4xl font-semibold">Explore Channels</div>
-            <div className="text-lg">Need some inspiration? Explore channels to find resources, tips, or maybe even your next teammate</div>
-          </div> */}
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </BaseWrapper>
   );
 };
 

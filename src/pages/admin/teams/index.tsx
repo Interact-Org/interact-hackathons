@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { ORG_URL } from '@/config/routes';
+import BaseWrapper from '@/wrappers/base';
 
 const Teams = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -74,71 +75,71 @@ const Teams = () => {
   }, []);
 
   return (
-    <div className="w-full bg-[#E1F1FF] min-h-screen">
-      <header className="bg-white w-full py-1 px-4 font-semibold">Interact</header>
-      <div className="w-[95%] mx-auto h-full flex flex-col gap-8">
-        <div className="--meta-info-container  w-full h-fit py-4">
-          <p className="text-xl font-medium">Team Up for Success Together</p>
-          <div className="w-full flex items-start justify-between gap-6">
-            <section className="--heading w-1/2 h-full text-6xl font-bold leading-[4.5rem]">
-              <h1
-                style={{
-                  background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                Team Overview
-              </h1>
-              <h1>Manage, Monitor, and Analyze Participation</h1>
+    <BaseWrapper>
+      <div className="w-full bg-[#E1F1FF] min-h-screen">
+        <div className="w-[95%] mx-auto h-full flex flex-col gap-8">
+          <div className="--meta-info-container  w-full h-fit py-4">
+            <div className="w-full flex items-start justify-between gap-6">
+              <section className="--heading w-1/2 h-full text-6xl font-bold leading-[4.5rem]">
+                <h1
+                  style={{
+                    background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  Team Overview
+                </h1>
+                <h1>Manage, Monitor, and Analyze Participation</h1>
+              </section>
+              <aside className="--analytics w-1/2 h-full">
+                <TeamOverviewAnalytics />
+              </aside>
+            </div>
+          </div>
+          <div className="--team-data-box flex flex-col gap-4">
+            <TeamSearchFilters
+              search={search}
+              setSearch={setSearch}
+              track={track}
+              setTrack={setTrack}
+              isEliminated={isEliminated}
+              setIsEliminated={setIsEliminated}
+              overallScore={overallScore}
+              setOverallScore={setOverallScore}
+              order={order}
+              setOrder={setOrder}
+            />
+            <section className="--team-table">
+              <Table className="bg-white rounded-md">
+                <TableHeader className="uppercase">
+                  <TableRow>
+                    <TableHead className="min-w-[100px] w-1/4">Team Name</TableHead>
+                    <TableHead>Created By</TableHead>
+                    <TableHead>Members</TableHead>
+                    <TableHead>Track</TableHead>
+                    <TableHead>Created At</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {teams.map(team => (
+                    <TableRow key={team.id}>
+                      <TableCell className="font-medium">{team.title}</TableCell>
+                      <TableCell>{team.user.name}</TableCell>
+                      <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
+                        <PictureList users={team.memberships.map(membership => membership.user)} size={6} gap={7} />
+                      </TableCell>
+                      <TableCell>{team.track?.title}</TableCell>
+                      <TableCell>{moment(team.createdAt).format('hh:mm a DD MMMM')}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </section>
-            <aside className="--analytics w-1/2 h-full">
-              <TeamOverviewAnalytics />
-            </aside>
           </div>
         </div>
-        <div className="--team-data-box flex flex-col gap-4">
-          <TeamSearchFilters
-            search={search}
-            setSearch={setSearch}
-            track={track}
-            setTrack={setTrack}
-            isEliminated={isEliminated}
-            setIsEliminated={setIsEliminated}
-            overallScore={overallScore}
-            setOverallScore={setOverallScore}
-            order={order}
-            setOrder={setOrder}
-          />
-          <section className="--team-table">
-            <Table className="bg-white rounded-md">
-              <TableHeader className="uppercase">
-                <TableRow>
-                  <TableHead className="min-w-[100px] w-1/4">Team Name</TableHead>
-                  <TableHead>Created By</TableHead>
-                  <TableHead>Members</TableHead>
-                  <TableHead>Track</TableHead>
-                  <TableHead>Created At</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {teams.map(team => (
-                  <TableRow key={team.id}>
-                    <TableCell className="font-medium">{team.title}</TableCell>
-                    <TableCell>{team.user.name}</TableCell>
-                    <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
-                      <PictureList users={team.memberships.map(membership => membership.user)} size={6} gap={7} />
-                    </TableCell>
-                    <TableCell>{team.track?.title}</TableCell>
-                    <TableCell>{moment(team.createdAt).format('hh:mm a DD MMMM')}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </section>
-        </div>
       </div>
-    </div>
+    </BaseWrapper>
   );
 };
 

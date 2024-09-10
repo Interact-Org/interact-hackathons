@@ -1,5 +1,4 @@
 import DashboardSidebar from '@/components/dashboard_sidebar';
-import { useRouter } from 'next/router';
 import { Chat, Kanban, Trophy, UsersThree } from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
 import TeamDetails from '@/sections/dashboard/team_details';
@@ -14,10 +13,10 @@ import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import { GetServerSidePropsContext } from 'next';
 import CommentBox from '@/components/comment/comment_box';
+import BaseWrapper from '@/wrappers/base';
 
 export default function Page({ tid }: { tid: string }) {
   const [team, setTeam] = useState(initialHackathonTeam);
-  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
 
   const hackathon = useSelector(currentHackathonSelector);
@@ -62,13 +61,14 @@ export default function Page({ tid }: { tid: string }) {
   const ActiveScreen = menuData[activeIndex].Screen;
 
   return (
-    <div className="w-full bg-[#E1F1FF] min-h-screen">
-      <header className="bg-white w-full py-1 px-4 font-semibold h-8 border-b-[1px] border-[#dedede] sticky top-0 left-0">Interact</header>
-      <div className="w-full flex items-start justify-between h-full">
-        <DashboardSidebar data={menuData} activeIndex={activeIndex} setActiveIndex={setActiveIndex} team={team} setTeam={setTeam} />
-        <div className="h-fit w-[85%]">{ActiveScreen}</div>
+    <BaseWrapper>
+      <div className="w-full bg-[#E1F1FF] min-h-screen">
+        <div className="w-full flex items-start justify-between h-full">
+          <DashboardSidebar data={menuData} activeIndex={activeIndex} setActiveIndex={setActiveIndex} team={team} setTeam={setTeam} />
+          <div className="h-fit w-[85%]">{ActiveScreen}</div>
+        </div>
       </div>
-    </div>
+    </BaseWrapper>
   );
 }
 

@@ -4,17 +4,15 @@ import { HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Funnel, PencilSimple } from '@phosphor-icons/react';
 import TeamSearchFilters from '@/components/team_search_filters';
 import { AvatarBox } from '@/components/common/avatar_box';
-import { Button } from '@/components/ui/button';
 import LiveRoundAnalytics from '@/sections/analytics/live_round_analytics';
 import TeamActions from '@/components/team_actions';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { useSelector } from 'react-redux';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { ORG_URL } from '@/config/routes';
+import BaseWrapper from '@/wrappers/base';
 
 interface Filter {
   name: string;
@@ -31,22 +29,6 @@ const Index = () => {
   const [isEliminated, setIsEliminated] = useState(false);
   const [overallScore, setOverallScore] = useState(0);
   const [order, setOrder] = useState('latest');
-
-  const [filters, setFilters] = useState<Filter[]>([
-    { name: 'Filter 1', checked: false },
-    { name: 'Filter 2', checked: false },
-    { name: 'Filter 3', checked: false },
-    { name: 'Filter 4', checked: false },
-    { name: 'Filter 5', checked: false },
-  ]);
-
-  const handleFilterChange = (index: number) => {
-    setFilters(prevFilters => {
-      const updatedFilters = [...prevFilters];
-      updatedFilters[index].checked = !updatedFilters[index].checked;
-      return updatedFilters;
-    });
-  };
 
   const hackathon = useSelector(currentHackathonSelector);
 
@@ -98,86 +80,86 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="w-full bg-[#E1F1FF] min-h-screen">
-      <header className="bg-white w-full py-1 px-4 font-semibold">Interact</header>
-      <div className="w-[95%] mx-auto h-full flex flex-col gap-8">
-        <div className="--meta-info-container  w-full h-fit py-4">
-          <p className="text-xl font-medium">Team Up for Success Together</p>
-          <div className="w-full flex items-start justify-between gap-6">
-            <section className="--heading w-1/2 h-full text-6xl font-bold leading-[4.5rem]">
-              <h1
-                style={{
-                  background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                ROUND 2 IS LIVE!
-                <br />
-                ENDS IN 18:47
-              </h1>
-              <h1 className="text-5xl w-3/4">NEXT JUDING ROUND STARTS IN 20:21</h1>
+    <BaseWrapper>
+      <div className="w-full bg-[#E1F1FF] min-h-screen">
+        <div className="w-[95%] mx-auto h-full flex flex-col gap-8">
+          <div className="--meta-info-container  w-full h-fit py-4">
+            <div className="w-full flex items-start justify-between gap-6">
+              <section className="--heading w-1/2 h-full text-6xl font-bold leading-[4.5rem]">
+                <h1
+                  style={{
+                    background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  ROUND 2 IS LIVE!
+                  <br />
+                  ENDS IN 18:47
+                </h1>
+                <h1 className="text-5xl w-3/4">NEXT JUDING ROUND STARTS IN 20:21</h1>
+              </section>
+              <aside className="--analytics w-1/2 h-full">
+                <div className="w-full h-full">
+                  <LiveRoundAnalytics />
+                </div>
+              </aside>
+            </div>
+          </div>
+          <div className="--team-data-box flex flex-col gap-4">
+            <TeamSearchFilters
+              search={search}
+              setSearch={setSearch}
+              track={track}
+              setTrack={setTrack}
+              isEliminated={isEliminated}
+              setIsEliminated={setIsEliminated}
+              overallScore={overallScore}
+              setOverallScore={setOverallScore}
+              order={order}
+              setOrder={setOrder}
+            />{' '}
+            <section className="--team-table">
+              <Table className="bg-white rounded-md">
+                <TableCaption>A list of all the participating teams</TableCaption>
+                <TableHeader className="uppercase">
+                  <TableRow>
+                    <TableHead>Team Name</TableHead>
+                    <TableHead>Project</TableHead>
+                    <TableHead>Track</TableHead>
+                    <TableHead>Members</TableHead>
+                    <TableHead>Elimination Status</TableHead>
+                    <TableHead>Scores</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {teams.map((team, index) => (
+                    <TableRow onClick={() => window.location.assign('/admin/live/' + team.id)} key={index}>
+                      <TableCell className="font-medium">{team.title}</TableCell>
+                      <TableCell>{team.project?.title}</TableCell>
+                      <TableCell>{team.track?.title}</TableCell>
+                      <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
+                        {team.memberships.map((membership, index) => (
+                          <AvatarBox key={index} name={membership.user.name} />
+                        ))}
+                      </TableCell>
+                      <TableCell>
+                        <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
+                      </TableCell>
+                      <TableCell>{1}</TableCell>
+                      <TableCell>
+                        <TeamActions teamId={team.id} data={team} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </section>
-            <aside className="--analytics w-1/2 h-full">
-              <div className="w-full h-full">
-                <LiveRoundAnalytics />
-              </div>
-            </aside>
           </div>
         </div>
-        <div className="--team-data-box flex flex-col gap-4">
-          <TeamSearchFilters
-            search={search}
-            setSearch={setSearch}
-            track={track}
-            setTrack={setTrack}
-            isEliminated={isEliminated}
-            setIsEliminated={setIsEliminated}
-            overallScore={overallScore}
-            setOverallScore={setOverallScore}
-            order={order}
-            setOrder={setOrder}
-          />{' '}
-          <section className="--team-table">
-            <Table className="bg-white rounded-md">
-              <TableCaption>A list of all the participating teams</TableCaption>
-              <TableHeader className="uppercase">
-                <TableRow>
-                  <TableHead>Team Name</TableHead>
-                  <TableHead>Project</TableHead>
-                  <TableHead>Track</TableHead>
-                  <TableHead>Members</TableHead>
-                  <TableHead>Elimination Status</TableHead>
-                  <TableHead>Scores</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {teams.map((team, index) => (
-                  <TableRow onClick={() => window.location.assign('/admin/live/' + team.id)} key={index}>
-                    <TableCell className="font-medium">{team.title}</TableCell>
-                    <TableCell>{team.project?.title}</TableCell>
-                    <TableCell>{team.track?.title}</TableCell>
-                    <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
-                      {team.memberships.map((membership, index) => (
-                        <AvatarBox key={index} name={membership.user.name} />
-                      ))}
-                    </TableCell>
-                    <TableCell>
-                      <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
-                    </TableCell>
-                    <TableCell>{1}</TableCell>
-                    <TableCell>
-                      <TeamActions teamId={team.id} data={team} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </section>
-        </div>
       </div>
-    </div>
+    </BaseWrapper>
   );
 };
 
