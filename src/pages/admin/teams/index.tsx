@@ -120,7 +120,7 @@ const Teams = () => {
                   <TableHeader className="uppercase text-xs md:text-sm">
                     <TableRow>
                       <TableHead className="min-w-[100px] w-1/4">Team Name</TableHead>
-                      <TableHead className="hidden md:block">Created By</TableHead>
+                      <TableHead>Created By</TableHead>
                       <TableHead>Members</TableHead>
                       <TableHead>Track</TableHead>
                       <TableHead className="hidden md:block">Created At</TableHead>

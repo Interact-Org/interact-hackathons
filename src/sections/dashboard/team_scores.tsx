@@ -97,7 +97,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
 
   return (
     <div className="w-full p-4 flex flex-col gap-8">
-      <div className="w-fit bg-white p-1 rounded-md mx-auto">
+      <div className="w-fit bg-white p-1 rounded-md mx-auto flex flex-wrap justify-center">
         {Array.from({ length: rounds.length }, (_, index) => (
           <button
             key={index}
@@ -109,11 +109,11 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
         ))}
       </div>
 
-      <div className="w-full grid grid-cols-2 gap-4">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
         {rounds[activeRound]?.metrics.map((metric, index) => (
           <div key={index} className="w-full p-3 bg-white rounded-md flex flex-col gap-2">
             <span>
-              <h1 className="text-2xl font-semibold">{metric.title}</h1>
+              <h1 className="text-lg md:text-xl lg:text-2xl font-semibold">{metric.title}</h1>
               <p className="text-xs mb-4">{metric.description}</p>
             </span>
 
@@ -169,11 +169,10 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
                 )}
               </>
             )}
-
             {role == 'admin' && (
               <Button
                 onClick={() => handleSubmit(metric.hackathonRoundID, inputScores[metric.id], metric.id)}
-                className="bg-primary_text/90 hover:bg-primary_text px-12"
+                className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"
               >
                 Submit
               </Button>
@@ -181,26 +180,28 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
           </div>
         ))}
       </div>
-      <div className="w-full p-3 bg-white text-primary_text rounded-md flex justify-between gap-4">
-        <span className="flex items-center gap-2">
+      <div className="w-full p-3 bg-white text-primary_text rounded-md flex flex-col md:flex-row md:justify-between gap-4">
+        <span className="w-full flex flex-col md:flex-row items-center gap-2">
           <Trophy size={32} />
-          <h1 className="text-3xl font-semibold text-nowrap">Overall Score</h1>
+          <h1 className="text-xl md:text-3xl font-semibold text-nowrap">Overall Score</h1>
           {role == 'admin' ? (
             <Input
               type="number"
-              className="bg-white text-black w-60 ml-8"
+              className="bg-white text-black w-full md:w-60 md:ml-8"
               placeholder="Enter Score"
               value={inputScores['overallScore'] || ''}
               onChange={e => handleInputChange('overallScore', e.target.value)}
             />
           ) : (
-            <h1 className="text-3xl font-semibold">: {inputScores['overallScore'] || ''}</h1>
+            <h1 className="text-3xl font-semibold">
+              <span className="hidden md:block">:</span> {inputScores['overallScore'] || ''}
+            </h1>
           )}
         </span>
         {role == 'admin' && (
           <Button
             onClick={() => handleSubmit(rounds[activeRound].id, inputScores['overallScore'])}
-            className="bg-primary_text/90 hover:bg-primary_text px-12"
+            className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"
           >
             Submit
           </Button>

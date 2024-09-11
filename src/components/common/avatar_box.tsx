@@ -7,7 +7,7 @@ interface Props {
   size?: 'big' | 'small';
 }
 export const AvatarBox = ({ image, name, size = 'small' }: Props) => {
-  const sizeClass = size === 'big' ? 'w-24 h-24' : 'w-8 h-8';
+  const sizeClass = size === 'big' ? 'w-20 md:w-24 h-20 md:h-24' : 'w-8 h-8';
   return (
     <div
       className={`${sizeClass} rounded-full border-[1px] border-[#aeaeae] p-[2px] flex items-center justify-center relative group cursor-pointer `}
