@@ -182,7 +182,7 @@ const Index = () => {
                         <TableCell>{team.project?.title}</TableCell>
                         <TableCell>{team.track?.title}</TableCell>
                         <TableCell className="min-w-[150px] max-w-[300px] hidden md:flex items-center gap-2 flex-wrap">
-                          <PictureList users={team.memberships.map(membership => membership.user)} size={6} gap={7} />
+                          <PictureList users={team.memberships.map(membership => membership.user)} size={6} />
                         </TableCell>
                         <TableCell>
                           <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />

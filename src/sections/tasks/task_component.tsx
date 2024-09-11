@@ -166,7 +166,7 @@ const TaskComponent = ({
         {task.users.length > 0 ? (
           <div onClick={() => setClickedOnUsers(true)} className="w-fit h-fit flex-center gap-2 cursor-pointer">
             <div className="text-xl font-medium">Assigned To: </div>
-            <PictureList users={task.users} size={8} gap={2} />
+            <PictureList users={task.users} size={8} />
           </div>
         ) : (
           <div onClick={() => setClickedOnEditTask(true)} className="w-full text-base bg-gray-100 rounded-xl p-4 cursor-pointer transition-ease-300">
