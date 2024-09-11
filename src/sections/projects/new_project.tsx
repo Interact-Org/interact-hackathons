@@ -26,7 +26,6 @@ const NewProject = ({ setShow, setTeam, team }: Props) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tagline, setTagline] = useState('');
-  const [isPrivate, setIsPrivate] = useState(false);
   const [category, setCategory] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [links, setLinks] = useState<string[]>([]);
@@ -35,8 +34,6 @@ const NewProject = ({ setShow, setTeam, team }: Props) => {
   const [mutex, setMutex] = useState(false);
 
   const user = useSelector(userSelector);
-
-  const dispatch = useDispatch();
 
   const [randomImage, setRandomImage] = useState(`default_${Math.floor(Math.random() * 9) + 1}.jpg`);
 
@@ -57,10 +54,6 @@ const NewProject = ({ setShow, setTeam, team }: Props) => {
       Toaster.error('Description cannot be empty');
       return;
     }
-    if (tags.length < 3) {
-      Toaster.error('Enter at least 3 tags');
-      return;
-    }
 
     if (mutex) return;
     setMutex(true);
@@ -75,7 +68,6 @@ const NewProject = ({ setShow, setTeam, team }: Props) => {
     tags.forEach(tag => formData.append('tags', tag));
     links.forEach(link => formData.append('links', link));
     formData.append('category', category);
-    formData.append('isPrivate', String(isPrivate));
 
     if (image) formData.append('coverPic', image);
     else formData.append('coverPic', randomImage);
@@ -144,7 +136,6 @@ const NewProject = ({ setShow, setTeam, team }: Props) => {
               <TextArea label="Project Description" val={description} setVal={setDescription} maxLength={1000} />
               <Tags label="Project Tags" tags={tags} setTags={setTags} maxTags={10} required={true} />
               <Links label="Project Links" links={links} setLinks={setLinks} maxLinks={5} />
-              {/* <Checkbox label="Keep this Project Private" val={isPrivate} setVal={setIsPrivate} /> */}
             </div>
           </div>
 

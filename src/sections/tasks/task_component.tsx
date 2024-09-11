@@ -71,7 +71,7 @@ const TaskComponent = ({
   return (
     <>
       {clickedOnUsers && <UsersList title="Task Users" users={task.users} setShow={setClickedOnUsers} />}
-      <div className="w-screen h-screen fixed bg-gray-50 top-0 overflow-y-auto flex flex-col gap-4 p-8 pt-4 max-md:px-4 font-primary animate-fade_third z-10 max-md:z-20">
+      <div className="w-screen h-screen pt-navbar fixed bg-gray-50 top-0 overflow-y-auto flex flex-col gap-4 p-8 max-md:px-4 font-primary animate-fade_third z-10 max-md:z-20">
         <div className="w-full flex flex-col gap-2">
           <ArrowArcLeft
             className="cursor-pointer"

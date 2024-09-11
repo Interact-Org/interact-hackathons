@@ -5,7 +5,6 @@ import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import TeamSearchFilters from '@/components/team_search_filters';
-import { AvatarBox } from '@/components/common/avatar_box';
 import LiveRoundAnalytics from '@/sections/analytics/live_round_analytics';
 import TeamActions from '@/components/team_actions';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
@@ -14,13 +13,8 @@ import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { ORG_URL } from '@/config/routes';
 import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
-import EditDetailsBtn from '@/components/buttons/edit_details_btn';
 import InfiniteScroll from 'react-infinite-scroll-component';
-
-interface Filter {
-  name: string;
-  checked: boolean;
-}
+import PictureList from '@/components/common/picture_list';
 
 const Index = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -165,7 +159,7 @@ const Index = () => {
               setOverallScore={setOverallScore}
               order={order}
               setOrder={setOrder}
-            />{' '}
+            />
             <section className="--team-table">
               <InfiniteScroll className="w-full" dataLength={teams.length} next={fetchTeams} hasMore={hasMore} loader={<></>}>
                 <Table className="bg-white rounded-md">
@@ -175,7 +169,7 @@ const Index = () => {
                       <TableHead>Team Name</TableHead>
                       <TableHead>Project</TableHead>
                       <TableHead>Track</TableHead>
-                      <TableHead className="hidden md:static">Members</TableHead>
+                      <TableHead className="hidden md:block">Members</TableHead>
                       <TableHead>Elimination Status</TableHead>
                       <TableHead>Scores</TableHead>
                       <TableHead>Actions</TableHead>
@@ -188,9 +182,7 @@ const Index = () => {
                         <TableCell>{team.project?.title}</TableCell>
                         <TableCell>{team.track?.title}</TableCell>
                         <TableCell className="min-w-[150px] max-w-[300px] hidden md:flex items-center gap-2 flex-wrap">
-                          {team.memberships.map((membership, index) => (
-                            <AvatarBox key={index} name={membership.user.name} />
-                          ))}
+                          <PictureList users={team.memberships.map(membership => membership.user)} size={6} gap={7} />
                         </TableCell>
                         <TableCell>
                           <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
