@@ -50,7 +50,7 @@ const CreateTeam = ({ setShow, submitHandler, hackathonID, tracks }: Props) => {
         </Select>
         <Select value={role} onValueChange={setRole}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select Role" />
+            <SelectValue placeholder="Select Leader Role" />
           </SelectTrigger>
           <SelectContent>
             {sampleRoleData.map((role, index) => (
