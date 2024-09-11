@@ -12,10 +12,10 @@ const Navbar = () => {
 
   return (
     <div className="w-full h-12 md:h-navbar bg-navbar dark:bg-dark_navbar text-gray-500 dark:text-white border-gray-300 border-b-[1px] dark:border-0 glassMorphism backdrop-blur-sm fixed top-0 flex justify-between px-4 items-center z-20">
-      <Link href={'/home'} className="hidden dark:flex">
+      <Link href={'/'} className="hidden dark:flex">
         <ReactSVG src="/onboarding_logo_dark.svg" />
       </Link>
-      <Link href={'/home'} className="static dark:hidden ">
+      <Link href={'/'} className="static dark:hidden ">
         <ReactSVG src="/onboarding_logo.svg" className="scale-75 md:scale-100 relative -left-4 md:left-0" />
       </Link>
       {user.id && (
