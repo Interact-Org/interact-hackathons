@@ -169,6 +169,40 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
                 )}
               </>
             )}
+
+            {metric.type === 'boolean' && (
+              <>
+                {role === 'admin' ? (
+                  <div className="flex items-center space-x-4">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name={`boolean-${metric.id}`}
+                        value="true"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                        checked={inputScores[metric.id] === true}
+                        onChange={() => handleInputChange(metric.id, true)}
+                      />
+                      <span className="text-gray-900">True</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name={`boolean-${metric.id}`}
+                        value="false"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                        checked={inputScores[metric.id] === false}
+                        onChange={() => handleInputChange(metric.id, false)}
+                      />
+                      <span className="text-gray-900">False</span>
+                    </label>
+                  </div>
+                ) : (
+                  <div>Value: {inputScores[metric.id] ? 'True' : 'False'}</div>
+                )}
+              </>
+            )}
+
             {role == 'admin' && (
               <Button
                 onClick={() => handleSubmit(metric.hackathonRoundID, inputScores[metric.id], metric.id)}
