@@ -16,6 +16,7 @@ import BaseWrapper from '@/wrappers/base';
 import getIcon from '@/utils/funcs/get_icon';
 import getDomainName from '@/utils/funcs/get_domain_name';
 import Link from 'next/link';
+import moment from 'moment';
 
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam>(initialHackathonTeam);
@@ -76,11 +77,25 @@ const Live = () => {
               <div className="text-[#607EE7]">Team</div>
               <div className="text-[#4B9EFF]">{team ? team.title : 'Formation'}</div>
             </div>
-            {currentRound && <div className="w-fit text-xl md:text-2xl font-medium">Round {currentRound.index + 1} is Live!</div>}
+            {currentRound && (
+              <div className="w-fit mx-auto flex-center flex-col">
+                <div className="w-fit text-xl md:text-2xl font-medium">Round {currentRound.index + 1} is Live!</div>
+                <div className="w-fit text-2xl">
+                  {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.judgingEndTime)) ? (
+                    <div className="w-full text-base">Judging is Live! Ends {moment(currentRound.judgingEndTime).fromNow()}.</div>
+                  ) : (
+                    moment(currentRound.judgingStartTime).isAfter(moment()) && (
+                      <>Next Judging Round Starts {moment(currentRound.judgingStartTime).fromNow()}.</>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
+
             {team && (
               <div className="font-medium mt-2">
                 The Team Code is{' '}
-                <span className="underline underline-offset-2">
+                <span className="underline underline-offset-2 cursor-pointer">
                   <span
                     onClick={() => {
                       navigator.clipboard.writeText(team.token);
