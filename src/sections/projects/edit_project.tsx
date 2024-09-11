@@ -28,7 +28,6 @@ const EditProject = ({ projectToEdit, setShow, setTeam }: Props) => {
   const [category, setCategory] = useState(projectToEdit.category);
   const [tags, setTags] = useState<string[]>(projectToEdit.tags || []);
   const [links, setLinks] = useState<string[]>(projectToEdit.links || []);
-  const [privateLinks, setPrivateLinks] = useState<string[]>(projectToEdit.privateLinks || []);
   const [image, setImage] = useState<File>();
 
   const [mutex, setMutex] = useState(false);
@@ -67,7 +66,6 @@ const EditProject = ({ projectToEdit, setShow, setTeam }: Props) => {
     // if (isArrEdited(links, projectToEdit.links))
     links.forEach(link => formData.append('links', link));
     // if (isArrEdited(privateLinks, projectToEdit.privateLinks))
-    privateLinks.forEach(link => formData.append('privateLinks', link));
     if (category != projectToEdit.category) formData.append('category', category);
     if (image) formData.append('coverPic', image);
 

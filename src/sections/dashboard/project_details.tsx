@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button';
 import { Project } from '@/types';
 import getDomainName from '@/utils/funcs/get_domain_name';
 import getIcon from '@/utils/funcs/get_icon';
-import { FigmaLogo, GithubLogo, LinkSimple } from '@phosphor-icons/react';
 import Link from 'next/link';
 import React from 'react';
 
@@ -10,7 +9,7 @@ export const ProjectDetails = ({ project }: { project: Project | undefined }) =>
   return (
     <div className="w-[90%] p-4 flex flex-col gap-8">
       {!project ? (
-        <p className="text-center font-semibold text-lg">Idea Not Submitted Yet.</p>
+        <div className="w-full h-fit flex-center text-4xl font-medium pt-32 max-md:pt-8">Project Not Submitted Yet.</div>
       ) : (
         <>
           <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold">{project.title}</h1>

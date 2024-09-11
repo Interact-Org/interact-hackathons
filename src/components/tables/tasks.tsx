@@ -36,7 +36,7 @@ const TasksTable = ({ tasks, fetcher, hasMore, setClickedOnTask, setClickedTaskI
           >
             <div className="w-[35%] flex-center font-medium max-md:text-sm">{task.title}</div>
             <div className="w-[20%] max-md:w-[25%] flex-center">
-              <PictureList users={task.users} size={6} gap={2} />
+              <PictureList users={task.users} size={6} />
             </div>
             <div className="w-[15%] max-md:hidden flex-center">
               <div className="flex-center px-3 py-1 rounded-full text-xs" style={{ backgroundColor: getTaskPriorityColor(task) }}>

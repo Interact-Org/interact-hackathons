@@ -12,8 +12,11 @@ import Tasks from '@/screens/participants/tasks';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { useSelector } from 'react-redux';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
-import moment from 'moment';
 import BaseWrapper from '@/wrappers/base';
+import getIcon from '@/utils/funcs/get_icon';
+import getDomainName from '@/utils/funcs/get_domain_name';
+import Link from 'next/link';
+import moment from 'moment';
 
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam>(initialHackathonTeam);
@@ -74,11 +77,25 @@ const Live = () => {
               <div className="text-[#607EE7]">Team</div>
               <div className="text-[#4B9EFF]">{team ? team.title : 'Formation'}</div>
             </div>
-            {currentRound && <div className="w-fit text-xl md:text-2xl font-medium">Round {currentRound.index + 1} is Live!</div>}
+            {currentRound && (
+              <div className="w-fit mx-auto flex-center flex-col">
+                <div className="w-fit text-xl md:text-2xl font-medium">Round {currentRound.index + 1} is Live!</div>
+                <div className="w-fit text-2xl">
+                  {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.judgingEndTime)) ? (
+                    <div className="w-full text-base">Judging is Live! Ends {moment(currentRound.judgingEndTime).fromNow()}.</div>
+                  ) : (
+                    moment(currentRound.judgingStartTime).isAfter(moment()) && (
+                      <>Next Judging Round Starts {moment(currentRound.judgingStartTime).fromNow()}.</>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
+
             {team && (
               <div className="font-medium mt-2">
                 The Team Code is{' '}
-                <span className="underline underline-offset-2">
+                <span className="underline underline-offset-2 cursor-pointer">
                   <span
                     onClick={() => {
                       navigator.clipboard.writeText(team.token);
@@ -109,29 +126,48 @@ const Live = () => {
         {index == 1 && (
           <>
             {team?.projectID && project ? (
-              <div className="w-full relative bg-gradient-to-b from-[#F6F7F9] to-[#D8EAFF] flex flex-col gap-2 md:gap-4 rounded-xl text-primary_black p-p-4 md:8">
+              <div className="w-full relative bg-gradient-to-b from-[#F6F7F9] to-[#D8EAFF] flex flex-col gap-2 md:gap-4 rounded-xl text-primary_black p-4 md:8">
                 <Pen onClick={() => setClickedOnProject(true)} className="absolute top-4 right-4 cursor-pointer" size={24} />
                 {clickedOnProject && <EditProject setShow={setClickedOnProject} projectToEdit={project} setTeam={setTeam} />}
                 <div className="text-2xl md:text-3xl lg:text-5xl font-semibold">{project.title}</div>
                 <div className="w-fit flex-center gap-3 md:gap-4">
                   {project.tags?.map(tag => (
-                    <div key={tag} className="bg-white rounded-2xl py-1 md:py-2 px-4 md:px-6 text-sm">
+                    <div key={tag} className="bg-white rounded-2xl py-1 md:py-2 px-4 text-sm">
                       {tag}
                     </div>
                   ))}
                 </div>
                 <div className="text-sm md:text-base lg:text-lg">{project.description}</div>
                 <div className="w-fit flex-center gap-4">
-                  {project.links?.map(link => (
-                    <div key={link}>{link}</div>
-                  ))}
+                  {project.links && project.links.length > 0 && (
+                    <div className="w-full flex flex-col gap-2">
+                      <div className="text-sm ml-1 font-medium uppercase text-gray-500">Links</div>
+                      <div
+                        className={`w-full h-fit flex flex-wrap items-center ${project.links.length == 1 ? 'justify-start' : 'justify-center'} gap-4`}
+                      >
+                        {project.links.map((link, index) => {
+                          return (
+                            <Link
+                              href={link}
+                              target="_blank"
+                              key={index}
+                              className="w-fit h-8 py-2 px-3 border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg flex items-center gap-2"
+                            >
+                              {getIcon(getDomainName(link), 24)}
+                              <div className="capitalize">{getDomainName(link)}</div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
               <>
                 <div
                   onClick={() => setClickedOnProject(true)}
-                  className="w-fit mx-auto text-xl md:text-3xl font-medium cursor-pointer hover:scale-105 transition-ease-300"
+                  className="w-fit bg-white py-4 px-8 mx-auto text-xl md:text-3xl font-medium cursor-pointer hover:scale-105 transition-ease-300"
                 >
                   Add your Project and Get Started!
                 </div>

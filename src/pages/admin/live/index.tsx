@@ -5,7 +5,6 @@ import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import TeamSearchFilters from '@/components/team_search_filters';
-import { AvatarBox } from '@/components/common/avatar_box';
 import LiveRoundAnalytics from '@/sections/analytics/live_round_analytics';
 import TeamActions from '@/components/team_actions';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
@@ -14,14 +13,8 @@ import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { ORG_URL } from '@/config/routes';
 import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
-import EditDetailsBtn from '@/components/buttons/edit_details_btn';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import Loader from '@/components/common/loader';
-
-interface Filter {
-  name: string;
-  checked: boolean;
-}
+import PictureList from '@/components/common/picture_list';
 
 const Index = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -31,7 +24,7 @@ const Index = () => {
   const [hasMore, setHasMore] = useState(true);
   const [search, setSearch] = useState('');
   const [track, setTrack] = useState('');
-  const [isEliminated, setIsEliminated] = useState(false);
+  const [eliminated, setEliminated] = useState('');
   const [overallScore, setOverallScore] = useState(0);
   const [order, setOrder] = useState('latest');
   const [rounds, setRounds] = useState<HackathonRound[]>([]);
@@ -61,9 +54,12 @@ const Index = () => {
   };
 
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
-    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${page}&limit=${20}&search=${search}${
+    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${
+      initialPage ? initialPage : page
+    }&limit=${20}&search=${search}${track != '' && track != 'none' ? `&track_id=${track}` : ''}${
       overallScore != 0 ? `&overall_score=${overallScore}` : ''
-    }&order=${order}`;
+    }${eliminated != '' && eliminated != 'none' ? `&is_eliminated=${eliminated == 'eliminated' ? 'true' : 'false'}` : ''}&order=${order}`;
+
     const res = await getHandler(URL, abortController?.signal);
     if (res.statusCode == 200) {
       if (initialPage == 1) {
@@ -101,7 +97,7 @@ const Index = () => {
     return () => {
       abortController.abort();
     };
-  }, [search, track, isEliminated, overallScore, order]);
+  }, [search, track, eliminated, overallScore, order]);
 
   useEffect(() => {
     const role = getHackathonRole();
@@ -138,9 +134,9 @@ const Index = () => {
                       )
                     )}
                   </div>
-                  <div className="w-full flex items-center gap-4 mt-4">
+                  {/* <div className="w-full flex items-center gap-4 mt-4">
                     <EditDetailsBtn rounds={rounds} />
-                  </div>
+                  </div> */}
                 </section>
               )}
 
@@ -157,13 +153,13 @@ const Index = () => {
               setSearch={setSearch}
               track={track}
               setTrack={setTrack}
-              isEliminated={isEliminated}
-              setIsEliminated={setIsEliminated}
+              eliminated={eliminated}
+              setEliminated={setEliminated}
               overallScore={overallScore}
               setOverallScore={setOverallScore}
               order={order}
               setOrder={setOrder}
-            />{' '}
+            />
             <section className="--team-table">
               <InfiniteScroll className="w-full" dataLength={teams.length} next={fetchTeams} hasMore={hasMore} loader={<></>}>
                 <Table className="bg-white rounded-md">
@@ -186,9 +182,7 @@ const Index = () => {
                         <TableCell>{team.project?.title}</TableCell>
                         <TableCell>{team.track?.title}</TableCell>
                         <TableCell className="min-w-[150px] max-w-[300px] hidden md:flex items-center gap-2 flex-wrap">
-                          {team.memberships.map((membership, index) => (
-                            <AvatarBox key={index} name={membership.user.name} />
-                          ))}
+                          <PictureList users={team.memberships.map(membership => membership.user)} size={6} />
                         </TableCell>
                         <TableCell>
                           <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
