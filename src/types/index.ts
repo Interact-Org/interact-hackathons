@@ -821,6 +821,7 @@ export interface HackathonTeam {
   track?: HackathonTrack;
   memberships: HackathonTeamMembership[];
   isEliminated: boolean;
+  roundScore: number;
   noComments: number;
   createdAt: Date;
   comments: Comment[];

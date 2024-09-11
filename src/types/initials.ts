@@ -540,6 +540,7 @@ export const initialHackathonTeam: HackathonTeam = {
   project: initialProject,
   memberships: [],
   isEliminated: false,
+  roundScore: 0,
   noComments: 0,
   createdAt: new Date(),
   comments: [],

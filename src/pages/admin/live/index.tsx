@@ -171,13 +171,12 @@ const Index = () => {
                       <TableHead>Track</TableHead>
                       <TableHead className="hidden md:block">Members</TableHead>
                       <TableHead>Elimination Status</TableHead>
-                      <TableHead>Scores</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead>Round Score</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody className="w-full">
                     {teams.map((team, index) => (
-                      <TableRow onClick={() => window.location.assign('/admin/live/' + team.id)} key={index}>
+                      <TableRow onClick={() => window.location.assign('/admin/live/' + team.id)} key={index} className="cursor-pointer">
                         <TableCell className="font-medium">{team.title}</TableCell>
                         <TableCell>{team.project?.title}</TableCell>
                         <TableCell>{team.track?.title}</TableCell>
@@ -187,10 +186,7 @@ const Index = () => {
                         <TableCell>
                           <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
                         </TableCell>
-                        <TableCell>{1}</TableCell>
-                        <TableCell>
-                          <TeamActions teamId={team.id} data={team} />
-                        </TableCell>
+                        <TableCell>{team.roundScore}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

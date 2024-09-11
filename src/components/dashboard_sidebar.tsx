@@ -1,6 +1,6 @@
 import { UsersThree } from '@phosphor-icons/react';
 import { ArrowLeft, PencilRuler } from 'lucide-react';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { HackathonTeam } from '@/types';
@@ -25,6 +25,7 @@ interface Props {
 }
 const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: Props) => {
   const hackathon = useSelector(currentHackathonSelector);
+  const [clickedOnEliminate, setClickedOnEliminate] = useState(false);
 
   const handleEliminateTeam = async () => {
     const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/team/${team.id}/eliminate`;
@@ -35,6 +36,7 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
       setTeam(prev => {
         return { ...prev, isEliminated: !prev.isEliminated };
       });
+      setClickedOnEliminate(false);
       Toaster.success(message);
     } else Toaster.error(message);
   };
@@ -79,15 +81,17 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
       </div>
       <div className="w-full flex flex-col gap-2">
         {role == 'admin' && (
-          <Dialog>
-            <DialogTrigger className="bg-red-500 text-white py-2 rounded-md">Eliminate Team</DialogTrigger>
+          <Dialog open={clickedOnEliminate} onOpenChange={setClickedOnEliminate}>
+            <DialogTrigger className={`${team.isEliminated ? 'bg-green-500' : 'bg-red-500'} text-white py-2 rounded-md`}>
+              {team.isEliminated ? 'Restore' : 'Eliminate'} Team
+            </DialogTrigger>
             <DialogContent>
               <DialogHeader className="text-left">
-                <DialogTitle>Eliminate Team</DialogTitle>
+                <DialogTitle>{team.isEliminated ? 'Restore' : 'Eliminate'} Team</DialogTitle>
                 <DialogDescription>This action can be undone. This will remove the team from the competition.</DialogDescription>
               </DialogHeader>
-              <Button onClick={handleEliminateTeam} variant={'destructive'}>
-                Eliminate
+              <Button onClick={handleEliminateTeam} variant={team.isEliminated ? 'default' : 'destructive'}>
+                {team.isEliminated ? 'Restore' : 'Eliminate'}
               </Button>
             </DialogContent>
           </Dialog>
