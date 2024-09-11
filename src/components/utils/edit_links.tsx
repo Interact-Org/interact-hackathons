@@ -68,17 +68,12 @@ const Links = ({ links, showTitle = false, setLinks, maxLinks = 5, title = 'Link
               {links.map((link: string, index: number) => {
                 return (
                   <div key={index} className="w-full h-8 flex justify-between gap-2 items-center font-Inconsolata">
-                    <div
-                      className={`flex items-center gap-2 ${showURL === index ? 'hidden' : ''}`}
-                      onMouseEnter={() => setShowURL(index)}
-                    >
+                    <div className={`flex items-center gap-2 ${showURL === index ? 'hidden' : ''}`} onMouseEnter={() => setShowURL(index)}>
                       {getIcon(getDomainName(link))}
                       <div className="capitalize">{getDomainName(link)}</div>
                     </div>
                     <Link
-                      className={`text-xs border-[1px] border-black border-dashed rounded-lg px-2 py-1 ${
-                        showURL !== index ? 'hidden' : ''
-                      }`}
+                      className={`text-xs border-[1px] border-black border-dashed rounded-lg px-2 py-1 ${showURL !== index ? 'hidden' : ''}`}
                       href={link}
                       target="_blank"
                       onMouseLeave={() => setShowURL(-1)}
@@ -112,7 +107,7 @@ const Links = ({ links, showTitle = false, setLinks, maxLinks = 5, title = 'Link
                     : 'bg-transparent dark:bg-[#10013b30] border-gray-400 dark:border-dark_primary_btn'
                 } focus:outline-none border-[1px] rounded-lg px-4 py-2 text-sm`}
                 value={newLink}
-                onChange={el => setNewLink(el.target.value.toLowerCase().trim())}
+                onChange={el => setNewLink(el.target.value.trim())}
                 placeholder="New Link"
               />
             </form>
