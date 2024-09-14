@@ -14,7 +14,6 @@ import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
 import TeamOverviewAnalytics from '@/sections/analytics/team_overview';
 import moment from 'moment';
-import { Plus } from 'lucide-react';
 import patchHandler from '@/handlers/patch_handler';
 import BaseWrapper from '@/wrappers/base';
 
@@ -53,19 +52,16 @@ const Team = () => {
       if (role != 'participant') window.location.replace('/');
       else {
         const now = moment();
-        // if (!now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
-        //   window.location.replace('/participant/live');
-        // else {
-        getTeam();
-        getTracks();
-        // }
+        if (!now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime))) {
+          if (now.isAfter(hackathon.startTime)) window.location.replace('/participant/live');
+          else window.location.replace('/');
+        } else {
+          getTeam();
+          getTracks();
+        }
       }
     }
   }, []);
-
-  useEffect(() => {
-    if (team) window.location.replace('/participant/live');
-  }, [team]);
 
   const handleCreateTeam = async (formData: any) => {
     const URL = `/hackathons/${hackathon.id}/participants/teams`;

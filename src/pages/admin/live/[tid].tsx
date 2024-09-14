@@ -14,6 +14,7 @@ import getHandler from '@/handlers/get_handler';
 import { GetServerSidePropsContext } from 'next';
 import CommentBox from '@/components/comment/comment_box';
 import BaseWrapper from '@/wrappers/base';
+import moment from 'moment';
 
 export default function Page({ tid }: { tid: string }) {
   const [team, setTeam] = useState(initialHackathonTeam);
@@ -32,7 +33,8 @@ export default function Page({ tid }: { tid: string }) {
   };
 
   useEffect(() => {
-    getTeam();
+    if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
+    else getTeam();
   }, [tid]);
 
   const menuData: MenuItem[] = [

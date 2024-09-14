@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import TeamSearchFilters from '@/components/team_search_filters';
 import LiveRoundAnalytics from '@/sections/analytics/live_round_analytics';
-import TeamActions from '@/components/team_actions';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { useSelector } from 'react-redux';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
@@ -35,7 +34,7 @@ const Index = () => {
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       const round = res.data.round;
-      setCurrentRound(round);
+      if (!round) window.location.replace('/admin/ended');
     } else {
       if (res.data.message) Toaster.error(res.data.message);
       else Toaster.error(SERVER_ERROR);
@@ -90,8 +89,6 @@ const Index = () => {
       setHasMore(true);
       setLoading(true);
       fetchTeams(abortController, 1);
-      getCurrentRound();
-      getRounds();
     }
 
     return () => {
@@ -102,6 +99,11 @@ const Index = () => {
   useEffect(() => {
     const role = getHackathonRole();
     if (role != 'admin' && role != 'org') window.location.replace('/');
+    else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
+    else {
+      getCurrentRound();
+      getRounds();
+    }
   }, []);
 
   return (
