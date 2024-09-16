@@ -1,6 +1,5 @@
 import PrimaryButton from '@/components/buttons/primary_btn';
 import { Input } from '@/components/ui/input';
-// import Input from '@/components/form/input';
 import ModalWrapper from '@/wrappers/modal';
 import React, { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -19,7 +18,6 @@ const JoinTeam = ({ setShow, submitHandler }: Props) => {
     <ModalWrapper setShow={setShow} top="1/2">
       <div className="flex w-full flex-col gap-3">
         <h1 className="text-2xl font-semibold">Join a Team</h1>
-        {/* <Input val={token} setVal={setToken} maxLength={25} /> */}
         <Input
           value={token}
           onChange={e => {

@@ -121,5 +121,5 @@ type BoxProps = {
   className?: string;
 };
 export function AnalyticBox({ children, className }: BoxProps) {
-  return <div className={`p-4 bg-white rounded-lg border-[2px] border-[#dedede]  w-full ${className}`}>{children}</div>;
+  return <div className={`p-4 bg-white rounded-lg w-full ${className}`}>{children}</div>;
 }

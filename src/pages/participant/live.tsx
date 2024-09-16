@@ -17,10 +17,12 @@ import getIcon from '@/utils/funcs/get_icon';
 import getDomainName from '@/utils/funcs/get_domain_name';
 import Link from 'next/link';
 import moment from 'moment';
+import ParticipantLiveRoundAnalytics from '@/sections/analytics/participant_live_round_analytics';
 
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam>(initialHackathonTeam);
   const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
+  const [nextRound, setNextRound] = useState<HackathonRound | null>(null);
   const [index, setIndex] = useState(0);
   const [clickedOnProject, setClickedOnProject] = useState(false);
 
@@ -31,6 +33,7 @@ const Live = () => {
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       setCurrentRound(res.data.round);
+      setNextRound(res.data.nextRound);
     } else {
       if (res.data.message) Toaster.error(res.data.message);
       else Toaster.error(SERVER_ERROR);
@@ -92,21 +95,6 @@ const Live = () => {
               </div>
             )}
 
-            {team && (
-              <div className="font-medium mt-2">
-                The Team Code is{' '}
-                <span className="underline underline-offset-2 cursor-pointer">
-                  <span
-                    onClick={() => {
-                      navigator.clipboard.writeText(team.token);
-                      Toaster.success('Team Code Copied to Clipboard');
-                    }}
-                  >
-                    {team.token}
-                  </span>
-                </span>
-              </div>
-            )}
             <div className="w-fit flex-center gap-0 md:gap-6 mt-4 md:mt-8 rounded-lg overflow-hidden md:rounded-none md:overflow-auto">
               {(team.projectID ? ['Team', 'Project', 'Tasks'] : ['Team', 'Project']).map((tab, i) => (
                 <div
@@ -121,6 +109,7 @@ const Live = () => {
               ))}
             </div>
           </div>
+          {team.id && <ParticipantLiveRoundAnalytics teamID={team.id} currentRound={currentRound} nextRound={nextRound} />}
         </div>
         {index == 0 && <TeamView team={team} />}
         {index == 1 && (

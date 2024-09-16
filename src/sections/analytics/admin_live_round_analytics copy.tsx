@@ -7,8 +7,10 @@ import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { HackathonRound } from '@/types';
 import TimeProgressGraph from '@/components/common/time_graph';
 import moment from 'moment';
+import Toaster from '@/utils/toaster';
+import { SERVER_ERROR } from '@/config/errors';
 
-export default function LiveRoundAnalytics({ round }: { round: HackathonRound | null }) {
+export default function AdminLiveRoundAnalytics({ round }: { round: HackathonRound | null }) {
   const [totalTeams, setTotalTeams] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalTeamsLeft, setTotalTeamsLeft] = useState(0);
@@ -24,6 +26,9 @@ export default function LiveRoundAnalytics({ round }: { round: HackathonRound | 
         setTotalUsers(res.data.totalUsers);
         setTotalTeamsLeft(res.data.totalTeamsLeft);
         setTotalUsersLeft(res.data.totalUsersLeft);
+      } else {
+        if (res.data.message) Toaster.error(res.data.message);
+        else Toaster.error(SERVER_ERROR);
       }
     };
 

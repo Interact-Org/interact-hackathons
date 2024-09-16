@@ -17,10 +17,6 @@ const CreateTeam = ({ setShow, submitHandler, hackathonID, tracks }: Props) => {
   const [title, setTitle] = useState('');
   const [track, setTrack] = useState('');
   const [role, setRole] = useState('');
-  const [schoolOfTeamMembers, setSchoolOfTeamMembers] = useState('');
-  const [facultyEmpID, setFacultyEmpID] = useState('');
-  const [facultyName, setFacultyName] = useState('');
-  const [facultySchool, setFacultySchool] = useState('');
 
   return (
     <ModalWrapper setShow={setShow} top="1/2">
@@ -60,48 +56,16 @@ const CreateTeam = ({ setShow, submitHandler, hackathonID, tracks }: Props) => {
             ))}
           </SelectContent>
         </Select>
-        <Input
-          value={schoolOfTeamMembers}
-          onChange={e => {
-            setSchoolOfTeamMembers(e.target.value);
-          }}
-          placeholder="Enter School of Team Members"
-        />
-        <Input
-          value={facultyEmpID}
-          onChange={e => {
-            setFacultyEmpID(e.target.value);
-          }}
-          placeholder="Enter Faculty Employee ID"
-        />
-        <Input
-          value={facultyName}
-          onChange={e => {
-            setFacultyName(e.target.value);
-          }}
-          placeholder="Enter Faculty Name"
-        />
-        <Input
-          value={facultySchool}
-          onChange={e => {
-            setFacultySchool(e.target.value);
-          }}
-          placeholder="Enter Faculty School"
-        />
         <div className="w-full flex justify-center">
           <PrimaryButton
             label="Create Team"
             onClick={() => {
-              if (title && track && role && schoolOfTeamMembers && facultyEmpID && facultyName && facultySchool) {
+              if (title && track && role) {
                 submitHandler({
                   title,
                   trackID: track,
                   hackathonID,
                   role,
-                  schoolOfTeamMembers,
-                  facultyEmpID,
-                  facultyName,
-                  facultySchool,
                 });
               } else {
                 Toaster.error('Please fill in all the fields');
