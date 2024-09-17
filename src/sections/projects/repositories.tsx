@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import getHandler from '@/handlers/get_handler';
 import { GithubRepo, HackathonTeam } from '@/types';
 import { SERVER_ERROR } from '@/config/errors';
-import { useDispatch, useSelector } from 'react-redux';
-import { setGithubUsername, userSelector } from '@/slices/userSlice';
+import { useDispatch } from 'react-redux';
+import { setGithubUsername } from '@/slices/userSlice';
 import Cookies from 'js-cookie';
 import { BACKEND_URL } from '@/config/routes';
 import { useRouter } from 'next/router';
@@ -111,16 +111,17 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
 
   return (
     <div>
-      <ul className="list-disc pl-5">
+      <h2 className="text-2xl font-bold mb-4">Github Repositories</h2>
+      <ul className="list-disc space-y-2">
         {githubRepos.map((repo, index) => (
-          <li key={index}>
+          <li key={index} className="flex items-center">
             <Link
               href={repo.repoLink}
               target="_blank"
               key={index}
-              className="w-fit h-8 py-2 px-3 border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg flex items-center gap-2"
+              className="w-fit h-8 py-2 px-3 rounded-lg flex items-center gap-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 shadow-sm"
             >
-              {repo.repoName}
+              <span className="text-blue-500 dark:text-blue-400 font-semibold">{repo.repoName}</span>
             </Link>
           </li>
         ))}
