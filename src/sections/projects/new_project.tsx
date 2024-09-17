@@ -18,7 +18,7 @@ import { useSelector } from 'react-redux';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
-  setTeam: React.Dispatch<React.SetStateAction<HackathonTeam>>;
+  setTeam: React.Dispatch<React.SetStateAction<HackathonTeam | null>>;
   team: HackathonTeam;
 }
 
@@ -79,7 +79,7 @@ const NewProject = ({ setShow, setTeam, team }: Props) => {
       const project = res.data.project;
       project.user = user;
       setTeam(prev => {
-        return { ...prev, projectID: project.id, project };
+        return { ...(prev as HackathonTeam), projectID: project.id, project };
       });
 
       Toaster.stopLoad(toaster, 'Project Added', 1);

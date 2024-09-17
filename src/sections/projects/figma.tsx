@@ -13,6 +13,7 @@ import Loader from '@/components/common/loader';
 import { useMemo } from 'react';
 import isURL from 'validator/lib/isURL';
 import Link from 'next/link';
+import Toaster from '@/utils/toaster';
 
 interface FigmaComponentProps {
   team: HackathonTeam;
@@ -43,7 +44,6 @@ const FigmaComponent: React.FC<FigmaComponentProps> = ({ team }) => {
   const isValid = useMemo(() => newFigmaFiles.every(repo => isURL(repo)), [newFigmaFiles]);
 
   const handleSaveFigmaFiles = async () => {
-    // setFigmaFiles([...figmaFiles, ...newFigmaFiles.filter(file => file)]);
     try {
       const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project/figma?projectID=${
         team.projectID
@@ -51,7 +51,7 @@ const FigmaComponent: React.FC<FigmaComponentProps> = ({ team }) => {
       const body = {};
       const res = await postHandler(URL, body);
       if (res.statusCode == 201) {
-        setFigmaFiles(res.data.figmaFiles);
+        setFigmaFiles(prev => [...prev, ...(res.data.figmaFiles || [])]);
       }
       setLoading(false);
     } catch (error) {
@@ -75,6 +75,7 @@ const FigmaComponent: React.FC<FigmaComponentProps> = ({ team }) => {
       if (status) {
         if (status && status == '1') {
           if (username && username != '') {
+            Toaster.success('Synced with Figma');
             dispatch(setFigmaUsername(username));
           }
         } else if (status && status == '0') {
