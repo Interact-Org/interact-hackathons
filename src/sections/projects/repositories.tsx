@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import getHandler from '@/handlers/get_handler';
 import { HackathonTeam } from '@/types';
 import { SERVER_ERROR } from '@/config/errors';
@@ -7,6 +7,8 @@ import { setGithubUsername, userSelector } from '@/slices/userSlice';
 import Cookies from 'js-cookie';
 import { BACKEND_URL } from '@/config/routes';
 import { useRouter } from 'next/router';
+import isURL from 'validator/lib/isURL';
+import Loader from '@/components/common/loader';
 
 interface RepositoriesComponentProps {
   team: HackathonTeam;
@@ -56,6 +58,8 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
     setNewRepos(updatedRepos);
   };
 
+  const isValid = useMemo(() => newRepos.every(repo => isURL(repo)), [newRepos]);
+
   const handleSaveRepositories = async () => {
     try {
       const URL = `${BACKEND_URL}/auth/github?token=${Cookies.get('token')}&repo_links=${newRepos.join(',')}`;
@@ -94,7 +98,11 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
   }
 
   if (error) {
@@ -103,7 +111,6 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">GitHub Repositories</h2>
       <ul className="list-disc pl-5">
         {githubRepos.map((repo, index) => (
           <li key={index}>
@@ -123,18 +130,33 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
               className="border p-2 rounded mr-2 w-full"
               placeholder="Enter GitHub repository URL"
             />
-            <button onClick={() => handleRemoveInput(index)} className="bg-red-500 text-white p-2 rounded hover:bg-red-700">
-              -
+            <button onClick={() => handleRemoveInput(index)} className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-700">
+              Remove
             </button>
           </div>
         ))}
-        <button onClick={handleAddInput} className="bg-green-500 text-white p-2 rounded hover:bg-green-700 mt-2">
-          +
-        </button>
       </div>
-      <button onClick={handleSaveRepositories} className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 mt-4">
-        Link Repositories
-      </button>
+      <div className="w-full flex items-center justify-between">
+        <button onClick={handleAddInput} className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-700 mt-2">
+          New Link
+        </button>
+        {newRepos && newRepos.length > 0 && (
+          <div className="group">
+            <button
+              disabled={!isValid}
+              onClick={handleSaveRepositories}
+              className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-blue-300 hover:bg-blue-700 mt-4"
+            >
+              Link Selected Repositories
+            </button>
+            {!isValid && (
+              <div className="w-full opacity-0 group-hover:opacity-100 text-center text-gray-500 text-xs mt-2 font-medium transition-ease-300">
+                All repo links must be valid URLs
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

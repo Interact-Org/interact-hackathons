@@ -58,7 +58,8 @@ const Live = () => {
       const role = getHackathonRole();
       if (role != 'participant') window.location.replace('/');
       else {
-        if (moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
+        if (hackathon.isEnded) window.location.replace('/participant/ended');
+        else if (moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
           window.location.replace('/participant/team');
         else {
           getTeam();
@@ -68,12 +69,17 @@ const Live = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const tab = new URLSearchParams(window.location.search).get('tab');
+    if (tab && (tab == 'repositories' || tab == 'figma')) setIndex(1);
+  }, []);
+
   return (
     <BaseWrapper>
       {team.isEliminated && !moment().isBetween(currentRound?.judgingStartTime, currentRound?.judgingEndTime) ? (
         <TeamEliminated team={team} />
       ) : (
-        <div className="w-full min-h-screen bg-[#E1F1FF] p-6 md:p-24 flex flex-col gap-10 md:gap-16">
+        <div className="w-full min-h-screen bg-[#E1F1FF] p-6 md:p-24 flex flex-col gap-10">
           <div className="w-full flex flex-col md:flex-row gap-8">
             <div className="w-full md:w-2/3 flex flex-col gap-2">
               <div className="w-full text-4xl md:text-6xl lg:text-10xl flex flex-col font-bold">
@@ -119,7 +125,7 @@ const Live = () => {
             )}
           </div>
           <div className="w-full">
-            {index == 0 && <TeamView team={team} />}
+            {index == 0 && <TeamView team={team} actions={false} />}
             {index == 1 && (
               <>
                 {team?.projectID && project ? (

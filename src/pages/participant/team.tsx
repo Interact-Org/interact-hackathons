@@ -52,7 +52,8 @@ const Team = () => {
       if (role != 'participant') window.location.replace('/');
       else {
         const now = moment();
-        if (!now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime))) {
+        if (hackathon.isEnded) window.location.replace('/participant/ended');
+        else if (!now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime))) {
           if (now.isAfter(hackathon.startTime)) window.location.replace('/participant/live');
           else window.location.replace('/');
         } else {

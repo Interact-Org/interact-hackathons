@@ -76,6 +76,7 @@ const Teams = () => {
   useEffect(() => {
     const role = getHackathonRole();
     if (role != 'admin' && role != 'org') window.location.replace('/');
+    else if (hackathon.isEnded) window.location.replace('/admin/ended');
     else if (moment().isAfter(hackathon.teamFormationEndTime)) window.location.replace('/admin/live');
   }, []);
 

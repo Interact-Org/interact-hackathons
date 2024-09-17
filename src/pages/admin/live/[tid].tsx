@@ -15,6 +15,7 @@ import { GetServerSidePropsContext } from 'next';
 import CommentBox from '@/components/comment/comment_box';
 import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
+import { getHackathonRole } from '@/utils/funcs/hackathons';
 
 export default function Page({ tid }: { tid: string }) {
   const [team, setTeam] = useState(initialHackathonTeam);
@@ -33,7 +34,10 @@ export default function Page({ tid }: { tid: string }) {
   };
 
   useEffect(() => {
-    if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
+    const role = getHackathonRole();
+    if (role != 'admin' && role != 'org') window.location.replace('/');
+    else if (hackathon.isEnded) window.location.replace('/admin/ended');
+    else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
     else getTeam();
   }, [tid]);
 

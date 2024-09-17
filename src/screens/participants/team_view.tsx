@@ -18,9 +18,10 @@ interface Props {
   onKickMember?: (userID: string) => void;
   tracks?: HackathonTrack[] | null;
   onUpdateTeam?: (formData: any) => void;
+  actions?: boolean;
 }
 
-const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam, tracks }: Props) => {
+const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam, tracks, actions = true }: Props) => {
   const user = useSelector(userSelector);
   const [track, setTrack] = useState(team.trackID ?? '');
   const [initialRender, setInitialRender] = useState(true);
@@ -78,7 +79,7 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
             <TableHead>Member</TableHead>
             <TableHead>Role</TableHead>
             <TableHead className="hidden md:block">Joined At</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            {actions && <TableHead className="text-right">Actions</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -101,28 +102,30 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
                 </TableCell>
                 <TableCell>{membership.role}</TableCell>
                 <TableCell className="hidden md:block">{moment(membership.createdAt).format('hh:mm a, DD MMMM')}</TableCell>
-                <TableCell>
-                  <div className="w-full h-full flex justify-end gap-4">
-                    {member.id != user.id &&
-                      (user.id == team.userID ? (
-                        <>
-                          <PencilLine className="cursor-pointer" size={20} />
-                          {onKickMember && (
-                            <Trash
-                              onClick={() => {
-                                if (onKickMember) onKickMember(member.id);
-                              }}
-                              className="text-primary_danger cursor-pointer"
-                              size={20}
-                            />
-                          )}
-                        </>
-                      ) : (
-                        // onLeaveTeam && <ArrowLineRight onClick={onLeaveTeam} className="text-primary_danger cursor-pointer" size={20} />
-                        <></>
-                      ))}
-                  </div>
-                </TableCell>
+                {actions && (
+                  <TableCell>
+                    <div className="w-full h-full flex justify-end gap-4">
+                      {member.id != user.id &&
+                        (user.id == team.userID ? (
+                          <>
+                            <PencilLine className="cursor-pointer" size={20} />
+                            {onKickMember && (
+                              <Trash
+                                onClick={() => {
+                                  if (onKickMember) onKickMember(member.id);
+                                }}
+                                className="text-primary_danger cursor-pointer"
+                                size={20}
+                              />
+                            )}
+                          </>
+                        ) : (
+                          // onLeaveTeam && <ArrowLineRight onClick={onLeaveTeam} className="text-primary_danger cursor-pointer" size={20} />
+                          <></>
+                        ))}
+                    </div>
+                  </TableCell>
+                )}
               </TableRow>
             );
           })}
