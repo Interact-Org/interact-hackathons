@@ -162,6 +162,7 @@ export interface User {
   lastViewed: Project[];
   isVerified: boolean;
   githubUsername: string;
+  figmaUsername: string;
   isOrganization: boolean;
   organization: Organization | null;
   createdAt: string;
@@ -930,4 +931,25 @@ export interface GithubRepo {
   practicality: number;
   plagiarism: number;
   updatedAt: string;
+}
+
+export interface FigmaVersionHistory {
+  id: string;
+  figmaFileID: string;
+  versionID: string;
+  versionCreatedAt: Date;
+  label: string;
+  description: string;
+  username: string;
+  userID: string;
+  user: User;
+  thumbnailUrl: string;
+}
+
+export interface FigmaFile {
+  id : string;
+  userID: string;
+  projectID: string;
+  fileURL: string;
+  figmaVersionHistories: FigmaVersionHistory[];
 }

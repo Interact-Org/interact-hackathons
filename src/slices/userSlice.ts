@@ -27,6 +27,7 @@ export interface UserState {
   organizationMemberships: OrganizationMembership[];
   registeredEvents: string[];
   githubUsername: string;
+  figmaUsername: string;
   createdAt: string;
 }
 
@@ -50,6 +51,7 @@ const initialState: UserState = {
   organizationMemberships: [],
   registeredEvents: [],
   githubUsername: '',
+  figmaUsername: '',
   createdAt: '',
 };
 
@@ -77,6 +79,7 @@ export const userSlice = createSlice({
       state.organizationMemberships = [];
       state.registeredEvents = [];
       state.githubUsername = action.payload.githubUsername;
+      state.figmaUsername = action.payload.figmaUsername;
       state.createdAt = action.payload.createdAt;
     },
     resetUser: state => {
@@ -99,6 +102,7 @@ export const userSlice = createSlice({
       state.organizationMemberships = [];
       state.registeredEvents = [];
       state.githubUsername = '';
+      state.figmaUsername = '';
       state.createdAt = '';
     },
     setReduxName: (state, action: PayloadAction<string>) => {
@@ -155,6 +159,9 @@ export const userSlice = createSlice({
     setGithubUsername: (state, action: PayloadAction<string>) => {
       state.githubUsername = action.payload;
     },
+    setFigmaUsername: (state, action: PayloadAction<string>) => {
+      state.figmaUsername = action.payload;
+    },
   },
 });
 
@@ -179,6 +186,7 @@ export const {
   setOrganizationMemberships,
   setRegisteredEvents,
   setGithubUsername,
+  setFigmaUsername,
 } = userSlice.actions;
 
 export default userSlice.reducer;
