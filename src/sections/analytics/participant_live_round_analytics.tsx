@@ -38,7 +38,7 @@ export default function ParticipantLiveRoundAnalytics({
   const now = moment();
 
   return (
-    <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+    <div className="w-full grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-4">
       {moment().isBetween(moment(currentRound?.judgingStartTime), moment(currentRound?.judgingEndTime)) ? (
         <TimeGraphWrapper title={'Time For Judging'} time1={moment(currentRound?.judgingStartTime)} time2={moment(currentRound?.judgingEndTime)} />
       ) : (
