@@ -35,8 +35,6 @@ export default function ParticipantLiveRoundAnalytics({
     fetchAnalyticsData();
   }, []);
 
-  const now = moment();
-
   return (
     <div className="w-full grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-4">
       {moment().isBetween(moment(currentRound?.judgingStartTime), moment(currentRound?.judgingEndTime)) ? (

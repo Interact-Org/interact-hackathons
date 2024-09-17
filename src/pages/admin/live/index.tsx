@@ -5,7 +5,7 @@ import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import TeamSearchFilters from '@/components/team_search_filters';
-import AdminLiveRoundAnalytics from '@/sections/analytics/live_round_analytics';
+import AdminLiveRoundAnalytics from '@/sections/analytics/admin_live_round_analytics copy';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { useSelector } from 'react-redux';
 import { getHackathonRole } from '@/utils/funcs/hackathons';

@@ -65,14 +65,6 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   const router = useRouter();
 
   useEffect(() => {
@@ -89,7 +81,7 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
         } else if (status && status == '0') {
           if (message) {
             delete query.message;
-          } else console.error(SERVER_ERROR);
+          }
         }
         delete query.status;
       }
@@ -100,6 +92,14 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
       });
     }
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div>

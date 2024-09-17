@@ -21,15 +21,9 @@ const TeamEliminated: React.FC<TeamEliminatedProps> = ({ team }) => {
         const res = await getHandler(URL);
         if (res.statusCode === 200) {
           setSimilarEvents(res.data.events);
-        } else {
-          if (res.data.message) {
-            console.error(res.data.message);
-          } else {
-            console.error('Server error');
-          }
         }
       } catch (error) {
-        console.error('Error fetching similar events:', error);
+        console.log('Error fetching similar events:', error);
       }
     };
 
