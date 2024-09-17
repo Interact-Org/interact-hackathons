@@ -120,7 +120,7 @@ const Live = () => {
             </div>
             {team.id && (
               <div className="w-full md:w-1/2">
-                <ParticipantLiveRoundAnalytics teamID={team.id} currentRound={currentRound} nextRound={nextRound} />
+                <ParticipantLiveRoundAnalytics teamID={team.id} currentRound={currentRound} />
               </div>
             )}
           </div>

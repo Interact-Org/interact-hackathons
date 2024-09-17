@@ -2,6 +2,8 @@ import '@/styles/globals.css';
 import '@/styles/loader.css';
 import '@/styles/toastify.css';
 import '@/styles/extras.tailwind.css';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import type { AppProps } from 'next/app';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
