@@ -9,7 +9,7 @@ import { BACKEND_URL } from '@/config/routes';
 import { useRouter } from 'next/router';
 import isURL from 'validator/lib/isURL';
 import Loader from '@/components/common/loader';
-import { Link } from 'lucide-react';
+import Link from 'next/link';
 
 interface RepositoriesComponentProps {
   team: HackathonTeam;
@@ -62,7 +62,7 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
 
   const handleSaveRepositories = async () => {
     try {
-      const URL = `${BACKEND_URL}/auth/github?token=${Cookies.get('token')}&repo_links=${newRepos.join(',')}`;
+      const URL = `${BACKEND_URL}/auth/github/${team.id}?token=${Cookies.get('token')}&repo_links=${newRepos.join(',')}`;
       window.location.assign(URL);
     } catch (err) {
       setError('Failed to save repositories');
