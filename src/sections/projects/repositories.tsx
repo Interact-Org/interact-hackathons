@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import getHandler from '@/handlers/get_handler';
-import { HackathonTeam } from '@/types';
+import { GithubRepo, HackathonTeam } from '@/types';
 import { SERVER_ERROR } from '@/config/errors';
 import { useDispatch, useSelector } from 'react-redux';
 import { setGithubUsername, userSelector } from '@/slices/userSlice';
@@ -9,13 +9,14 @@ import { BACKEND_URL } from '@/config/routes';
 import { useRouter } from 'next/router';
 import isURL from 'validator/lib/isURL';
 import Loader from '@/components/common/loader';
+import { Link } from 'lucide-react';
 
 interface RepositoriesComponentProps {
   team: HackathonTeam;
 }
 
 const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) => {
-  const [githubRepos, setGithubRepos] = useState<string[]>([]);
+  const [githubRepos, setGithubRepos] = useState<GithubRepo[]>([]);
   const [newRepos, setNewRepos] = useState<string[]>(['']);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,12 +30,11 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
         const res = await getHandler(URL);
         if (res.statusCode == 200) {
           setGithubRepos(res.data.githubRepos);
-          setLoading(false);
         } else {
           if (res.data.message) setError(res.data.message);
           else setError(SERVER_ERROR);
-          setLoading(false);
         }
+        setLoading(false);
       } catch (err) {
         setError('Failed to fetch repositories');
         setLoading(false);
@@ -114,9 +114,14 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
       <ul className="list-disc pl-5">
         {githubRepos.map((repo, index) => (
           <li key={index}>
-            <a href={repo} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-              {repo}
-            </a>
+            <Link
+              href={repo.repoLink}
+              target="_blank"
+              key={index}
+              className="w-fit h-8 py-2 px-3 border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg flex items-center gap-2"
+            >
+              {repo.repoName}
+            </Link>
           </li>
         ))}
       </ul>

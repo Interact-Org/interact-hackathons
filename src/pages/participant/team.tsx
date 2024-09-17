@@ -35,6 +35,7 @@ const Team = () => {
       else Toaster.error(SERVER_ERROR);
     }
   };
+
   const getTracks = async () => {
     const URL = `/hackathons/tracks/${hackathon.id}`;
     const res = await getHandler(URL);
@@ -45,6 +46,7 @@ const Team = () => {
       else Toaster.error(SERVER_ERROR);
     }
   };
+
   useEffect(() => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
@@ -149,7 +151,7 @@ const Team = () => {
         <div className="w-full mx-auto flex flex-col md:flex-row gap-4 md:gap-8">
           <div className="w-full md:w-1/2 justify-center items-start flex-col gap-2">
             <div className="font-bold">
-              <h4 className="gradient-text text-5xl mb-2">Team {team ? team.title : 'Formation'}</h4>
+              <h4 className="w-fit gradient-text-3 text-5xl mb-2">Team {team ? team.title : 'Formation'}</h4>
             </div>
             <div className="w-fit text-lg md:text-4xl lg:text-8xl font-bold gradient-text-2">
               {team ? (
@@ -161,8 +163,17 @@ const Team = () => {
               )}
             </div>
             {team && (
-              <div className="font-medium mt-16 text-4xl">
-                The Team Code is <span className="underline underline-offset-2">{team.token}</span>
+              <div className="font-semibold mt-8 text-xl">
+                The Team Code is{' '}
+                <span
+                  onClick={() => {
+                    navigator.clipboard.writeText(team.token);
+                    Toaster.success('Copied to Clipboard!');
+                  }}
+                  className="underline underline-offset-2 cursor-pointer"
+                >
+                  {team.token}
+                </span>
               </div>
             )}
           </div>

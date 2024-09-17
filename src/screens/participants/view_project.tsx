@@ -17,27 +17,21 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, team }) => {
     if (tab) setActiveTab(tab);
   }, []);
 
+  const TabButton = ({ title }: { title: string }) => (
+    <button
+      className={`text-xl ${activeTab === title.toLowerCase() ? 'text-blue-800 underline underline-offset-4' : 'text-blue-500'} transition-ease-500`}
+      onClick={() => setActiveTab(title.toLowerCase())}
+    >
+      {title}
+    </button>
+  );
+
   return (
-    <div className="w-full flex flex-col md:justify-center font-primary p-4 md:p-2">
-      <div className="flex flex-wrap justify-start items-start space-x-4 md:space-x-12 font-bold mt-4">
-        <button
-          className={`text-lg md:text-2xl ${activeTab === 'overview' ? 'text-blue-800 underline underline-offset-4' : 'text-blue-500'}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          Overview
-        </button>
-        <button
-          className={`text-lg md:text-2xl ${activeTab === 'repositories' ? 'text-blue-800 underline underline-offset-4' : 'text-blue-500'}`}
-          onClick={() => setActiveTab('repositories')}
-        >
-          Repositories
-        </button>
-        <button
-          className={`text-lg md:text-2xl ${activeTab === 'figma' ? 'text-blue-800 underline underline-offset-4' : 'text-blue-500'}`}
-          onClick={() => setActiveTab('figma')}
-        >
-          Figma
-        </button>
+    <div className="w-full flex flex-col md:justify-center font-primary">
+      <div className="flex flex-wrap justify-start items-start gap-8 font-semibold">
+        <TabButton title="Overview" />
+        <TabButton title="Repositories" />
+        <TabButton title="Figma" />
       </div>
       <div className="mt-4">
         {activeTab === 'overview' && <OverviewComponent project={project} />}

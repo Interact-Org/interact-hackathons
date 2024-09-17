@@ -888,3 +888,46 @@ export interface HackathonHistory {
   deletedText?: string;
   createdAt: Date;
 }
+
+export interface CommitHistory {
+  id: string;
+  repoId: string;
+  username: string;
+  userId?: string;
+  user: User;
+  message: string;
+  addedFiles: string[];
+  modifiedFiles: string[];
+  removedFiles: string[];
+  changes: number;
+  timestamp: string;
+}
+
+export interface GithubRepo {
+  id: string;
+  repoName: string;
+  repoLink: string;
+  projectID?: string;
+  project: Project;
+  users: User[];
+  commitHistories: CommitHistory[];
+  readability: number;
+  maintainability: number;
+  consistency: number;
+  commenting: number;
+  correctness: number;
+  completeness: number;
+  errorHandling: number;
+  efficiency: number;
+  scalability: number;
+  security: number;
+  testCoverage: number;
+  innovation: number;
+  creativity: number;
+  complexityScore: number;
+  projectImpact: number;
+  technicalComplexity: number;
+  practicality: number;
+  plagiarism: number;
+  updatedAt: string;
+}

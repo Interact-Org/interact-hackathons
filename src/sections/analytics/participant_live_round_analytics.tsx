@@ -36,15 +36,34 @@ export default function ParticipantLiveRoundAnalytics({
   }, []);
 
   return (
-    <div className="w-full grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-4">
-      {moment().isBetween(moment(currentRound?.judgingStartTime), moment(currentRound?.judgingEndTime)) ? (
-        <TimeGraphWrapper title={'Time For Judging'} time1={moment(currentRound?.judgingStartTime)} time2={moment(currentRound?.judgingEndTime)} />
-      ) : (
-        moment(currentRound?.judgingStartTime).isAfter(moment()) && (
-          <TimeGraphWrapper title={'Time Till Judging'} time1={moment(currentRound?.startTime)} time2={moment(currentRound?.judgingStartTime)} />
-        )
-      )}
-      {nextRound && <TimeGraphWrapper title={'Time Till Next Round'} time1={moment(currentRound?.startTime)} time2={moment(nextRound?.startTime)} />}
+    <div className="w-full flex flex-col gap-8">
+      <div className="w-full flex gap-8">
+        <div className="w-1/3 h-40 bg-white rounded-xl"></div>
+        <div className="w-1/3 h-40 bg-white rounded-xl"></div>
+        <div className="w-1/3 h-40 bg-white rounded-xl"></div>
+      </div>
+      <div className="w-full flex gap-8">
+        <div className={`w-2/3 grid ${nextRound && 'grid-cols-2 max-md:grid-cols-1'} gap-3 md:gap-4`}>
+          {moment().isBetween(moment(currentRound?.judgingStartTime), moment(currentRound?.judgingEndTime)) ? (
+            <TimeGraphWrapper
+              title={'Time For Judging'}
+              time1={moment(currentRound?.judgingStartTime)}
+              time2={moment(currentRound?.judgingEndTime)}
+            />
+          ) : (
+            moment(currentRound?.judgingStartTime).isAfter(moment()) && (
+              <TimeGraphWrapper title={'Time Till Judging'} time1={moment(currentRound?.startTime)} time2={moment(currentRound?.judgingStartTime)} />
+            )
+          )}
+          {nextRound && (
+            <TimeGraphWrapper title={'Time Till Next Round'} time1={moment(currentRound?.startTime)} time2={moment(nextRound?.startTime)} />
+          )}
+        </div>
+        <div className="w-1/3 flex flex-col gap-8">
+          <div className="w-full h-1/2 bg-white rounded-xl"></div>
+          <div className="w-full h-1/2 bg-white rounded-xl"></div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -53,7 +72,7 @@ const TimeGraphWrapper = ({ title, time1, time2 }: { title?: String; time1: mome
   return (
     <div className="w-full h-fit bg-white rounded-xl">
       {title && <div className="py-4 text-center font-medium text-gray-500">{title}</div>}
-      <TimeProgressGraph time1={time1} time2={time2} height={130} className="hidden md:block" />
+      <TimeProgressGraph time1={time1} time2={time2} height={130} innerRadius={90} outerRadius={140} />
     </div>
   );
 };

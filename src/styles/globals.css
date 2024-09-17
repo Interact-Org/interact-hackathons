@@ -44,6 +44,13 @@ input[type='number'] {
   font-weight: bold;
 }
 
+.gradient-text-3 {
+  background: linear-gradient(to left, #4B9EFF, #5977E3, #607EE7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+
 .bg-gradient {
   background: linear-gradient(to right, #E1F1FF, #E5E7EB);
 }

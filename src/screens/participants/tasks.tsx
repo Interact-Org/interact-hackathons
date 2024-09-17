@@ -122,7 +122,7 @@ const Tasks = ({ slug }: Props) => {
     <>
       {clickedOnNewTask && <NewTask setShow={setClickedOnNewTask} project={project} setTasks={setTasks} />}
       <div className="w-full flex flex-col">
-        <div className="w-full flex justify-between items-center p-base_padding">
+        <div className="w-full flex justify-between items-center">
           <div className="flex-center gap-4">
             <div className="w-fit text-6xl font-semibold dark:text-white font-primary ">Tasks</div>
             {tasks && tasks.length > 0 && (
@@ -168,11 +168,11 @@ const Tasks = ({ slug }: Props) => {
           />
         </div>
 
-        <div className="w-full flex flex-col gap-6 px-2 py-2">
+        <div className="w-full flex flex-col gap-6 py-2">
           {loading ? (
             <Loader />
           ) : tasks.length > 0 ? (
-            <div className="w-full flex justify-evenly px-4">
+            <div className="w-full flex justify-evenly">
               {clickedOnTask && (
                 <TaskView
                   taskID={clickedTaskID}

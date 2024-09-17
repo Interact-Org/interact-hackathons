@@ -81,19 +81,19 @@ const Live = () => {
       ) : (
         <div className="w-full min-h-screen bg-[#E1F1FF] p-6 md:p-24 flex flex-col gap-10">
           <div className="w-full flex flex-col md:flex-row gap-8">
-            <div className="w-full md:w-2/3 flex flex-col gap-2">
+            <div className="w-full md:w-1/2 flex flex-col gap-2">
               <div className="w-full text-4xl md:text-6xl lg:text-10xl flex flex-col font-bold">
                 <div className="font-bold">
-                  <h4 className="gradient-text text-7xl mb-2">Team {team ? team.title : 'Formation'}</h4>
+                  <h4 className="gradient-text-3 text-7xl mb-2">Team {team ? team.title : 'Formation'}</h4>
                 </div>
                 {currentRound && (
                   <div className="w-fit flex flex-col">
                     <div className="w-fit text-lg md:text-4xl lg:text-9xl font-bold gradient-text-2">
                       Round {currentRound.index + 1} <span className="text-black text-4xl">is Live!</span>
                     </div>
-                    <div className="w-fit text-3xl mt-8">
+                    <div className="w-fit font-semibold gradient-text-2 text-2xl mt-4">
                       {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.judgingEndTime)) ? (
-                        <div className="w-full">Judging is Live! Ends {moment(currentRound.judgingEndTime).fromNow()}.</div>
+                        <div className="w-full">Judging is Live!</div>
                       ) : (
                         moment(currentRound.judgingStartTime).isAfter(moment()) && (
                           <>Next Judging Round Starts {moment(currentRound.judgingStartTime).fromNow()}.</>
@@ -119,7 +119,7 @@ const Live = () => {
               </div>
             </div>
             {team.id && (
-              <div className="w-full md:w-1/3">
+              <div className="w-full md:w-1/2">
                 <ParticipantLiveRoundAnalytics teamID={team.id} currentRound={currentRound} nextRound={nextRound} />
               </div>
             )}
