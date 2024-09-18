@@ -65,18 +65,21 @@ export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: 
           value={analyticsData.totalFigmaHistories}
           change={analyticsData.figmaHistoriesPercentageChange == 0 ? undefined : analyticsData.figmaHistoriesPercentageChange}
         />
-        <div className="w-1/3 h-36 bg-white rounded-xl p-4">
+        <div className="w-1/3 max-md:hidden h-36 bg-white rounded-xl p-4">
           <ComparisonScoreBar max={analyticsData.maxActivityCount} min={analyticsData.minActivityCount} score={analyticsData.totalActivityCount} />
         </div>
       </div>
+      <div className="w-full md:hidden h-36 bg-white rounded-xl p-4">
+        <ComparisonScoreBar max={analyticsData.maxActivityCount} min={analyticsData.minActivityCount} score={analyticsData.totalActivityCount} />
+      </div>
       <div className="w-full flex gap-6">
         <GraphCarousel currentRound={currentRound} />
-        <div className="w-1/3 flex flex-col gap-6">
-          <div className="w-full h-1/2 bg-white rounded-xl p-3">
+        <div className="w-1/3 max-md:w-full flex md:flex-col gap-6">
+          <div className="w-full h-1/2 max-md:h-fit bg-white rounded-xl p-3">
             <div className="text font-medium">Track Prize</div>
             <div className="text-3xl font-semibold">{analyticsData.trackPrize}</div>
           </div>
-          <div className="w-full h-1/2 bg-white rounded-xl p-3">
+          <div className="w-full h-1/2 max-md:h-fit bg-white rounded-xl p-3">
             <div className="text font-medium">Teams Left</div>
             <div className="text-3xl font-semibold">{analyticsData.teamsLeftInTrack}</div>
           </div>
@@ -112,7 +115,7 @@ const GraphCarousel = ({ currentRound }: { currentRound: HackathonRound | null }
   };
 
   return (
-    <div className="w-2/3 bg-white rounded-xl gap-3 md:gap-4 pb-4">
+    <div className="w-2/3 max-md:hidden bg-white rounded-xl gap-3 md:gap-4 pb-4">
       <Slider {...settings} className="">
         {isJudgingActive && (
           <TimeGraphWrapper title={'Time For Judging'} time1={moment(currentRound?.judgingStartTime)} time2={moment(currentRound?.judgingEndTime)} />
@@ -128,7 +131,7 @@ const GraphCarousel = ({ currentRound }: { currentRound: HackathonRound | null }
 };
 
 export const AnalyticsCard = ({ title, value, change }: { title: string; value: number; change?: number }) => (
-  <div className="w-1/3 h-36 flex flex-col justify-between bg-white rounded-xl p-4">
+  <div className="w-1/3 max-md:w-1/2 h-36 flex flex-col justify-between bg-white rounded-xl p-4">
     <div className="w-full flex flex-col gap-1">
       <div className="text font-medium">{title}</div>
       <div className="text-3xl font-semibold">{value}</div>

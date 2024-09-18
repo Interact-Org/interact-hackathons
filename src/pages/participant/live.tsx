@@ -88,8 +88,8 @@ const Live = () => {
                   </div>
                   {currentRound ? (
                     <div className="w-fit flex flex-col">
-                      <div className="w-fit text-lg md:text-4xl lg:text-9xl font-bold gradient-text-2">
-                        Round {currentRound.index + 1} <span className="text-black text-4xl">is Live!</span>
+                      <div className="w-fit text-xl md:text-4xl lg:text-9xl font-bold gradient-text-2">
+                        Round {currentRound.index + 1} <span className="text-black text-4xl max-md:text-xl">is Live!</span>
                       </div>
                       <div className="w-fit font-semibold gradient-text-2 text-2xl mt-4">
                         {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.judgingEndTime)) ? (

@@ -22,7 +22,7 @@ export const ProjectDetails = ({ project }: { project: Project | undefined }) =>
             ))}
           </div>
           <p className="text-sm md:text-base">{project.description}</p>
-          <div className="flex items-center gap-2 ">
+          <div className="flex items-center gap-2 flex-wrap">
             {project.links?.map((link, index) => (
               <>
                 <Link href={link} target="_blank">
