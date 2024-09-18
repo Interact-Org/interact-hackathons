@@ -10,6 +10,7 @@ import moment from 'moment';
 import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import Slider from 'react-slick';
+import ComparisonScoreBar from './comparison_score_bar';
 
 export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: { teamID: string; currentRound: HackathonRound | null }) {
   const [analyticsData, setAnalyticsData] = useState({
@@ -52,8 +53,8 @@ export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: 
   }, []);
 
   return (
-    <div className="w-full flex flex-col gap-8">
-      <div className="w-full flex gap-8">
+    <div className="w-full flex flex-col gap-6">
+      <div className="w-full flex gap-6">
         <AnalyticsCard
           title="Github Commits"
           value={analyticsData.totalGithubCommits}
@@ -64,11 +65,13 @@ export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: 
           value={analyticsData.totalFigmaHistories}
           change={analyticsData.figmaHistoriesPercentageChange == 0 ? undefined : analyticsData.figmaHistoriesPercentageChange}
         />
-        <div className="w-1/3 h-36 bg-white rounded-xl"></div>
+        <div className="w-1/3 h-36 bg-white rounded-xl p-4">
+          <ComparisonScoreBar max={analyticsData.maxActivityCount} min={analyticsData.minActivityCount} score={analyticsData.totalActivityCount} />
+        </div>
       </div>
-      <div className="w-full flex gap-8">
+      <div className="w-full flex gap-6">
         <GraphCarousel currentRound={currentRound} />
-        <div className="w-1/3 flex flex-col gap-8">
+        <div className="w-1/3 flex flex-col gap-6">
           <div className="w-full h-1/2 bg-white rounded-xl p-3">
             <div className="text font-medium">Track Prize</div>
             <div className="text-3xl font-semibold">{analyticsData.trackPrize}</div>

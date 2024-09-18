@@ -1,4 +1,3 @@
-import { AvatarBox } from '@/components/common/avatar_box';
 import { Status } from '@/pages/admin/live';
 import { UsersThree } from '@phosphor-icons/react';
 import { PencilRuler } from 'lucide-react';
@@ -14,6 +13,7 @@ import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import ContributionsGraph from '../analytics/contribution_graph';
+import ComparisonScoreBar from '../analytics/comparison_score_bar';
 
 const TeamDetails = ({ team }: { team: HackathonTeam }) => {
   const [scores, setScores] = useState<{ userID: string; score: number }[]>([]);
@@ -92,7 +92,13 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
                   value={analyticsData.totalFigmaHistories}
                   change={analyticsData.figmaHistoriesPercentageChange == 0 ? undefined : analyticsData.figmaHistoriesPercentageChange}
                 />
-                <div className="w-1/3 h-36 bg-white rounded-xl"></div>
+                <div className="w-1/3 h-36 bg-white rounded-xl p-4">
+                  <ComparisonScoreBar
+                    max={analyticsData.maxActivityCount}
+                    min={analyticsData.minActivityCount}
+                    score={analyticsData.totalActivityCount}
+                  />
+                </div>
               </div>
             </div>
             <div className="w-full flex flex-col gap-4 pb-3">
@@ -155,7 +161,7 @@ function MemberCard({ membership, score }: { membership: HackathonTeamMembership
 export const AnalyticsCard = ({ title, value, change }: { title: string; value: number; change?: number }) => (
   <div className="w-1/3 h-36 flex flex-col justify-between bg-white rounded-xl p-4">
     <div className="w-full flex flex-col gap-1">
-      <div className="text font-medium">{title}</div>
+      <div className="font-medium">{title}</div>
       <div className="text-3xl font-semibold">{value}</div>
     </div>
     {change && change != 0 && (
