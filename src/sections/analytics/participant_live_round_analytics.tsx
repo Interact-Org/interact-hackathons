@@ -81,7 +81,7 @@ const GraphCarousel = ({ currentRound }: { currentRound: HackathonRound | null }
           <TimeGraphWrapper title={'Time Till Judging'} time1={moment(currentRound?.startTime)} time2={moment(currentRound?.judgingStartTime)} />
         )}
 
-        <TimeGraphWrapper title={'Time Till Next Round'} time1={moment(currentRound?.startTime)} time2={moment(currentRound?.endTime)} />
+        <TimeGraphWrapper title={'Time Till Round Ends'} time1={moment(currentRound?.startTime)} time2={moment(currentRound?.endTime)} />
       </Slider>
     </div>
   );

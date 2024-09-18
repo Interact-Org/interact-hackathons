@@ -5,7 +5,7 @@ import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import TeamSearchFilters from '@/components/team_search_filters';
-import AdminLiveRoundAnalytics from '@/sections/analytics/admin_live_round_analytics copy';
+import AdminLiveRoundAnalytics from '@/sections/analytics/admin_live_round_analytics';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { useSelector } from 'react-redux';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
@@ -33,8 +33,7 @@ const Index = () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
-      const round = res.data.round;
-      if (!round) window.location.replace('/admin/ended');
+      setCurrentRound(res.data.round);
     } else {
       if (res.data.message) Toaster.error(res.data.message);
       else Toaster.error(SERVER_ERROR);
@@ -113,7 +112,7 @@ const Index = () => {
         <div className="w-[95%] mx-auto h-full flex flex-col gap-2 md:gap-4 lg:gap-8">
           <div className="--meta-info-container  w-full h-fit py-4">
             <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">
-              {currentRound && (
+              {currentRound ? (
                 <section className="--heading w-full md:w-1/2 h-full text-3xl md:text-4xl lg:text-6xl font-bold lg:leading-[4.5rem]">
                   <h1
                     style={{
@@ -140,6 +139,18 @@ const Index = () => {
                   {/* <div className="w-full flex items-center gap-4 mt-4">
                     <EditDetailsBtn rounds={rounds} />
                   </div> */}
+                </section>
+              ) : (
+                <section className="--heading w-full md:w-1/2 h-full text-3xl md:text-4xl lg:text-6xl font-bold lg:leading-[4.5rem]">
+                  <h1
+                    style={{
+                      background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  >
+                    All Rounds have ended.
+                  </h1>
                 </section>
               )}
 

@@ -65,7 +65,7 @@ export default function AdminLiveRoundAnalytics({ round }: { round: HackathonRou
         </span> */}
       </AnalyticBox>
       <AnalyticBox className="hidden md:block">
-        <div className="text-sm font-semibold text-primary_btn">Round {(round?.index || 0) + 1} is Live!</div>
+        <div className="text-sm font-semibold text-primary_btn">{round ? `Round ${(round?.index || 0) + 1}` : 'All rounds have ended.'} is Live!</div>
       </AnalyticBox>
       <AnalyticBox className="flex flex-col gap-5 justify-between">
         <div className="flex items-start justify-between">
@@ -95,7 +95,7 @@ export default function AdminLiveRoundAnalytics({ round }: { round: HackathonRou
           <p>{analyticsData.total_teams.trend}</p>
         </span> */}
       </AnalyticBox>
-      <TimeProgressGraph time1={moment(round?.startTime)} time2={moment(round?.endTime)} height={130} className="hidden md:block" />
+      {round && <TimeProgressGraph time1={moment(round?.startTime)} time2={moment(round?.endTime)} height={130} className="hidden md:block" />}
     </div>
   );
 }

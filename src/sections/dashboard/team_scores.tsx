@@ -227,7 +227,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
               onChange={e => handleInputChange('overallScore', e.target.value)}
             />
           ) : (
-            <h1 className="text-3xl font-semibold">
+            <h1 className="flex-center gap-2 text-3xl font-semibold">
               <span className="hidden md:block">:</span> {inputScores['overallScore'] || ''}
             </h1>
           )}
