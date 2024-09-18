@@ -12,13 +12,36 @@ import { SERVER_ERROR } from '@/config/errors';
 import Slider from 'react-slick';
 
 export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: { teamID: string; currentRound: HackathonRound | null }) {
+  const [analyticsData, setAnalyticsData] = useState({
+    figmaHistoriesPercentageChange: 0,
+    githubCommitPercentageChange: 0,
+    maxActivityCount: 0,
+    minActivityCount: 0,
+    teamsLeftInTrack: 0,
+    totalActivityCount: 0,
+    totalFigmaHistories: 0,
+    totalGithubCommits: 0,
+    trackPrize: 0,
+  });
+
   const hackathon = useSelector(currentHackathonSelector);
 
   useEffect(() => {
     const fetchAnalyticsData = async () => {
       const res = await getHandler(`/hackathons/${hackathon.id}/participants/analytics/${teamID}/live`);
       if (res.statusCode == 200) {
-        console.log(res.data);
+        const data = res.data;
+        setAnalyticsData({
+          figmaHistoriesPercentageChange: data.figmaHistoriesPercentageChange || 0,
+          githubCommitPercentageChange: data.githubCommitPercentageChange || 0,
+          maxActivityCount: data.maxActivityCount || 0,
+          minActivityCount: data.minActivityCount || 0,
+          teamsLeftInTrack: data.teamsLeftInTrack || 0,
+          totalActivityCount: data.totalActivityCount || 0,
+          totalFigmaHistories: data.totalFigmaHistories || 0,
+          totalGithubCommits: data.totalGithubCommits || 0,
+          trackPrize: data.trackPrize || 0,
+        });
       } else {
         if (res.data.message) Toaster.error(res.data.message);
         else Toaster.error(SERVER_ERROR);
@@ -31,15 +54,29 @@ export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: 
   return (
     <div className="w-full flex flex-col gap-8">
       <div className="w-full flex gap-8">
-        <div className="w-1/3 h-40 bg-white rounded-xl"></div>
-        <div className="w-1/3 h-40 bg-white rounded-xl"></div>
-        <div className="w-1/3 h-40 bg-white rounded-xl"></div>
+        <AnalyticsCard
+          title="Github Commits"
+          value={analyticsData.totalGithubCommits}
+          change={analyticsData.githubCommitPercentageChange == 0 ? undefined : analyticsData.githubCommitPercentageChange}
+        />
+        <AnalyticsCard
+          title="Figma Activity"
+          value={analyticsData.totalFigmaHistories}
+          change={analyticsData.figmaHistoriesPercentageChange == 0 ? undefined : analyticsData.figmaHistoriesPercentageChange}
+        />
+        <div className="w-1/3 h-36 bg-white rounded-xl"></div>
       </div>
       <div className="w-full flex gap-8">
         <GraphCarousel currentRound={currentRound} />
         <div className="w-1/3 flex flex-col gap-8">
-          <div className="w-full h-1/2 bg-white rounded-xl"></div>
-          <div className="w-full h-1/2 bg-white rounded-xl"></div>
+          <div className="w-full h-1/2 bg-white rounded-xl p-3">
+            <div className="text font-medium">Track Prize</div>
+            <div className="text-3xl font-semibold">{analyticsData.trackPrize}</div>
+          </div>
+          <div className="w-full h-1/2 bg-white rounded-xl p-3">
+            <div className="text font-medium">Teams Left</div>
+            <div className="text-3xl font-semibold">{analyticsData.teamsLeftInTrack}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -86,3 +123,17 @@ const GraphCarousel = ({ currentRound }: { currentRound: HackathonRound | null }
     </div>
   );
 };
+
+export const AnalyticsCard = ({ title, value, change }: { title: string; value: number; change?: number }) => (
+  <div className="w-1/3 h-36 flex flex-col justify-between bg-white rounded-xl p-4">
+    <div className="w-full flex flex-col gap-1">
+      <div className="text font-medium">{title}</div>
+      <div className="text-3xl font-semibold">{value}</div>
+    </div>
+    {change && change != 0 && (
+      <div className={`${change > 0 ? 'text-priority_low' : 'text-priority_high'} text-xs`}>{`${change}% ${
+        change > 0 ? 'increase' : 'decrease'
+      }`}</div>
+    )}
+  </div>
+);
