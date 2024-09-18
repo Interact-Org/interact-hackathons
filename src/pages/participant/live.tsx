@@ -86,7 +86,7 @@ const Live = () => {
                   <div className="font-bold">
                     <h4 className="gradient-text-3 text-7xl mb-2">Team {team ? team.title : 'Formation'}</h4>
                   </div>
-                  {currentRound && (
+                  {currentRound ? (
                     <div className="w-fit flex flex-col">
                       <div className="w-fit text-lg md:text-4xl lg:text-9xl font-bold gradient-text-2">
                         Round {currentRound.index + 1} <span className="text-black text-4xl">is Live!</span>
@@ -100,6 +100,10 @@ const Live = () => {
                           )
                         )}
                       </div>
+                    </div>
+                  ) : (
+                    <div className="w-fit flex flex-col">
+                      <div className="w-fit text-lg md:text-4xl lg:text-9xl font-bold gradient-text-2">All Rounds have ended.</div>
                     </div>
                   )}
                 </div>

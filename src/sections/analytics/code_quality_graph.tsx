@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Bar, BarChart, XAxis } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { GithubRepo, HackathonTeam } from '@/types';
+import { GithubRepo } from '@/types';
 import moment from 'moment';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
@@ -21,7 +21,6 @@ type MetricScore = {
 
 const convertRepoMetricsToArray = (repo: GithubRepo): MetricScore[] => {
   return Object.entries(repo).reduce<MetricScore[]>((acc, [key, value]) => {
-    // Skip non-metric properties like repoName and repoLink
     if (typeof value === 'number') {
       acc.push({ metric: key, score: value });
     }
@@ -30,12 +29,22 @@ const convertRepoMetricsToArray = (repo: GithubRepo): MetricScore[] => {
   }, []);
 };
 
-const chartConfig = {
-  repo: {
-    label: 'Github Repo',
-    color: '#10b981',
-  },
-} satisfies ChartConfig;
+const getColorByIndex = (index: number): string => {
+  const colors = [
+    '#FF5733', // Red-Orange
+    '#33FF57', // Green
+    '#3357FF', // Blue
+    '#FF33A1', // Pink
+    '#FFBD33', // Yellow-Orange
+    '#33FFF5', // Cyan
+    '#A133FF', // Purple
+    '#FF6F33', // Light Red-Orange
+    '#33FFBD', // Light Green
+    '#3338FF', // Deep Blue
+  ];
+
+  return colors[index % colors.length];
+};
 
 const CodeQualityGraph = ({ teamID }: { teamID: string }) => {
   const [graphIndex, setGraphIndex] = useState(-1);
@@ -46,6 +55,16 @@ const CodeQualityGraph = ({ teamID }: { teamID: string }) => {
   const chartData = useMemo(() => reposData[graphIndex], [graphIndex, reposData]);
 
   const hackathon = useSelector(currentHackathonSelector);
+
+  const chartConfig = useMemo(
+    () => ({
+      repo: {
+        label: githubRepos[graphIndex]?.repoName || 'Github Repo',
+        color: getColorByIndex(graphIndex),
+      },
+    }),
+    [githubRepos, graphIndex]
+  ) satisfies ChartConfig;
 
   useEffect(() => {
     const fetchRepositories = async () => {
