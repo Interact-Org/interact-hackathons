@@ -9,15 +9,11 @@ import getIcon from '@/utils/funcs/get_icon';
 
 interface OverviewComponentProps {
   project: Project | null;
+  setTeam: React.Dispatch<React.SetStateAction<HackathonTeam | null>>;
 }
 
-const OverviewComponent: React.FC<OverviewComponentProps> = ({ project }) => {
+const OverviewComponent: React.FC<OverviewComponentProps> = ({ project, setTeam }) => {
   const [clickedOnProject, setClickedOnProject] = useState(false);
-  const [team, setTeam] = useState<HackathonTeam>(initialHackathonTeam);
-
-  interface LanguageColors {
-    [key: string]: string;
-  }
 
   const getTagColor = (tag: string): string => {
     const lowerCaseTag = tag.toLowerCase();

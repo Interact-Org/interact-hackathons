@@ -7,9 +7,10 @@ import { HackathonTeam, Project } from '@/types';
 interface ProjectViewProps {
   project: Project | null;
   team: HackathonTeam | null;
+  setTeam: React.Dispatch<React.SetStateAction<HackathonTeam | null>>;
 }
 
-const ProjectView: React.FC<ProjectViewProps> = ({ project, team }) => {
+const ProjectView: React.FC<ProjectViewProps> = ({ project, team, setTeam }) => {
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
@@ -34,7 +35,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, team }) => {
         <TabButton title="Figma" />
       </div>
       <div className="mt-4">
-        {activeTab === 'overview' && <OverviewComponent project={project} />}
+        {activeTab === 'overview' && <OverviewComponent project={project} setTeam={setTeam} />}
         {activeTab === 'repositories' && team && <RepositoriesComponent team={team} />}
         {activeTab === 'figma' && team && <FigmaComponent team={team} />}
       </div>

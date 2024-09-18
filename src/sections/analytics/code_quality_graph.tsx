@@ -90,9 +90,10 @@ const CodeQualityGraph = ({ teamID }: { teamID: string }) => {
     <Loader />
   ) : (
     <AnalyticBox className="hidden md:block">
-      <span className="flex items-center text-lg font-medium justify-between mb-4">
-        <h1 className="uppercase text-black/70">Connected Repositories</h1>
-      </span>
+      <div className="mb-4">
+        <h1 className="text-lg font-semibold uppercase">Connected Repositories</h1>
+        <span className="text-xs text-muted-foreground">*Scores are calculated 15-30 minutes before each judging round starts.</span>
+      </div>
       {githubRepos && githubRepos.length > 0 ? (
         <div className="flex">
           {githubRepos.map((repo, index) => {
@@ -107,12 +108,12 @@ const CodeQualityGraph = ({ teamID }: { teamID: string }) => {
                 onClick={() => setGraphIndex(index)}
               >
                 <div className="w-full flex items-center justify-between">
-                  <span className="text-lg font-bold leading-none sm:text-3xl">{repo.repoName}</span>
+                  <span className="text-lg font-semibold leading-none sm:text-3xl">{repo.repoName}</span>
                   <Link target="_blank" href={repo.repoLink}>
                     <ArrowUpRight />
                   </Link>
                 </div>
-                <span className="text-xs text-muted-foreground">Last Updated {moment(repo.updatedAt).fromNow()}</span>
+                <span className="text-xs text-muted-foreground">Last Synced {moment(repo.updatedAt).fromNow()}</span>
               </button>
             );
           })}

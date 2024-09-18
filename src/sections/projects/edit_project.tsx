@@ -19,7 +19,7 @@ import CoverPic from '@/components/utils/new_cover';
 interface Props {
   projectToEdit: Project;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
-  setTeam: React.Dispatch<React.SetStateAction<HackathonTeam>>;
+  setTeam: React.Dispatch<React.SetStateAction<HackathonTeam | null>>;
 }
 
 const EditProject = ({ projectToEdit, setShow, setTeam }: Props) => {
@@ -78,7 +78,7 @@ const EditProject = ({ projectToEdit, setShow, setTeam }: Props) => {
       newProject.user = user;
 
       setTeam(prev => {
-        return { ...prev, project: newProject };
+        return { ...(prev as HackathonTeam), project: newProject };
       });
       Toaster.stopLoad(toaster, 'Project Edited', 1);
       setTagline('');

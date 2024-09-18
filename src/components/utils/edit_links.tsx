@@ -29,10 +29,7 @@ const Links = ({ links, showTitle = false, setLinks, maxLinks = 5, title = 'Link
       const link = newLinkRef.current;
 
       if (isURL(link)) {
-        if (link.startsWith('https://www.')) setLinks(prev => [...prev, link]);
-        else if (link.startsWith('https://')) setLinks(prev => [...prev, link.replace('https://', 'https://www.')]);
-        else if (link.startsWith('www.')) setLinks(prev => [...prev, 'https://' + link]);
-        else setLinks(prev => [...prev, 'https://www.' + link]);
+        setLinks(prev => [...prev, link]);
         setNewLink('');
       }
     };
@@ -44,10 +41,7 @@ const Links = ({ links, showTitle = false, setLinks, maxLinks = 5, title = 'Link
       return;
     }
     if (isURL(newLink)) {
-      if (newLink.startsWith('https://www.')) setLinks(prev => [...prev, newLink]);
-      else if (newLink.startsWith('https://')) setLinks(prev => [...prev, newLink.replace('https://', 'https://www.')]);
-      else if (newLink.startsWith('www.')) setLinks(prev => [...prev, 'https://' + newLink]);
-      else setLinks(prev => [...prev, 'https://www.' + newLink]);
+      setLinks(prev => [...prev, newLink]);
       setNewLink('');
     } else Toaster.error('Enter a valid URL');
   };
@@ -55,12 +49,10 @@ const Links = ({ links, showTitle = false, setLinks, maxLinks = 5, title = 'Link
   return (
     <>
       <div className="w-full flex flex-col gap-2">
-        {showTitle ? (
+        {showTitle && (
           <div className="w-full text-sm font-medium">
             {title} ({links.length + '/' + maxLinks})
           </div>
-        ) : (
-          <></>
         )}
         <div className="w-full flex flex-col gap-2">
           {links && links.length > 0 ? (

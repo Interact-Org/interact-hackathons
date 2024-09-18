@@ -133,7 +133,7 @@ const Live = () => {
               {index == 1 && (
                 <>
                   {team?.projectID && project ? (
-                    <ProjectView project={project} team={team} />
+                    <ProjectView project={project} team={team} setTeam={setTeam} />
                   ) : (
                     <>
                       <div className="w-full max-w-md mx-auto bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105">
