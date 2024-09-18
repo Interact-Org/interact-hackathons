@@ -66,7 +66,7 @@ const OverviewComponent: React.FC<OverviewComponentProps> = ({ project, setTeam 
         ))}
       </div>
       <div className="flex flex-wrap gap-4 mt-8">
-        {project?.links.map((link, index) => {
+        {project?.links?.map((link, index) => {
           return (
             <Link
               href={link}
