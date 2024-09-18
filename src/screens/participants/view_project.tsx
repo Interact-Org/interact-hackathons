@@ -35,7 +35,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, team, setTeam }) => 
         <TabButton title="Figma" />
       </div>
       <div className="mt-4">
-        {activeTab === 'overview' && <OverviewComponent project={project} setTeam={setTeam} />}
+        {activeTab === 'overview' && project && <OverviewComponent project={project} setTeam={setTeam} />}
         {activeTab === 'repositories' && team && <RepositoriesComponent team={team} />}
         {activeTab === 'figma' && team && <FigmaComponent team={team} />}
       </div>
