@@ -93,6 +93,7 @@ export const initialUser: User = {
   isVerified: false,
   isOrganization: false,
   githubUsername: '',
+  figmaUsername: '',
   organization: null,
   createdAt: '',
 };
