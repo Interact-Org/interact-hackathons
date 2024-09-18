@@ -80,6 +80,7 @@ const FigmaComponent: React.FC<FigmaComponentProps> = ({ team }) => {
           }
         } else if (status && status == '0') {
           if (message) {
+            Toaster.error(message);
             delete query.message;
           }
         }

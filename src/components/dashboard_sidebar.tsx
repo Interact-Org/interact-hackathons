@@ -44,7 +44,7 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
   const role = getHackathonRole();
 
   return (
-    <div className="w-[12%] md:w-[15%] sticky top-8 left-0 bg-white h-base px-2 md:p-3 md:flex flex-col justify-between">
+    <div className="w-[12%] md:w-[15%] sticky top-16 left-0 bg-white h-base px-2 md:p-3 md:flex flex-col justify-between">
       <div className="w-full">
         <section className="--team-details hidden md:flex flex-col gap-2 pb-4 border-b-[2px] border-primary_text">
           <h1 className="text-2xl font-semibold">{team.title}</h1>

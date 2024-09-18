@@ -154,11 +154,7 @@ const Index = () => {
                 </section>
               )}
 
-              <aside className="--analytics w-full md:w-1/2 h-full">
-                <div className="w-full h-full">
-                  <AdminLiveRoundAnalytics round={currentRound} />
-                </div>
-              </aside>
+              <AdminLiveRoundAnalytics round={currentRound} />
             </div>
           </div>
           <div className="--team-data-box flex flex-col gap-4">

@@ -7,6 +7,7 @@ import { HackathonTeam, HackathonTeamMembership, User } from '@/types';
 import Image from 'next/image';
 
 import React from 'react';
+import CodeQualityGraph from '../analytics/code_quality_graph';
 
 const TeamDetails = ({ team }: { team: HackathonTeam }) => {
   return (
@@ -29,12 +30,33 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
         </div>
         <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
       </section>
-      <h1 className="text-2xl md:text-4xl font-semibold mb-4">Team Details</h1>
-      <div className="w-full mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-4">
-        {team.memberships?.map(membership => (
-          <MemberCard key={membership.id} membership={membership} />
-        ))}
-      </div>
+
+      {team.id && (
+        <div className="w-full flex gap-4">
+          <div className="w-2/3 flex flex-col gap-4">
+            <div className="w-full flex flex-col gap-4">
+              <div className="w-full flex gap-4">
+                <div className="w-1/3 h-40 bg-white rounded-xl"></div>
+                <div className="w-1/3 h-40 bg-white rounded-xl"></div>
+                <div className="w-1/3 h-40 bg-white rounded-xl"></div>
+              </div>
+            </div>
+            <div className="w-full flex flex-col gap-4">
+              <div className="w-full flex gap-4">
+                <div className="w-1/3 h-40 bg-white rounded-xl"></div>
+                <div className="w-1/3 h-40 bg-white rounded-xl"></div>
+                <div className="w-1/3 h-40 bg-white rounded-xl"></div>
+              </div>
+            </div>
+            <CodeQualityGraph teamID={team.id} />
+          </div>
+          <div className="w-1/3 flex flex-col gap-4">
+            {team.memberships?.map(membership => (
+              <MemberCard key={membership.id} membership={membership} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -44,7 +66,7 @@ export default TeamDetails;
 function MemberCard({ membership }: { membership: HackathonTeamMembership }) {
   const user = membership.user;
   return (
-    <div className="w-full bg-white rounded-md border-[2px] border-[#dedede] flex flex-col items-center p-4 gap-4">
+    <div className="w-full bg-white rounded-lg border-[2px] border-[#dedede] flex items-center p-4 gap-4">
       <Image
         crossOrigin="anonymous"
         width={50}
@@ -53,10 +75,13 @@ function MemberCard({ membership }: { membership: HackathonTeamMembership }) {
         src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
         placeholder="blur"
         blurDataURL={user.profilePicBlurHash || 'no-hash'}
-        className="w-32 h-32 rounded-full cursor-default shadow-md"
+        className="w-20 h-20 rounded-full cursor-default shadow-md"
       />
-      <div className="text-center">
-        <h1 className="text-lg md:text-xl lg:text-2xl font-semibold">{user.name}</h1>
+      <div className="">
+        <div className="flex-center flex-wrap gap-1">
+          <h1 className="text-lg md:text-xl lg:text-2xl font-semibold">{user.name}</h1>
+          <h1 className="text-xs">@{user.username}</h1>
+        </div>
         <p className="text-xs md:text-sm lg:text-base">{membership.role}</p>
       </div>
       {/* <div className="flex items-center gap-2 w-full">

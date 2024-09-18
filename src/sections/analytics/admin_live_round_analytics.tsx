@@ -95,7 +95,7 @@ export default function AdminLiveRoundAnalytics({ round }: { round: HackathonRou
           <p>{analyticsData.total_teams.trend}</p>
         </span> */}
       </AnalyticBox>
-      {round && <TimeProgressGraph time1={moment(round?.startTime)} time2={moment(round?.endTime)} height={130} className="hidden md:block" />}
+      {round && <TimeProgressGraph time1={moment(round?.startTime)} time2={moment(round?.endTime)} innerRadius={70} outerRadius={100} height={140} />}
     </div>
   );
 }

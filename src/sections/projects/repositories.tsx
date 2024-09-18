@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import isURL from 'validator/lib/isURL';
 import Loader from '@/components/common/loader';
 import Link from 'next/link';
+import Toaster from '@/utils/toaster';
 
 interface RepositoriesComponentProps {
   team: HackathonTeam;
@@ -84,6 +85,7 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
           if (username && username != '') dispatch(setGithubUsername(username));
         } else if (status && status == '0') {
           if (message) {
+            Toaster.error(message);
             delete query.message;
           }
         }
