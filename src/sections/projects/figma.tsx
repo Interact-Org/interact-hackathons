@@ -14,6 +14,8 @@ import { useMemo } from 'react';
 import isURL from 'validator/lib/isURL';
 import Link from 'next/link';
 import Toaster from '@/utils/toaster';
+import deleteHandler from '@/handlers/delete_handler';
+import { Trash } from '@phosphor-icons/react';
 
 interface FigmaComponentProps {
   team: HackathonTeam;
@@ -103,6 +105,22 @@ const FigmaComponent: React.FC<FigmaComponentProps> = ({ team }) => {
     }
   };
 
+  const handleFigmaDelete = async (repo: string) => {
+    try {
+      const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project/figma/${repo}?fileID=${repo}`;
+      const res = await deleteHandler(URL, { projectID: team.projectID });
+      if (res.statusCode == 200) {
+        setFigmaFiles(figmaFiles.filter(r => r.id != repo));
+        Toaster.success('Repository deleted successfully');
+      } else {
+        console.log(res.data);
+        Toaster.error('Failed to delete repository  ' + res.data.message);
+      }
+    } catch (err) {
+      setError('Failed to delete repository');
+    }
+  };
+
   useEffect(() => {
     const fetchFigmaLinks = async () => {
       try {
@@ -153,6 +171,7 @@ const FigmaComponent: React.FC<FigmaComponentProps> = ({ team }) => {
                 >
                   <span className="text-blue-500 dark:text-blue-400 font-semibold">{file.fileURL}</span>
                 </Link>
+                <Trash className="h-5 w-5 ml-2 text-red-500 cursor-pointer" onClick={() => handleFigmaDelete(file.id)} />
               </li>
             ))}
           </ul>
