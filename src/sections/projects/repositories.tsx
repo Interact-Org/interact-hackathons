@@ -11,6 +11,8 @@ import isURL from 'validator/lib/isURL';
 import Loader from '@/components/common/loader';
 import Link from 'next/link';
 import Toaster from '@/utils/toaster';
+import { Trash } from '@phosphor-icons/react';
+import deleteHandler from '@/handlers/delete_handler';
 
 interface RepositoriesComponentProps {
   team: HackathonTeam;
@@ -70,6 +72,21 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
     }
   };
 
+  const handleRepoDelete = async (repo: string) => {
+    try {
+      const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project/github/${repo}?repoID=${repo}`;
+      const res = await deleteHandler(URL, { project_id: team.projectID });
+      if (res.statusCode == 200) {
+        setGithubRepos(githubRepos.filter(r => r.id != repo));
+        Toaster.success('Repository deleted successfully');
+      } else {
+        Toaster.error('Failed to delete repository  ' + res.data.message);
+      }
+    } catch (err) {
+      setError('Failed to delete repository');
+    }
+  };
+
   const router = useRouter();
 
   useEffect(() => {
@@ -116,15 +133,16 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
       <h2 className="text-2xl font-bold mb-4">Github Repositories</h2>
       <ul className="list-disc space-y-2">
         {githubRepos.map((repo, index) => (
-          <li key={index} className="flex items-center">
+          <li key={index} className="flex items-center w-96">
             <Link
               href={repo.repoLink}
               target="_blank"
               key={index}
-              className="w-fit h-8 py-2 px-3 rounded-lg flex items-center gap-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 shadow-sm"
+              className="w-96 h-8 py-2 px-3 rounded-lg flex items-center gap-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 shadow-sm"
             >
               <span className="text-blue-500 dark:text-blue-400 font-semibold">{repo.repoName}</span>
             </Link>
+            <Trash className="h-5 w-5 ml-2 text-red-500 cursor-pointer" onClick={() => handleRepoDelete(repo.id)} />
           </li>
         ))}
       </ul>
