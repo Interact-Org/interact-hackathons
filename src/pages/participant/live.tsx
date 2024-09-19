@@ -14,6 +14,7 @@ import moment from 'moment';
 import ParticipantLiveRoundAnalytics from '@/sections/analytics/participant_live_round_analytics';
 import TeamEliminated from '@/screens/participants/team_eliminated';
 import ProjectView from '@/screens/participants/view_project';
+import Loader from '@/components/common/loader';
 
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -21,6 +22,7 @@ const Live = () => {
   const [nextRound, setNextRound] = useState<HackathonRound | null>(null);
   const [index, setIndex] = useState(0);
   const [clickedOnProject, setClickedOnProject] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const hackathon = useSelector(currentHackathonSelector);
 
@@ -43,6 +45,7 @@ const Live = () => {
       const team = res.data.team;
       if (!team) Toaster.error('Team Not Found');
       else setTeam(team);
+      setLoading(false);
     } else {
       if (res.data.message) Toaster.error(res.data.message);
       else Toaster.error(SERVER_ERROR);
@@ -156,6 +159,10 @@ const Live = () => {
             </div>
           </div>
         )
+      ) : loading ? (
+        <div className="w-full h-base flex-center">
+          <Loader />
+        </div>
       ) : (
         <div className="text-4xl font-medium mx-auto py-16 text-primary_danger">Team not registered for this Hackathon.</div>
       )}

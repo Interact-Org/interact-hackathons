@@ -4,7 +4,6 @@ import { PencilRuler } from 'lucide-react';
 import { USER_PROFILE_PIC_URL } from '@/config/routes';
 import { HackathonTeam, HackathonTeamMembership, User } from '@/types';
 import Image from 'next/image';
-
 import React, { useEffect, useState } from 'react';
 import CodeQualityGraph from '../analytics/code_quality_graph';
 import { useSelector } from 'react-redux';
@@ -70,9 +69,6 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
             <UsersThree size={24} />
             <span className="text-primary_black">{team.memberships?.length}</span>
           </h2>
-          {/* <h2 className="text-base font-semibold text-primary_text flex items-center gap-1">
-              <Trophy size={20} /> <span className="text-primary_black">4500</span>
-              </h2> */}
         </div>
         <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
       </section>
@@ -151,16 +147,6 @@ function MemberCard({ membership, score }: { membership: HackathonTeamMembership
         <p className="text-xs md:text-sm lg:text-base">{membership.role}</p>
         {score != undefined && <p className="text-xs mt-2">Team Contribution Score: {score}</p>}
       </div>
-      {/* <div className="flex items-center gap-2 w-full">
-        <button className=" w-1/2 p-2 rounded-md bg-black text-white flex items-center justify-center gap-1 font-semibold">
-          <GithubLogo size={20} weight="fill" />
-          <p>Github</p>
-        </button>
-        <button className=" w-1/2 p-2 rounded-md bg-black text-white flex items-center justify-center gap-1 font-semibold">
-          <FigmaLogo size={20} weight="fill" />
-          <p>Figma</p>
-        </button>
-      </div> */}
     </div>
   );
 }
@@ -174,7 +160,7 @@ export const AnalyticsCard = ({ title, value, change }: { title: string; value: 
     {change && change != 0 && (
       <div className={`${change > 0 ? 'text-priority_low' : 'text-priority_high'} text-xs`}>{`${change}% ${
         change > 0 ? 'increase' : 'decrease'
-      }`}</div>
+      } from last round`}</div>
     )}
   </div>
 );

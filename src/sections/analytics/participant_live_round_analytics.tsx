@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { AnalyticBox } from './team_overview';
-import { UsersFour, UsersThree } from '@phosphor-icons/react';
 import getHandler from '@/handlers/get_handler';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
@@ -139,7 +137,7 @@ export const AnalyticsCard = ({ title, value, change }: { title: string; value: 
     {change && change != 0 && (
       <div className={`${change > 0 ? 'text-priority_low' : 'text-priority_high'} text-xs`}>{`${change}% ${
         change > 0 ? 'increase' : 'decrease'
-      }`}</div>
+      } from last round`}</div>
     )}
   </div>
 );
