@@ -53,8 +53,8 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
       }
     };
 
-    fetchAnalyticsData();
-  }, []);
+    if (team.id != '') fetchAnalyticsData();
+  }, [team]);
 
   return (
     <div className="w-full p-4">
