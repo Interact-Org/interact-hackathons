@@ -122,7 +122,7 @@ const CodeQualityGraph = ({ teamID }: { teamID: string }) => {
         <div>No Github Repositories are connected for analytics.</div>
       )}
 
-      {graphIndex != -1 && (
+      {/* {graphIndex != -1 && (
         <ChartContainer config={chartConfig} className="h-fit w-full">
           <BarChart data={chartData}>
             <XAxis dataKey="metric" tickLine={false} tickMargin={10} axisLine={false} angle={-75} />
@@ -130,7 +130,7 @@ const CodeQualityGraph = ({ teamID }: { teamID: string }) => {
             <Bar dataKey="score" fill="var(--color-repo)" radius={4} />
           </BarChart>
         </ChartContainer>
-      )}
+      )} */}
     </AnalyticBox>
   );
 };
