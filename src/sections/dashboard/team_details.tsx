@@ -149,7 +149,7 @@ function MemberCard({ membership, score }: { membership: HackathonTeamMembership
           <h1 className="text-xs">@{user.username}</h1>
         </div>
         <p className="text-xs md:text-sm lg:text-base">{membership.role}</p>
-        {score != undefined && <p className="text-xs mt-2">Team Contribution Score: {score}</p>}
+        {score != undefined && <p className="text-xs mt-2">Team Contribution Score: {score.toFixed(2)}</p>}
       </div>
       {/* <div className="flex items-center gap-2 w-full">
         <button className=" w-1/2 p-2 rounded-md bg-black text-white flex items-center justify-center gap-1 font-semibold">

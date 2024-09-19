@@ -159,7 +159,7 @@ const Team = () => {
                   Team Formation <span className="text-black text-2xl">is Live!</span>
                 </>
               ) : (
-                <span className="text-6xl">Find, Create, and Join Teams Easily and Effortlessly.</span>
+                <span className="text-3xl">Find, Create, and Join Teams Easily and Effortlessly.</span>
               )}
             </div>
             {team && (
