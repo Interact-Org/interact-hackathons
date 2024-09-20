@@ -80,6 +80,9 @@ const OverviewComponent: React.FC<OverviewComponentProps> = ({ project, setTeam 
           );
         })}
       </div>
+      <p className="text-yellow-700 pt-4 rounded-md">
+        *Disclaimer: This project is now private on Interact but will be converted to public once the hackathon ends.
+      </p>
     </div>
   );
 };

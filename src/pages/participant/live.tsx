@@ -106,7 +106,7 @@ const Live = () => {
                     </div>
                   ) : (
                     <div className="w-fit flex flex-col">
-                      <div className="w-fit text-lg md:text-4xl lg:text-9xl font-bold gradient-text-2">All Rounds have ended.</div>
+                      <div className="w-fit text-lg md:text-4xl lg:text-8xl font-bold gradient-text-2">All Rounds have ended.</div>
                     </div>
                   )}
                 </div>
