@@ -41,7 +41,7 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
   }, [track]);
 
   return (
-    <div className="w-full mx-auto  p-3 md:p-6 bg-white rounded-xl shadow-lg transition hover:shadow-xl">
+    <div className="w-full mx-auto  p-3 md:p-6 md:pt-navbar bg-white rounded-xl shadow-lg transition hover:shadow-xl">
       <div className="w-full flex flex-col md:flex-row items-center justify-between">
         {tracks && tracks.length > 0 && (
           <div className="w-full md:w-fit flex items-center gap-2">
