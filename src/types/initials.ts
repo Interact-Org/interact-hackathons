@@ -271,7 +271,9 @@ export const initialAnnouncement: Announcement = {
   taggedUsers: [],
   isOpen: true,
   organizationID: '',
-  organization: initialOrganization,
+  organization: null,
+  hackathonID: '',
+  hackathon: null,
 };
 
 export const initialMessage: Message = {

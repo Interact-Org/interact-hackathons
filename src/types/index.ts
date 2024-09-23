@@ -664,8 +664,10 @@ export interface Poll {
 
 export interface Announcement {
   id: string;
-  organizationID: string;
+  organizationID?: string;
   organization: Organization | null;
+  hackathonID?: string;
+  hackathon: Hackathon | null;
   title: string;
   content: string;
   noLikes: number;
@@ -947,7 +949,7 @@ export interface FigmaVersionHistory {
 }
 
 export interface FigmaFile {
-  id : string;
+  id: string;
   userID: string;
   projectID: string;
   fileURL: string;
