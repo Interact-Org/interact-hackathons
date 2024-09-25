@@ -11,7 +11,7 @@ const BaseWrapper: React.FC<WrapperProps> = ({ children, title = '' }) => {
   return (
     <>
       <Head>
-        <title>{title} | Interact</title>
+        <title>{title}Hackathons | Interact</title>
       </Head>
       <Navbar />
       <div className="w-full flex pt-12 md:pt-navbar bg-gradient">{children}</div>

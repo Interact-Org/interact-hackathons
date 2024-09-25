@@ -1,6 +1,6 @@
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
-import { HackathonTeam } from '@/types';
+import { Announcement, HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
@@ -11,9 +11,11 @@ import moment from 'moment';
 import Loader from '@/components/common/loader';
 import { initialProject } from '@/types/initials';
 import EndOverviewComponent from '@/sections/projects/end_overview';
+import AnnouncementCard from '@/components/announcement_card';
 
-const Live = () => {
+const Ended = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
 
   const hackathon = useSelector(currentHackathonSelector);
@@ -32,6 +34,17 @@ const Live = () => {
     }
   };
 
+  const fetchAnnouncements = async () => {
+    const res = await getHandler(`/hackathons/${hackathon.id}/participants/announcements/`);
+    if (res.statusCode == 200) {
+      setAnnouncements(res.data.announcements);
+      console.log(res.data.announcements);
+    } else {
+      if (res.data.message) Toaster.error(res.data.message);
+      else Toaster.error(SERVER_ERROR);
+    }
+  };
+
   useEffect(() => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
@@ -41,7 +54,10 @@ const Live = () => {
         if (moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
           window.location.replace('/participant/team');
         else if (!hackathon.isEnded) window.location.replace('/participant/live');
-        else getTeam();
+        else {
+          getTeam();
+          fetchAnnouncements();
+        }
       }
     }
   }, []);
@@ -63,6 +79,16 @@ const Live = () => {
             </div>
           </div>
           <EndOverviewComponent project={team.project || initialProject} />
+          {announcements && announcements.length > 0 && (
+            <div className="w-4/5 h-full mx-auto">
+              <div className="text-xl font-semibold mb-2">Announcements</div>
+              {announcements.map(announcement => (
+                <div key={announcement.id} className="pb-2">
+                  <AnnouncementCard announcement={announcement} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       ) : loading ? (
         <div className="w-full h-base flex-center">
@@ -75,4 +101,4 @@ const Live = () => {
   );
 };
 
-export default Live;
+export default Ended;
