@@ -2,11 +2,10 @@ import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import { HackathonRound, HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import TeamSearchFilters from '@/components/team_search_filters';
-import AdminLiveRoundAnalytics from '@/sections/analytics/admin_live_round_analytics';
-import { currentHackathonSelector, markHackathonEnded, setCurrentHackathon } from '@/slices/hackathonSlice';
+import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { useSelector } from 'react-redux';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { ORG_URL } from '@/config/routes';
@@ -17,8 +16,6 @@ import PictureList from '@/components/common/picture_list';
 import { Button } from '@/components/ui/button';
 import NewAnnouncement from '@/sections/new_announcement';
 import ViewAnnouncements from '@/sections/view_announcements';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import postHandler from '@/handlers/post_handler';
 
 const Index = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -87,25 +84,11 @@ const Index = () => {
     else if (!hackathon.isEnded) window.location.replace('/admin/live');
   }, []);
 
-  const role = useMemo(() => getHackathonRole(), []);
-
-  const handleEndHackathon = async () => {
-    const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/end`;
-    const res = await postHandler(URL, { winners: [] });
-    if (res.statusCode == 200) {
-      markHackathonEnded();
-      window.location.assign('/admin/ended');
-    } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
-    }
-  };
-
   return (
     <BaseWrapper>
       {clickedOnNewAnnouncement && <NewAnnouncement setShow={setClickedOnNewAnnouncement} />}
       {clickedOnViewAnnouncement && <ViewAnnouncements setShow={setClickedOnViewAnnouncement} />}
-      <div className="w-full bg-[#E1F1FF] min-h-screen">
+      <div className="w-full bg-[#E1F1FF] min-h-base">
         <div className="w-[95%] mx-auto h-full flex flex-col gap-2 md:gap-4 lg:gap-8">
           <div className="--meta-info-container  w-full h-fit flex flex-col gap-4 py-8">
             <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">

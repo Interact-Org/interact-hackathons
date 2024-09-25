@@ -78,39 +78,46 @@ export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: 
 
   return (
     <Slider {...settings} className="relative">
-      <div className="w-full">
-        <div className="w-full flex gap-6 mb-6">
-          <AnalyticsCard
-            title="Github Commits"
-            value={analyticsData.totalGithubCommits}
-            change={analyticsData.githubCommitPercentageChange == 0 ? undefined : analyticsData.githubCommitPercentageChange}
-          />
-          <AnalyticsCard
-            title="Figma Activity"
-            value={analyticsData.totalFigmaHistories}
-            change={analyticsData.figmaHistoriesPercentageChange == 0 ? undefined : analyticsData.figmaHistoriesPercentageChange}
-          />
-          <div className="w-1/3 max-md:hidden h-36 bg-white rounded-xl p-4">
+      {!hackathon.isEnded && (
+        <div className="w-full">
+          <div className="w-full flex gap-6 mb-6">
+            <AnalyticsCard
+              title="Github Commits"
+              value={analyticsData.totalGithubCommits}
+              change={analyticsData.githubCommitPercentageChange == 0 ? undefined : analyticsData.githubCommitPercentageChange}
+            />
+            <AnalyticsCard
+              title="Figma Activity"
+              value={analyticsData.totalFigmaHistories}
+              change={analyticsData.figmaHistoriesPercentageChange == 0 ? undefined : analyticsData.figmaHistoriesPercentageChange}
+            />
+            <div className="w-1/3 max-md:hidden h-36 bg-white rounded-xl p-4">
+              <ComparisonScoreBar
+                max={analyticsData.maxActivityCount}
+                min={analyticsData.minActivityCount}
+                score={analyticsData.totalActivityCount}
+              />
+            </div>
+          </div>
+          <div className="w-full md:hidden h-36 bg-white rounded-xl p-4 mb-6">
             <ComparisonScoreBar max={analyticsData.maxActivityCount} min={analyticsData.minActivityCount} score={analyticsData.totalActivityCount} />
           </div>
-        </div>
-        <div className="w-full md:hidden h-36 bg-white rounded-xl p-4 mb-6">
-          <ComparisonScoreBar max={analyticsData.maxActivityCount} min={analyticsData.minActivityCount} score={analyticsData.totalActivityCount} />
-        </div>
-        <div className="w-full flex gap-6 mb-2">
-          <GraphCarousel currentRound={currentRound} />
-          <div className="w-1/3 max-md:w-full flex md:flex-col gap-6">
-            <div className="w-full h-1/2 max-md:h-fit bg-white rounded-xl p-3">
-              <div className="text font-medium">Track Prize</div>
-              <div className="text-3xl font-semibold">{analyticsData.trackPrize}</div>
-            </div>
-            <div className="w-full h-1/2 max-md:h-fit bg-white rounded-xl p-3">
-              <div className="text font-medium">Teams Left</div>
-              <div className="text-3xl font-semibold">{analyticsData.teamsLeftInTrack}</div>
+          <div className="w-full flex gap-6 mb-2">
+            <GraphCarousel currentRound={currentRound} />
+            <div className="w-1/3 max-md:w-full flex md:flex-col gap-6">
+              <div className="w-full h-1/2 max-md:h-fit bg-white rounded-xl p-3">
+                <div className="text font-medium">Track Prize</div>
+                <div className="text-3xl font-semibold">{analyticsData.trackPrize}</div>
+              </div>
+              <div className="w-full h-1/2 max-md:h-fit bg-white rounded-xl p-3">
+                <div className="text font-medium">Teams Left</div>
+                <div className="text-3xl font-semibold">{analyticsData.teamsLeftInTrack}</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
+
       {announcements && announcements.length > 0 && (
         <div className="w-full h-full max-h-96 overflow-y-auto pb-12">
           <div className="text-xl font-semibold mb-2">Announcements</div>

@@ -44,7 +44,6 @@ const OverviewComponent: React.FC<OverviewComponentProps> = ({ project, setTeam 
     next: 'bg-black text-white',
     html: 'bg-orange-500 text-white',
     css: 'bg-blue-300 text-white',
-    // Add more languages and colors as needed
   };
 
   return (
@@ -60,7 +59,7 @@ const OverviewComponent: React.FC<OverviewComponentProps> = ({ project, setTeam 
       <h4 className="text-lg md:text-xl mb-2">{project?.description}</h4>
       <div className="flex flex-wrap gap-4 mt-6">
         {project?.tags?.map(tag => (
-          <div key={tag} className={`p-2 rounded-lg ${getTagColor(tag)}`}>
+          <div key={tag} className={`py-2 px-4 rounded-xl ${getTagColor(tag)}`}>
             <p>{tag}</p>
           </div>
         ))}

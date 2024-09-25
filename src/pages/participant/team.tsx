@@ -147,7 +147,7 @@ const Team = () => {
 
   return (
     <BaseWrapper>
-      <div className="w-full min-h-screen py-8 mt-4 md:p-12 flex flex-col md:justify-start gap-8 md:gap-16 font-primary p-8">
+      <div className="w-full min-h-base py-8 mt-4 md:p-12 flex flex-col md:justify-start gap-8 md:gap-16 font-primary p-8">
         <div className="w-full mx-auto flex flex-col md:flex-row gap-4 md:gap-8">
           <div className="w-full md:w-1/2 justify-center items-start flex-col gap-2">
             <div className="font-bold">

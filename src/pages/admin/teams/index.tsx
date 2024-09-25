@@ -82,7 +82,7 @@ const Teams = () => {
 
   return (
     <BaseWrapper>
-      <div className="w-full bg-[#E1F1FF] min-h-screen">
+      <div className="w-full bg-[#E1F1FF] min-h-base">
         <div className="w-[95%] mx-auto h-full flex flex-col gap-8">
           <div className="--meta-info-container  w-full h-fit py-4">
             <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">

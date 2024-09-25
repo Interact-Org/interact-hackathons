@@ -57,7 +57,7 @@ const Index = () => {
   }
   return (
     <BaseWrapper>
-      <div className="w-full bg-[#E1F1FF] min-h-screen">
+      <div className="w-full bg-[#E1F1FF] min-h-base">
         <div className="w-full bg-white h-fit py-2 text-primary_text flex items-center  justify-between px-4">
           <span className="flex flex-col">
             <h1 className="text-xl md:text-2xl font-semibold">Hackathon Dashboard</h1>

@@ -132,7 +132,7 @@ const Index = () => {
     <BaseWrapper>
       {clickedOnNewAnnouncement && <NewAnnouncement setShow={setClickedOnNewAnnouncement} />}
       {clickedOnViewAnnouncement && <ViewAnnouncements setShow={setClickedOnViewAnnouncement} />}
-      <div className="w-full bg-[#E1F1FF] min-h-screen">
+      <div className="w-full bg-[#E1F1FF] min-h-base">
         <div className="w-[95%] mx-auto h-full flex flex-col gap-2 md:gap-4 lg:gap-8">
           <div className="--meta-info-container  w-full h-fit flex flex-col gap-4 py-4">
             <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">
