@@ -1,6 +1,6 @@
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
-import { HackathonRound, HackathonTeam } from '@/types';
+import { HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -16,12 +16,13 @@ import PictureList from '@/components/common/picture_list';
 import { Button } from '@/components/ui/button';
 import NewAnnouncement from '@/sections/new_announcement';
 import ViewAnnouncements from '@/sections/view_announcements';
+import configuredAxios from '@/config/axios';
+import { Loader } from 'lucide-react';
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const Index = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
-  const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
   const [page, setPage] = useState(0);
-  const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [search, setSearch] = useState('');
   const [track, setTrack] = useState('');
@@ -31,7 +32,7 @@ const Index = () => {
   const hackathon = useSelector(currentHackathonSelector);
   const [clickedOnNewAnnouncement, setClickedOnNewAnnouncement] = useState(false);
   const [clickedOnViewAnnouncement, setClickedOnViewAnnouncement] = useState(false);
-  const [clickedOnEndHackathon, setClickedOnEndHackathon] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${
@@ -50,7 +51,6 @@ const Index = () => {
         setTeams(addedTeams);
       }
       setPage(prev => prev + 1);
-      setLoading(false);
     } else {
       if (res.data.message) Toaster.error(res.data.message);
       else Toaster.error(SERVER_ERROR);
@@ -68,7 +68,6 @@ const Index = () => {
       setPage(1);
       setTeams([]);
       setHasMore(true);
-      setLoading(true);
       fetchTeams(abortController, 1);
     }
 
@@ -83,6 +82,62 @@ const Index = () => {
     else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
     else if (!hackathon.isEnded) window.location.replace('/admin/live');
   }, []);
+
+  const handleDownload = async (downloadType: 'team' | 'overall' | 'round', roundID?: string, roundIndex?: number) => {
+    if (loading) return;
+    try {
+      let URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/csv`;
+      let filename = hackathon.title.replaceAll(' ', '_');
+
+      var isValid = true;
+
+      switch (downloadType) {
+        case 'team':
+          URL += '/teams';
+          filename += '_teams';
+          break;
+        case 'overall':
+          URL += '/scores';
+          filename += '_overall-scores';
+          break;
+        case 'round':
+          if (!roundID || !roundIndex) isValid = false;
+          else {
+            URL += `/rounds/${roundID}`;
+            filename += `_round-${roundID}-scores`;
+          }
+          break;
+        default:
+          isValid = false;
+      }
+
+      if (!isValid) return;
+
+      setLoading(true);
+
+      const response = await configuredAxios.get(URL, {
+        responseType: 'blob',
+      });
+
+      const blob = new Blob([response.data], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename + '.csv');
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      Toaster.error(SERVER_ERROR);
+      console.error('Error downloading CSV:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <BaseWrapper>
@@ -101,20 +156,51 @@ const Index = () => {
                       WebkitTextFillColor: 'transparent',
                     }}
                   >
-                    The Hackathon has ended.
+                    The Hackathon has ended
                   </h1>
                 </section>
-                <div className="w-full flex gap-4">
+                <div className="w-full flex gap-4 max-md:flex-col">
                   <Button onClick={() => setClickedOnNewAnnouncement(true)} className="w-1/2 bg-primary_text">
-                    <span className="hidden md:block">
-                      <div className="">Create New Announcement</div>
-                    </span>
+                    <div className="">Create New Announcement</div>
                   </Button>
                   <Button onClick={() => setClickedOnViewAnnouncement(true)} className="w-1/2 bg-primary_text">
-                    <span className="hidden md:block">
-                      <div className="">View All Announcements</div>
-                    </span>
+                    <div className="">View All Announcements</div>
                   </Button>
+                </div>
+                <div className="w-full flex flex-col gap-2">
+                  <div className="text-xl font-semibold">Event Reports (in CSV)</div>
+                  <div className="w-full flex gap-4 max-md:flex-col relative">
+                    {loading && (
+                      <div className="w-full h-full bg-white flex-center absolute top-0 right-0 bg-opacity-50 rounded-lg">
+                        <Loader />
+                      </div>
+                    )}
+                    <Button onClick={() => handleDownload('team')} className="w-1/2 bg-priority_low" variant={'link'}>
+                      <div className="font-semibold">Team Details</div>
+                    </Button>
+                    <Button onClick={() => handleDownload('overall')} className="w-1/2 bg-priority_low" variant={'link'}>
+                      <div className="font-semibold">Overall Team Scores</div>
+                    </Button>
+                    <Button className="w-1/2 bg-priority_low text-primary_black" variant={'default'} disabled={true}>
+                      <div className="font-semibold">Round Wise Team Scores</div>
+                    </Button>
+                    {/* <Button onClick={() => handleDownload('round')} className="w-1/2 bg-priority_low" variant={'link'}>
+                      <Select value={''} onValueChange={()=>}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select Your Role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {sampleRoleData.map((role, index) => (
+                            <SelectItem value={role} key={index}>
+                              {role}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      <div className="">Round Wise Team Scores</div>
+                    </Button> */}
+                  </div>
                 </div>
               </div>
             </div>

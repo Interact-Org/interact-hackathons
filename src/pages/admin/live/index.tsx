@@ -196,16 +196,12 @@ const Index = () => {
                     </>
                   )}
                 </section>
-                <div className="w-full flex gap-4">
+                <div className="w-full flex gap-4 max-md:flex-col">
                   <Button onClick={() => setClickedOnNewAnnouncement(true)} className="w-1/2 bg-primary_text">
-                    <span className="hidden md:block">
-                      <div className="">Create New Announcement</div>
-                    </span>
+                    <div className="">Create New Announcement</div>
                   </Button>
                   <Button onClick={() => setClickedOnViewAnnouncement(true)} className="w-1/2 bg-primary_text">
-                    <span className="hidden md:block">
-                      <div className="">View All Announcements</div>
-                    </span>
+                    <div className="">View All Announcements</div>
                   </Button>
                 </div>
               </div>
