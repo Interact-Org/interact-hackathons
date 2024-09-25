@@ -34,7 +34,7 @@ const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
         URL += `/live`;
         break;
       case HACKATHON_COMPLETED:
-        URL += `/completed`;
+        URL += `/ended`;
         break;
     }
 

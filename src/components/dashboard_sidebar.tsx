@@ -80,7 +80,7 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
         </section>
       </div>
       <div className="w-full flex flex-col gap-2">
-        {role == 'admin' && (
+        {role == 'admin' && !hackathon.isEnded && (
           <Dialog open={clickedOnEliminate} onOpenChange={setClickedOnEliminate}>
             <DialogTrigger className={`${team.isEliminated ? 'bg-green-500' : 'bg-red-500'} text-white py-2 rounded-md`}>
               {team.isEliminated ? 'Restore' : 'Eliminate'} Team
@@ -96,7 +96,7 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
             </DialogContent>
           </Dialog>
         )}
-        <Button onClick={() => window.location.assign('/admin/live')} className="bg-primary_text mt-6">
+        <Button onClick={() => window.location.assign('/admin' + (hackathon.isEnded ? '/ended' : '/live'))} className="bg-primary_text mt-6">
           <span className="hidden md:block">Go Back</span>
           <span className="md:hidden">
             <ArrowLeft size={16} />

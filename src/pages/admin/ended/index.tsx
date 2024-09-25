@@ -31,33 +31,10 @@ const Index = () => {
   const [eliminated, setEliminated] = useState('');
   const [overallScore, setOverallScore] = useState(0);
   const [order, setOrder] = useState('latest');
-  const [rounds, setRounds] = useState<HackathonRound[]>([]);
   const hackathon = useSelector(currentHackathonSelector);
   const [clickedOnNewAnnouncement, setClickedOnNewAnnouncement] = useState(false);
   const [clickedOnViewAnnouncement, setClickedOnViewAnnouncement] = useState(false);
   const [clickedOnEndHackathon, setClickedOnEndHackathon] = useState(false);
-
-  const getCurrentRound = async () => {
-    const URL = `/hackathons/${hackathon.id}/participants/round`;
-    const res = await getHandler(URL);
-    if (res.statusCode == 200) {
-      setCurrentRound(res.data.round);
-    } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
-    }
-  };
-
-  const getRounds = async () => {
-    const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/rounds`;
-    const res = await getHandler(URL);
-    if (res.statusCode == 200) {
-      setRounds(res.data.rounds);
-    } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
-    }
-  };
 
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${
@@ -106,12 +83,8 @@ const Index = () => {
   useEffect(() => {
     const role = getHackathonRole();
     if (role != 'admin' && role != 'org') window.location.replace('/');
-    else if (hackathon.isEnded) window.location.replace('/admin/ended');
     else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
-    else {
-      getCurrentRound();
-      getRounds();
-    }
+    else if (!hackathon.isEnded) window.location.replace('/admin/live');
   }, []);
 
   const role = useMemo(() => getHackathonRole(), []);
@@ -134,67 +107,19 @@ const Index = () => {
       {clickedOnViewAnnouncement && <ViewAnnouncements setShow={setClickedOnViewAnnouncement} />}
       <div className="w-full bg-[#E1F1FF] min-h-screen">
         <div className="w-[95%] mx-auto h-full flex flex-col gap-2 md:gap-4 lg:gap-8">
-          <div className="--meta-info-container  w-full h-fit flex flex-col gap-4 py-4">
+          <div className="--meta-info-container  w-full h-fit flex flex-col gap-4 py-8">
             <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">
-              <div className="--heading w-full md:w-1/2 h-full flex flex-col gap-4">
-                <section className="w-full h-full text-3xl md:text-4xl lg:text-6xl font-bold lg:leading-[4.5rem]">
-                  {currentRound ? (
-                    <>
-                      <h1
-                        style={{
-                          background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                        }}
-                      >
-                        Round {currentRound.index + 1} is Live!
-                      </h1>
-                      <div className="text-3xl"> Ends {moment(currentRound.endTime).fromNow()}.</div>
-                      <div className="text-5xl w-3/4">
-                        {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.judgingEndTime)) ? (
-                          <div className="w-full flex flex-col gap-4">
-                            <div className="text-[#003a7c]">Judging is Live!</div>
-                            <div className="text-3xl">Ends {moment(currentRound.judgingEndTime).fromNow()}.</div>
-                          </div>
-                        ) : (
-                          moment(currentRound.judgingStartTime).isAfter(moment()) && (
-                            <>Next Judging Round Starts {moment(currentRound.judgingStartTime).fromNow()}.</>
-                          )
-                        )}
-                      </div>
-                      {/* <div className="w-full flex items-center gap-4 mt-4">
-                    <EditDetailsBtn rounds={rounds} />
-                  </div> */}
-                    </>
-                  ) : (
-                    <>
-                      <h1
-                        style={{
-                          background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                        }}
-                      >
-                        All Rounds have ended.
-                      </h1>
-                      {role == 'admin' && (
-                        <Dialog open={clickedOnEndHackathon} onOpenChange={setClickedOnEndHackathon}>
-                          <DialogTrigger className="w-full text-base font-medium bg-red-500 text-white py-2 rounded-md">End Hackathon</DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader className="text-left">
-                              <DialogTitle>End Hackathon</DialogTitle>
-                              <DialogDescription>
-                                This action can not be undone. This will mark this hackathon as ended, no further actions would be possible.
-                              </DialogDescription>
-                            </DialogHeader>
-                            <Button onClick={handleEndHackathon} variant={'destructive'}>
-                              Confirm
-                            </Button>
-                          </DialogContent>
-                        </Dialog>
-                      )}
-                    </>
-                  )}
+              <div className="--heading w-full h-full flex flex-col gap-8">
+                <section className="w-full h-full text-center text-3xl md:text-4xl lg:text-7xl font-bold lg:leading-[4.5rem]">
+                  <h1
+                    style={{
+                      background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  >
+                    The Hackathon has ended.
+                  </h1>
                 </section>
                 <div className="w-full flex gap-4">
                   <Button onClick={() => setClickedOnNewAnnouncement(true)} className="w-1/2 bg-primary_text">
@@ -209,7 +134,6 @@ const Index = () => {
                   </Button>
                 </div>
               </div>
-              <AdminLiveRoundAnalytics round={currentRound} />
             </div>
           </div>
           <div className="--team-data-box flex flex-col gap-4">
@@ -236,12 +160,12 @@ const Index = () => {
                       <TableHead>Track</TableHead>
                       <TableHead className="hidden md:block">Members</TableHead>
                       <TableHead>Elimination Status</TableHead>
-                      <TableHead>Round Score</TableHead>
+                      <TableHead>Overall Score</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody className="w-full">
                     {teams.map((team, index) => (
-                      <TableRow onClick={() => window.location.assign('/admin/live/' + team.id)} key={index} className="cursor-pointer">
+                      <TableRow onClick={() => window.location.assign('/admin/ended/' + team.id)} key={index} className="cursor-pointer">
                         <TableCell className="font-medium">{team.title}</TableCell>
                         <TableCell>{team.project?.title}</TableCell>
                         <TableCell>{team.track?.title}</TableCell>
@@ -251,7 +175,7 @@ const Index = () => {
                         <TableCell>
                           <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
                         </TableCell>
-                        <TableCell>{team.roundScore}</TableCell>
+                        <TableCell>{team.overallScore}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

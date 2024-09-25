@@ -87,10 +87,14 @@ export const hackathonSlice = createSlice({
     resetCurrentHackathon: state => {
       state = initialState;
     },
+
+    markHackathonEnded: state => {
+      state.isEnded = true;
+    },
   },
 });
 
-export const { setCurrentHackathon, resetCurrentHackathon } = hackathonSlice.actions;
+export const { setCurrentHackathon, resetCurrentHackathon, markHackathonEnded } = hackathonSlice.actions;
 
 export default hackathonSlice.reducer;
 

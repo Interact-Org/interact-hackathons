@@ -52,7 +52,7 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
       }
     };
 
-    if (team.id != '') fetchAnalyticsData();
+    if (team.id != '' && !hackathon.isEnded) fetchAnalyticsData();
   }, [team]);
 
   return (
@@ -76,34 +76,38 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
       {team.id && (
         <div className="w-full flex max-md:flex-col gap-4">
           <div className="w-2/3 max-md:w-full flex flex-col gap-4">
-            <div className="w-full flex flex-col gap-4">
-              <div className="w-full flex gap-4">
-                <AnalyticsCard
-                  title="Github Commits"
-                  value={analyticsData.totalGithubCommits}
-                  change={analyticsData.githubCommitPercentageChange == 0 ? undefined : analyticsData.githubCommitPercentageChange}
-                />
-                <AnalyticsCard
-                  title="Figma Activity"
-                  value={analyticsData.totalFigmaHistories}
-                  change={analyticsData.figmaHistoriesPercentageChange == 0 ? undefined : analyticsData.figmaHistoriesPercentageChange}
-                />
-                <div className="w-1/3 h-36 bg-white rounded-xl p-4 max-md:hidden">
-                  <ComparisonScoreBar
-                    max={analyticsData.maxActivityCount}
-                    min={analyticsData.minActivityCount}
-                    score={analyticsData.totalActivityCount}
+            {!hackathon.isEnded && (
+              <div className="w-full flex flex-col gap-4">
+                <div className="w-full flex gap-4">
+                  <AnalyticsCard
+                    title="Github Commits"
+                    value={analyticsData.totalGithubCommits}
+                    change={analyticsData.githubCommitPercentageChange == 0 ? undefined : analyticsData.githubCommitPercentageChange}
                   />
+                  <AnalyticsCard
+                    title="Figma Activity"
+                    value={analyticsData.totalFigmaHistories}
+                    change={analyticsData.figmaHistoriesPercentageChange == 0 ? undefined : analyticsData.figmaHistoriesPercentageChange}
+                  />
+                  <div className="w-1/3 h-36 bg-white rounded-xl p-4 max-md:hidden">
+                    <ComparisonScoreBar
+                      max={analyticsData.maxActivityCount}
+                      min={analyticsData.minActivityCount}
+                      score={analyticsData.totalActivityCount}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="w-full h-36 bg-white rounded-xl p-4 md:hidden">
-              <ComparisonScoreBar
-                max={analyticsData.maxActivityCount}
-                min={analyticsData.minActivityCount}
-                score={analyticsData.totalActivityCount}
-              />
-            </div>
+            )}
+            {!hackathon.isEnded && (
+              <div className="w-full h-36 bg-white rounded-xl p-4 md:hidden">
+                <ComparisonScoreBar
+                  max={analyticsData.maxActivityCount}
+                  min={analyticsData.minActivityCount}
+                  score={analyticsData.totalActivityCount}
+                />
+              </div>
+            )}
             <div className="w-full flex flex-col gap-4 pb-3 max-md:hidden">
               <ContributionsGraph teamID={team.id} setScores={setScores} />
             </div>

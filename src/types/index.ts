@@ -832,6 +832,7 @@ export interface HackathonTeam {
   facultyEmpID?: string;
   facultyName?: string;
   facultySchool?: string;
+  overallScore: number;
 }
 
 export interface HackathonTeamMembership {

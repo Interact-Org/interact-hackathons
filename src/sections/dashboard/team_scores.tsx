@@ -119,7 +119,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
 
             {metric.type === 'number' && (
               <>
-                {role == 'admin' ? (
+                {role == 'admin' && !hackathon.isEnded ? (
                   <Input
                     type="number"
                     className="w-full p-2 border border-gray-300 rounded-md"
@@ -133,7 +133,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
               </>
             )}
 
-            {metric.type === 'text' && (
+            {metric.type === 'text' && !hackathon.isEnded && (
               <>
                 {role == 'admin' ? (
                   <TextArea
@@ -149,7 +149,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
               </>
             )}
 
-            {metric.type === 'select' && metric.options && metric.options.length > 0 && (
+            {metric.type === 'select' && metric.options && metric.options.length > 0 && !hackathon.isEnded && (
               <>
                 {role == 'admin' ? (
                   <Select onValueChange={value => handleInputChange(metric.id, value)}>
@@ -170,7 +170,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
               </>
             )}
 
-            {metric.type === 'boolean' && (
+            {metric.type === 'boolean' && !hackathon.isEnded && (
               <>
                 {role === 'admin' ? (
                   <div className="flex items-center space-x-4">
@@ -203,7 +203,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
               </>
             )}
 
-            {role == 'admin' && (
+            {role == 'admin' && !hackathon.isEnded && (
               <Button
                 onClick={() => handleSubmit(metric.hackathonRoundID, inputScores[metric.id], metric.id)}
                 className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"
@@ -218,7 +218,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
         <span className="w-full flex flex-col md:flex-row items-center gap-2">
           <Trophy size={32} />
           <h1 className="text-xl md:text-3xl font-semibold text-nowrap">Overall Score</h1>
-          {role == 'admin' ? (
+          {role == 'admin' && !hackathon.isEnded ? (
             <Input
               type="number"
               className="bg-white text-black w-full md:w-60 md:ml-8"
@@ -232,7 +232,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
             </h1>
           )}
         </span>
-        {role == 'admin' && (
+        {role == 'admin' && !hackathon.isEnded && (
           <Button
             onClick={() => handleSubmit(rounds[activeRound].id, inputScores['overallScore'])}
             className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"

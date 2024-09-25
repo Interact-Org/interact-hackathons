@@ -547,4 +547,5 @@ export const initialHackathonTeam: HackathonTeam = {
   noComments: 0,
   createdAt: new Date(),
   comments: [],
+  overallScore: 0,
 };
