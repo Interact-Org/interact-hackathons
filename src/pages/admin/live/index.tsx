@@ -14,6 +14,9 @@ import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import PictureList from '@/components/common/picture_list';
+import { Button } from '@/components/ui/button';
+import NewAnnouncement from '@/sections/new_announcement';
+import ViewAnnouncements from '@/sections/view_announcements';
 
 const Index = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -28,6 +31,8 @@ const Index = () => {
   const [order, setOrder] = useState('latest');
   const [rounds, setRounds] = useState<HackathonRound[]>([]);
   const hackathon = useSelector(currentHackathonSelector);
+  const [clickedOnNewAnnouncement, setClickedOnNewAnnouncement] = useState(false);
+  const [clickedOnViewAnnouncement, setClickedOnViewAnnouncement] = useState(false);
 
   const getCurrentRound = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
@@ -108,52 +113,67 @@ const Index = () => {
 
   return (
     <BaseWrapper>
+      {clickedOnNewAnnouncement && <NewAnnouncement setShow={setClickedOnNewAnnouncement} />}
+      {clickedOnViewAnnouncement && <ViewAnnouncements setShow={setClickedOnViewAnnouncement} />}
       <div className="w-full bg-[#E1F1FF] min-h-screen">
         <div className="w-[95%] mx-auto h-full flex flex-col gap-2 md:gap-4 lg:gap-8">
-          <div className="--meta-info-container  w-full h-fit py-4">
+          <div className="--meta-info-container  w-full h-fit flex flex-col gap-4 py-4">
             <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">
-              {currentRound ? (
-                <section className="--heading w-full md:w-1/2 h-full text-3xl md:text-4xl lg:text-6xl font-bold lg:leading-[4.5rem]">
-                  <h1
-                    style={{
-                      background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
-                  >
-                    Round {currentRound.index + 1} is Live!
-                  </h1>
-                  <div className="text-3xl"> Ends {moment(currentRound.endTime).fromNow()}.</div>
-                  <div className="text-5xl w-3/4">
-                    {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.judgingEndTime)) ? (
-                      <div className="w-full flex flex-col gap-4">
-                        <div className="text-[#003a7c]">Judging is Live!</div>
-                        <div className="text-3xl">Ends {moment(currentRound.judgingEndTime).fromNow()}.</div>
+              <div className="--heading w-full md:w-1/2 h-full flex flex-col gap-4">
+                <section className="w-full h-full text-3xl md:text-4xl lg:text-6xl font-bold lg:leading-[4.5rem]">
+                  {currentRound ? (
+                    <>
+                      <h1
+                        style={{
+                          background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                        }}
+                      >
+                        Round {currentRound.index + 1} is Live!
+                      </h1>
+                      <div className="text-3xl"> Ends {moment(currentRound.endTime).fromNow()}.</div>
+                      <div className="text-5xl w-3/4">
+                        {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.judgingEndTime)) ? (
+                          <div className="w-full flex flex-col gap-4">
+                            <div className="text-[#003a7c]">Judging is Live!</div>
+                            <div className="text-3xl">Ends {moment(currentRound.judgingEndTime).fromNow()}.</div>
+                          </div>
+                        ) : (
+                          moment(currentRound.judgingStartTime).isAfter(moment()) && (
+                            <>Next Judging Round Starts {moment(currentRound.judgingStartTime).fromNow()}.</>
+                          )
+                        )}
                       </div>
-                    ) : (
-                      moment(currentRound.judgingStartTime).isAfter(moment()) && (
-                        <>Next Judging Round Starts {moment(currentRound.judgingStartTime).fromNow()}.</>
-                      )
-                    )}
-                  </div>
-                  {/* <div className="w-full flex items-center gap-4 mt-4">
+                      {/* <div className="w-full flex items-center gap-4 mt-4">
                     <EditDetailsBtn rounds={rounds} />
                   </div> */}
+                    </>
+                  ) : (
+                    <h1
+                      style={{
+                        background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                      }}
+                    >
+                      All Rounds have ended.
+                    </h1>
+                  )}
                 </section>
-              ) : (
-                <section className="--heading w-full md:w-1/2 h-full text-3xl md:text-4xl lg:text-6xl font-bold lg:leading-[4.5rem]">
-                  <h1
-                    style={{
-                      background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
-                  >
-                    All Rounds have ended.
-                  </h1>
-                </section>
-              )}
-
+                <div className="w-full flex gap-4">
+                  <Button onClick={() => setClickedOnNewAnnouncement(true)} className="w-1/2 bg-primary_text">
+                    <span className="hidden md:block">
+                      <div className="">Create New Announcement</div>
+                    </span>
+                  </Button>
+                  <Button onClick={() => setClickedOnViewAnnouncement(true)} className="w-1/2 bg-primary_text">
+                    <span className="hidden md:block">
+                      <div className="">View All Announcements</div>
+                    </span>
+                  </Button>
+                </div>
+              </div>
               <AdminLiveRoundAnalytics round={currentRound} />
             </div>
           </div>

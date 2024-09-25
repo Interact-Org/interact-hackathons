@@ -58,19 +58,21 @@ const Links = ({ links, showTitle = false, setLinks, maxLinks = 5, title = 'Link
           {links && links.length > 0 ? (
             <div className="flex flex-col gap-4">
               {links.map((link: string, index: number) => {
+                const fullLink = link.startsWith('https') ? link : `https://${link}`;
+
                 return (
                   <div key={index} className="w-full h-8 flex justify-between gap-2 items-center font-Inconsolata">
                     <div className={`flex items-center gap-2 ${showURL === index ? 'hidden' : ''}`} onMouseEnter={() => setShowURL(index)}>
-                      {getIcon(getDomainName(link))}
-                      <div className="capitalize">{getDomainName(link)}</div>
+                      {getIcon(getDomainName(fullLink))}
+                      <div className="capitalize">{getDomainName(fullLink)}</div>
                     </div>
                     <Link
                       className={`text-xs border-[1px] border-black border-dashed rounded-lg px-2 py-1 ${showURL !== index ? 'hidden' : ''}`}
-                      href={link}
+                      href={fullLink}
                       target="_blank"
                       onMouseLeave={() => setShowURL(-1)}
                     >
-                      {link.length < 40 ? link : link.substring(0, 40) + '...'}
+                      {fullLink.length < 40 ? fullLink : fullLink.substring(0, 40) + '...'}
                     </Link>
                     <div
                       className="mr-5 cursor-pointer"

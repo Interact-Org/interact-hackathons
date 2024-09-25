@@ -10,10 +10,12 @@ import { currentOrgIDSelector } from '@/slices/orgSlice';
 import getHandler from '@/handlers/get_handler';
 import TagUserUtils from '@/utils/funcs/tag_users';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
+import Input from '@/components/form/input';
+import TextArea from '@/components/form/textarea';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
-  setAnnouncements: React.Dispatch<React.SetStateAction<Announcement[]>>;
+  setAnnouncements?: React.Dispatch<React.SetStateAction<Announcement[]>>;
 }
 
 const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
@@ -88,7 +90,7 @@ const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
       return;
     }
 
-    const toaster = Toaster.startLoad('Adding your Post..');
+    const toaster = Toaster.startLoad('Adding your Announcement..');
 
     const formData = {
       title,
@@ -97,15 +99,14 @@ const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
       taggedUsernames,
     };
 
-    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/announcements`;
+    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/announcements`;
 
     const res = await postHandler(URL, formData);
-
     if (res.statusCode === 201) {
       setContent('');
       setShow(false);
       const announcement: Announcement = res.data.announcement;
-      setAnnouncements(prev => [announcement, ...prev]);
+      if (setAnnouncements) setAnnouncements(prev => [announcement, ...prev]);
       Toaster.stopLoad(toaster, 'Announcement Added!', 1);
       setShow(false);
     } else {
@@ -119,7 +120,7 @@ const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
 
   return (
     <>
-      <div className="fixed top-24 max-md:top-[calc(50%-75px)] w-[953px] max-lg:w-5/6 h-[560px] max-md:h-2/3 shadow-2xl dark:shadow-none backdrop-blur-xl bg-[#ffffff] dark:bg-[#ffe1fc22] flex flex-col gap-8 justify-between max-md:items-end p-8 max-md:p-6 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg right-1/2 translate-x-1/2 max-md:-translate-y-1/2 animate-fade_third z-30">
+      <div className="fixed top-1/2 -translate-y-1/2 max-md:top-[calc(50%-75px)] w-1/2 max-lg:w-5/6 h-3/5 max-md:h-4/5 shadow-2xl dark:shadow-none backdrop-blur-xl bg-[#ffffff] dark:bg-[#ffe1fc22] flex flex-col gap-8 justify-between max-md:items-end p-8 max-md:p-6 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg right-1/2 translate-x-1/2 max-md:-translate-y-1/2 animate-fade_third z-30">
         <div className="flex gap-4 max-md:w-full">
           {/* <Image
             crossOrigin="anonymous"
@@ -130,53 +131,21 @@ const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
             src={`${USER_PROFILE_PIC_URL}/${organisation.user.profilePic}`}
           /> */}
           <div className="grow flex flex-col gap-4">
-            <div className="flex justify-between items-center">
-              {/* <div className="flex flex-col">
-                <div className="text-2xl font-semibold">{organisation.user.name}</div>
-                <div className="text-sm">@{organisation.user.username}</div>
-              </div> */}
-              <div
-                onClick={handleSubmit}
-                className="max-md:hidden w-[120px] h-[48px] bg-primary_comp dark:bg-dark_primary_comp hover:bg-primary_comp_hover dark:hover:bg-dark_primary_comp_hover active:bg-primary_comp_active dark:active:bg-dark_primary_comp_active transition-ease-300 shrink-0 flex-center text-lg font-semibold rounded-lg cursor-pointer"
-              >
-                Post
-              </div>
-            </div>
-
             <div className="w-full flex flex-col gap-4 relative">
-              <input
-                type="text"
-                value={title}
-                maxLength={50}
-                onChange={el => setTitle(el.target.value)}
-                className="w-full text-lg font-medium border-[2px] border-dashed p-2 rounded-lg focus:outline-none"
-                placeholder="Announcement Title"
-              />
-              <textarea
-                id="textarea_id"
-                className="w-full border-[2px] border-dashed p-2 rounded-lg dark:text-white dark:bg-dark_primary_comp focus:outline-none min-h-[16rem] max-h-64 max-md:w-full"
-                value={content}
-                onChange={tagsUserUtils.handleContentChange}
-                onKeyDown={handleKeyDown}
-                maxLength={1000}
-                placeholder="What's the announcement?"
-              ></textarea>
-              <div className="w-fit flex-center gap-4">
-                <label className="w-fit flex cursor-pointer select-none items-center text-sm gap-2">
-                  <div className="font-semibold">Open for All</div>
-                  <div className="relative">
-                    <input type="checkbox" checked={isOpen} onChange={() => setIsOpen(prev => !prev)} className="sr-only" />
-                    <div className={`box block h-6 w-10 rounded-full ${isOpen ? 'bg-blue-300' : 'bg-black'} transition-ease-300`}></div>
-                    <div
-                      className={`absolute left-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white transition ${
-                        isOpen ? 'translate-x-full' : ''
-                      }`}
-                    ></div>
-                  </div>
-                </label>
-                <div className="text-sm font-medium text-gray-500">
-                  ({isOpen ? 'Will be shown in the feed of your Followers' : 'Will be shown in the feed of your Members Only'})
+              <Input val={title} setVal={setTitle} label="Announcement Title" maxLength={50} />
+              <div>
+                <div className="text-xs ml-1 font-medium uppercase text-gray-500">
+                  Announcement Content * ({content.trim().length}/{1000})
                 </div>
+                <textarea
+                  id="textarea_id"
+                  className="w-full min-h-[240px] max-h-80 bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2"
+                  value={content}
+                  onChange={tagsUserUtils.handleContentChange}
+                  onKeyDown={handleKeyDown}
+                  maxLength={1000}
+                  placeholder="What's the announcement?"
+                ></textarea>
               </div>
             </div>
           </div>
@@ -206,6 +175,19 @@ const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
             ))}
           </div>
         )}
+
+        <div className="w-full flex justify-end items-center">
+          {/* <div className="flex flex-col">
+                <div className="text-2xl font-semibold">{organisation.user.name}</div>
+                <div className="text-sm">@{organisation.user.username}</div>
+              </div> */}
+          <div
+            onClick={handleSubmit}
+            className="max-md:hidden w-[120px] h-[48px] bg-primary_comp dark:bg-dark_primary_comp hover:bg-primary_comp_hover dark:hover:bg-dark_primary_comp_hover active:bg-primary_comp_active dark:active:bg-dark_primary_comp_active transition-ease-300 shrink-0 flex-center text-lg font-semibold rounded-lg cursor-pointer"
+          >
+            Post
+          </div>
+        </div>
       </div>
       <div onClick={() => setShow(false)} className="bg-backdrop w-screen h-screen fixed top-0 left-0 animate-fade_third z-20"></div>
     </>

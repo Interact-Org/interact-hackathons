@@ -65,7 +65,7 @@ export default function AdminLiveRoundAnalytics({ round }: { round: HackathonRou
         </span> */}
       </AnalyticBox>
       <AnalyticBox className="hidden md:block">
-        <div className="text-sm font-semibold text-primary_btn">{round ? `Round ${(round?.index || 0) + 1}` : 'All rounds have ended.'} is Live!</div>
+        <div className="text-sm font-semibold text-primary_btn">{round ? `Round ${(round?.index || 0) + 1} is Live!` : 'All rounds have ended.'}</div>
       </AnalyticBox>
       <AnalyticBox className="flex flex-col gap-5 justify-between">
         <div className="flex items-start justify-between">

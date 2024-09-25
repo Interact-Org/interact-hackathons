@@ -67,15 +67,18 @@ const OverviewComponent: React.FC<OverviewComponentProps> = ({ project, setTeam 
       </div>
       <div className="flex flex-wrap gap-4 mt-8">
         {project?.links?.map((link, index) => {
+          const fullLink = link.startsWith('https') ? link : `https://${link}`;
+
           return (
             <Link
-              href={link}
+              href={fullLink}
               target="_blank"
+              rel="noopener noreferrer"
               key={index}
               className="w-fit h-8 py-2 px-3 border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg flex items-center gap-2"
             >
-              {getIcon(getDomainName(link), 24)}
-              <div className="capitalize">{getDomainName(link)}</div>
+              {getIcon(getDomainName(fullLink), 24)}
+              <div className="capitalize">{getDomainName(fullLink)}</div>
             </Link>
           );
         })}

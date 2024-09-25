@@ -82,7 +82,7 @@ const Live = () => {
         team.isEliminated && !moment().isBetween(currentRound?.judgingStartTime, currentRound?.judgingEndTime) ? (
           <TeamEliminated team={team} />
         ) : (
-          <div className="w-full min-h-screen bg-[#E1F1FF] p-6 md:p-24 flex flex-col gap-10">
+          <div className="w-full min-h-screen bg-[#E1F1FF] p-6  flex flex-col gap-10">
             <div className="w-full flex flex-col md:flex-row gap-8">
               <div className="w-full md:w-1/2 flex flex-col gap-2">
                 <div className="w-full text-4xl md:text-6xl lg:text-10xl flex flex-col font-bold">

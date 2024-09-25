@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import getHandler from '@/handlers/get_handler';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
-import { HackathonRound } from '@/types';
+import { Announcement, HackathonRound } from '@/types';
 import TimeProgressGraph from '@/components/common/time_graph';
 import moment from 'moment';
 import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import Slider from 'react-slick';
 import ComparisonScoreBar from './comparison_score_bar';
+import AnnouncementCard from '@/components/announcement_card';
 
 export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: { teamID: string; currentRound: HackathonRound | null }) {
   const [analyticsData, setAnalyticsData] = useState({
@@ -22,6 +23,7 @@ export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: 
     totalGithubCommits: 0,
     trackPrize: 0,
   });
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
   const hackathon = useSelector(currentHackathonSelector);
 
@@ -47,43 +49,79 @@ export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: 
       }
     };
 
+    const fetchAnnouncements = async () => {
+      const res = await getHandler(`/hackathons/${hackathon.id}/participants/announcements/`);
+      if (res.statusCode == 200) {
+        setAnnouncements(res.data.announcements);
+        console.log(res.data.announcements);
+      } else {
+        if (res.data.message) Toaster.error(res.data.message);
+        else Toaster.error(SERVER_ERROR);
+      }
+    };
+
     fetchAnalyticsData();
+    fetchAnnouncements();
   }, []);
 
+  const settings = {
+    dots: announcements && announcements.length > 0 && true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: false,
+    autoplay: announcements && announcements.length > 0 && true,
+    autoplaySpeed: 5000,
+    vertical: true,
+  };
+
   return (
-    <div className="w-full flex flex-col gap-6">
-      <div className="w-full flex gap-6">
-        <AnalyticsCard
-          title="Github Commits"
-          value={analyticsData.totalGithubCommits}
-          change={analyticsData.githubCommitPercentageChange == 0 ? undefined : analyticsData.githubCommitPercentageChange}
-        />
-        <AnalyticsCard
-          title="Figma Activity"
-          value={analyticsData.totalFigmaHistories}
-          change={analyticsData.figmaHistoriesPercentageChange == 0 ? undefined : analyticsData.figmaHistoriesPercentageChange}
-        />
-        <div className="w-1/3 max-md:hidden h-36 bg-white rounded-xl p-4">
+    <Slider {...settings} className="relative">
+      <div className="w-full">
+        <div className="w-full flex gap-6 mb-6">
+          <AnalyticsCard
+            title="Github Commits"
+            value={analyticsData.totalGithubCommits}
+            change={analyticsData.githubCommitPercentageChange == 0 ? undefined : analyticsData.githubCommitPercentageChange}
+          />
+          <AnalyticsCard
+            title="Figma Activity"
+            value={analyticsData.totalFigmaHistories}
+            change={analyticsData.figmaHistoriesPercentageChange == 0 ? undefined : analyticsData.figmaHistoriesPercentageChange}
+          />
+          <div className="w-1/3 max-md:hidden h-36 bg-white rounded-xl p-4">
+            <ComparisonScoreBar max={analyticsData.maxActivityCount} min={analyticsData.minActivityCount} score={analyticsData.totalActivityCount} />
+          </div>
+        </div>
+        <div className="w-full md:hidden h-36 bg-white rounded-xl p-4 mb-6">
           <ComparisonScoreBar max={analyticsData.maxActivityCount} min={analyticsData.minActivityCount} score={analyticsData.totalActivityCount} />
         </div>
-      </div>
-      <div className="w-full md:hidden h-36 bg-white rounded-xl p-4">
-        <ComparisonScoreBar max={analyticsData.maxActivityCount} min={analyticsData.minActivityCount} score={analyticsData.totalActivityCount} />
-      </div>
-      <div className="w-full flex gap-6">
-        <GraphCarousel currentRound={currentRound} />
-        <div className="w-1/3 max-md:w-full flex md:flex-col gap-6">
-          <div className="w-full h-1/2 max-md:h-fit bg-white rounded-xl p-3">
-            <div className="text font-medium">Track Prize</div>
-            <div className="text-3xl font-semibold">{analyticsData.trackPrize}</div>
-          </div>
-          <div className="w-full h-1/2 max-md:h-fit bg-white rounded-xl p-3">
-            <div className="text font-medium">Teams Left</div>
-            <div className="text-3xl font-semibold">{analyticsData.teamsLeftInTrack}</div>
+        <div className="w-full flex gap-6 mb-2">
+          <GraphCarousel currentRound={currentRound} />
+          <div className="w-1/3 max-md:w-full flex md:flex-col gap-6">
+            <div className="w-full h-1/2 max-md:h-fit bg-white rounded-xl p-3">
+              <div className="text font-medium">Track Prize</div>
+              <div className="text-3xl font-semibold">{analyticsData.trackPrize}</div>
+            </div>
+            <div className="w-full h-1/2 max-md:h-fit bg-white rounded-xl p-3">
+              <div className="text font-medium">Teams Left</div>
+              <div className="text-3xl font-semibold">{analyticsData.teamsLeftInTrack}</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      {announcements && announcements.length > 0 && (
+        <div className="w-full h-full max-h-96 overflow-y-auto pb-12">
+          <div className="text-xl font-semibold mb-2">Announcements</div>
+          {announcements.map(announcement => (
+            <div key={announcement.id} className="pb-2">
+              <AnnouncementCard announcement={announcement} />
+            </div>
+          ))}
+        </div>
+      )}
+    </Slider>
   );
 }
 

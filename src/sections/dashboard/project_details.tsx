@@ -23,16 +23,18 @@ export const ProjectDetails = ({ project }: { project: Project | undefined }) =>
           </div>
           <p className="text-sm md:text-base">{project.description}</p>
           <div className="flex items-center gap-2 flex-wrap">
-            {project.links?.map((link, index) => (
-              <>
-                <Link href={link} target="_blank">
+            {project.links?.map((link, index) => {
+              const fullLink = link.startsWith('https') ? link : `https://${link}`;
+
+              return (
+                <Link href={fullLink} target="_blank" rel="noopener noreferrer" key={index}>
                   <Button variant="outline" className="gap-2 py-4" key={index}>
                     {getIcon(getDomainName(link))}
                     <div className="capitalize">{getDomainName(link)}</div>
                   </Button>
                 </Link>
-              </>
-            ))}
+              );
+            })}
           </div>
         </>
       )}

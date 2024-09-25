@@ -16,11 +16,16 @@ const Navbar = () => {
     <div className="w-full h-12 md:h-navbar bg-navbar dark:bg-dark_navbar text-gray-500 dark:text-white border-gray-300 border-b-[1px] dark:border-0 glassMorphism backdrop-blur-sm fixed top-0 flex justify-between px-4 items-center z-20">
       <Link href={'/'} className="hidden dark:flex dark:flex-row">
         <ReactSVG src="/onboarding_logo_dark.svg" />
-        {hackathon && <span className="text-black dark:text-white font-medium">X{hackathon.organizationTitle}</span>}
+        {hackathon && <span className="text-black dark:text-white font-medium">X {hackathon.organizationTitle}</span>}
       </Link>
       <Link href={'/'} className="static dark:hidden flex flex-row">
         <ReactSVG src="/onboarding_logo.svg" className="scale-75 md:scale-100 relative -left-4 md:left-0" />
-        {hackathon && <span className="text-black dark:text-white font-bold mt-[0.4rem]">X {hackathon.organizationTitle}</span>}
+        {hackathon && (
+          <span className="h-full text-black dark:text-white flex-center gap-5 font-bold mt-[0.4rem]">
+            <div>X</div>
+            <div>{hackathon.organizationTitle}</div>
+          </span>
+        )}
       </Link>
 
       {user.id && (
