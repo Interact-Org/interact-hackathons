@@ -95,7 +95,7 @@ const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
       taggedUsernames,
     };
 
-    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/announcements`;
+    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/announcements`;
 
     const res = await postHandler(URL, formData);
     if (res.statusCode === 201) {
