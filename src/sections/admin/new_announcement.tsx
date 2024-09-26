@@ -6,12 +6,10 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { Announcement, User } from '@/types';
-import { currentOrgIDSelector } from '@/slices/orgSlice';
 import getHandler from '@/handlers/get_handler';
 import TagUserUtils from '@/utils/funcs/tag_users';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import Input from '@/components/form/input';
-import TextArea from '@/components/form/textarea';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,7 +19,6 @@ interface Props {
 const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  const [isOpen, setIsOpen] = useState(true);
   const [taggedUsernames, setTaggedUsernames] = useState<string[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [showUsers, setShowUsers] = useState(false);
@@ -95,7 +92,6 @@ const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
     const formData = {
       title,
       content: content.replace(/\n{3,}/g, '\n\n'),
-      isOpen,
       taggedUsernames,
     };
 

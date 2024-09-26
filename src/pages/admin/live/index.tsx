@@ -6,7 +6,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import TeamSearchFilters from '@/components/team_search_filters';
 import AdminLiveRoundAnalytics from '@/sections/analytics/admin_live_round_analytics';
-import { currentHackathonSelector, markHackathonEnded, setCurrentHackathon } from '@/slices/hackathonSlice';
+import { currentHackathonSelector, markHackathonEnded } from '@/slices/hackathonSlice';
 import { useSelector } from 'react-redux';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { ORG_URL } from '@/config/routes';
@@ -15,10 +15,13 @@ import moment from 'moment';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import PictureList from '@/components/common/picture_list';
 import { Button } from '@/components/ui/button';
-import NewAnnouncement from '@/sections/new_announcement';
-import ViewAnnouncements from '@/sections/view_announcements';
+import NewAnnouncement from '@/sections/admin/new_announcement';
+import ViewAnnouncements from '@/sections/admin/view_announcements';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import postHandler from '@/handlers/post_handler';
+import { UserPlus } from '@phosphor-icons/react';
+import { initialHackathonTeam } from '@/types/initials';
+import AddTeamMember from '@/sections/admin/add_team_member';
 
 const Index = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -36,6 +39,8 @@ const Index = () => {
   const [clickedOnNewAnnouncement, setClickedOnNewAnnouncement] = useState(false);
   const [clickedOnViewAnnouncement, setClickedOnViewAnnouncement] = useState(false);
   const [clickedOnEndHackathon, setClickedOnEndHackathon] = useState(false);
+  const [clickedOnAddMember, setClickedOnAddMember] = useState<boolean>(false);
+  const [clickedTeam, setClickedTeam] = useState(initialHackathonTeam);
 
   const getCurrentRound = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
@@ -132,6 +137,7 @@ const Index = () => {
     <BaseWrapper>
       {clickedOnNewAnnouncement && <NewAnnouncement setShow={setClickedOnNewAnnouncement} />}
       {clickedOnViewAnnouncement && <ViewAnnouncements setShow={setClickedOnViewAnnouncement} />}
+      {clickedOnAddMember && <AddTeamMember setShow={setClickedOnAddMember} team={clickedTeam} />}
       <div className="w-full bg-[#E1F1FF] min-h-base">
         <div className="w-[95%] mx-auto h-full flex flex-col gap-2 md:gap-4 lg:gap-8">
           <div className="--meta-info-container  w-full h-fit flex flex-col gap-4 py-4">
@@ -233,6 +239,7 @@ const Index = () => {
                       <TableHead className="hidden md:block">Members</TableHead>
                       <TableHead>Elimination Status</TableHead>
                       <TableHead>Round Score</TableHead>
+                      {role == 'admin' && <TableHead>Actions</TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody className="w-full">
@@ -248,6 +255,17 @@ const Index = () => {
                           <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
                         </TableCell>
                         <TableCell>{team.roundScore}</TableCell>
+                        {role == 'admin' && (
+                          <TableCell
+                            onClick={el => {
+                              el.stopPropagation();
+                              setClickedTeam(team);
+                              setClickedOnAddMember(true);
+                            }}
+                          >
+                            <UserPlus />
+                          </TableCell>
+                        )}
                       </TableRow>
                     ))}
                   </TableBody>
