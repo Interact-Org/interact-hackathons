@@ -57,7 +57,7 @@ const TimeProgressGraph = ({ time1, time2, innerRadius = 80, outerRadius = 120, 
   const variants = ['h-[130px]', 'h-[140px]', 'h-[150px]', 'h-[160px]', 'h-[170px]'];
 
   return (
-    <AnalyticBox className={`h-[${height}px] relative ${className}`}>
+    <AnalyticBox styles={{ height: `${height}px` }} className={`relative ${className}`}>
       <ChartContainer config={chartConfig} className="w-full transition-ease-500">
         <RadialBarChart
           data={chartData}

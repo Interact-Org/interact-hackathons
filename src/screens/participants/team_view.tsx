@@ -107,23 +107,21 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
                 {actions && (
                   <TableCell>
                     <div className="w-full h-full flex justify-end gap-4">
-                      {member.id != user.id &&
-                        (user.id == team.userID ? (
-                          <>
-                            {onKickMember && (
-                              <Trash
-                                onClick={() => {
-                                  if (onKickMember) onKickMember(member.id);
-                                }}
-                                className="text-primary_danger cursor-pointer"
-                                size={20}
-                              />
-                            )}
-                          </>
-                        ) : (
-                          // onLeaveTeam && <ArrowLineRight onClick={onLeaveTeam} className="text-primary_danger cursor-pointer" size={20} />
-                          <></>
-                        ))}
+                      {member.id != user.id && user.id == team.userID ? (
+                        <>
+                          {onKickMember && (
+                            <Trash
+                              onClick={() => {
+                                if (onKickMember) onKickMember(member.id);
+                              }}
+                              className="text-primary_danger cursor-pointer"
+                              size={20}
+                            />
+                          )}
+                        </>
+                      ) : (
+                        <></>
+                      )}
                     </div>
                   </TableCell>
                 )}

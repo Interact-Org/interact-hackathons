@@ -163,7 +163,7 @@ const Team = () => {
                   Team Formation <span className="text-black text-2xl">is Live!</span>
                 </>
               ) : (
-                <div className="text-4xl font-semibold">Find, Create, and Join Teams Easily and Effortlessly.</div>
+                <div className="text-4xl font-bold">Create, and Join Teams Easily and Effortlessly.</div>
               )}
             </div>
             {team && (
@@ -206,7 +206,7 @@ const Team = () => {
               className="w-full md:w-1/2 h-40 md:h-52 p-2 md:p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex flex-col justify-center items-center"
             >
               <div className="text-2xl md:text-4xl font-semibold">Create Team</div>
-              <div className="text-xs md:text-sm">
+              <div className="text-xs md:text-base">
                 Initiate brilliance! Create a team to transform your visionary ideas into actionable innovation
               </div>
             </div>
@@ -215,7 +215,7 @@ const Team = () => {
               className="w-full md:w-1/2 h-40 md:h-52 p-2 md:p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex flex-col justify-center items-center"
             >
               <div className="text-2xl md:text-4xl font-semibold">Join Team</div>
-              <div className="text-xs md:text-sm">
+              <div className="text-xs md:text-base">
                 Contribute to success! Join a team to merge your skills with theirs and drive innovative solutions.
               </div>
             </div>

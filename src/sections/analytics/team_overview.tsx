@@ -87,9 +87,9 @@ const TeamOverviewAnalytics = () => {
       <TimeProgressGraph
         time1={moment(hackathon.teamFormationStartTime)}
         time2={moment(hackathon.teamFormationEndTime)}
-        innerRadius={140}
-        outerRadius={200}
-        height={160}
+        innerRadius={80}
+        outerRadius={140}
+        height={140}
       />
 
       <div className="w-full grid grid-cols-2 gap-2">
@@ -119,7 +119,12 @@ export default TeamOverviewAnalytics;
 type BoxProps = {
   children: ReactNode;
   className?: string;
+  styles?: React.CSSProperties;
 };
-export function AnalyticBox({ children, className }: BoxProps) {
-  return <div className={`p-4 bg-white rounded-lg w-full ${className}`}>{children}</div>;
+export function AnalyticBox({ children, className, styles }: BoxProps) {
+  return (
+    <div style={styles} className={`p-4 bg-white rounded-lg w-full ${className}`}>
+      {children}
+    </div>
+  );
 }
