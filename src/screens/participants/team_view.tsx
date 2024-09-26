@@ -70,6 +70,12 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
               <ArrowLineRight className="md:ml-2 cursor-pointer" size={20} />
             </Button>
           )}
+          {user.id == team.userID && team.memberships.length == 1 && (
+            <Button variant={'destructive'} onClick={onDeleteTeam}>
+              <p className="hidden md:inline-block">Delete Team</p>
+              <Trash className="md:ml-2 cursor-pointer" size={20} />
+            </Button>
+          )}
         </div>
       </div>
       <Table>
@@ -107,7 +113,7 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
                 {actions && (
                   <TableCell>
                     <div className="w-full h-full flex justify-end gap-4">
-                      {member.id != user.id && user.id == team.userID ? (
+                      {member.id != user.id && user.id == team.userID && (
                         <>
                           {onKickMember && (
                             <Trash
@@ -119,8 +125,6 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
                             />
                           )}
                         </>
-                      ) : (
-                        <></>
                       )}
                     </div>
                   </TableCell>
