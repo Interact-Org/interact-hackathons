@@ -239,7 +239,7 @@ const ContributionsGraph = ({
           <ChartContainer config={overallDataConfig} className="w-full">
             <BarChart accessibilityLayer data={overallData}>
               <CartesianGrid vertical={false} />
-              <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} tickFormatter={value => value.slice(0, 3)} />
+              <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="codeContribution" fill="var(--color-codeContribution)" radius={4} />
               <Bar dataKey="designContribution" fill="var(--color-designContribution)" radius={4} />
@@ -253,7 +253,7 @@ const ContributionsGraph = ({
           <ChartContainer config={codeDataConfig} className="w-full">
             <BarChart accessibilityLayer data={codeData}>
               <CartesianGrid vertical={false} />
-              <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} tickFormatter={value => value.slice(0, 3)} />
+              <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="totalCommits" fill="var(--color-totalCommits)" radius={4} />
               <Bar dataKey="totalLinesChanged" fill="var(--color-totalLinesChanged)" radius={4} />
@@ -268,7 +268,7 @@ const ContributionsGraph = ({
           <ChartContainer config={figmaDataConfig} className="w-full">
             <BarChart accessibilityLayer data={figmaData}>
               <CartesianGrid vertical={false} />
-              <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} tickFormatter={value => value.slice(0, 3)} />
+              <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="totalVersions" fill="var(--color-totalVersions)" radius={4} />
               <Bar dataKey="score" fill="var(--color-score)" radius={4} />
@@ -281,7 +281,7 @@ const ContributionsGraph = ({
           <ChartContainer config={tasksDataConfig} className="w-full">
             <BarChart accessibilityLayer data={tasksData}>
               <CartesianGrid vertical={false} />
-              <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} tickFormatter={value => value.slice(0, 3)} />
+              <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="tasksAssigned" fill="var(--color-tasksAssigned)" radius={4} />
               <Bar dataKey="tasksCompleted" fill="var(--color-tasksCompleted)" radius={4} />

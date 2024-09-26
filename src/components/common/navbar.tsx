@@ -12,6 +12,8 @@ const Navbar = () => {
   const user = useSelector(userSelector);
   const hackathon = useSelector(currentHackathonSelector);
 
+  const path = window.location.pathname?.replace('/', '');
+
   return (
     <div className="w-full h-12 md:h-navbar bg-navbar dark:bg-dark_navbar text-gray-500 dark:text-white border-gray-300 border-b-[1px] dark:border-0 glassMorphism backdrop-blur-sm fixed top-0 flex justify-between px-4 items-center z-20">
       <Link href={'/'} className="hidden dark:flex dark:flex-row">
@@ -20,7 +22,7 @@ const Navbar = () => {
       </Link>
       <Link href={'/'} className="static dark:hidden flex flex-row">
         <ReactSVG src="/onboarding_logo.svg" className="scale-75 md:scale-100 relative -left-4 md:left-0" />
-        {hackathon && (
+        {hackathon && path && (
           <span className="h-full text-black dark:text-white flex-center gap-5 font-bold mt-[0.4rem]">
             <div>X</div>
             <div>{hackathon.organizationTitle}</div>

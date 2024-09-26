@@ -148,10 +148,14 @@ const Team = () => {
   return (
     <BaseWrapper>
       <div className="w-full min-h-base py-8 mt-4 md:p-12 flex flex-col md:justify-start gap-8 md:gap-16 font-primary p-8">
-        <div className="w-full mx-auto flex flex-col md:flex-row gap-4 md:gap-8">
+        <div className="w-full mx-auto flex flex-col items-center md:flex-row gap-4 md:gap-8">
           <div className="w-full md:w-1/2 justify-center items-start flex-col gap-2">
             <div className="font-bold">
-              <h4 className="w-fit gradient-text-3 text-5xl mb-2">Team {team ? team.title : 'Formation'}</h4>
+              {team ? (
+                <h4 className="w-fit gradient-text-3 text-5xl mb-2">Team {team.title}</h4>
+              ) : (
+                <h4 className="w-fit gradient-text-3 text-8xl mb-6">Team Formation</h4>
+              )}
             </div>
             <div className="w-fit text-lg md:text-4xl lg:text-8xl font-bold gradient-text-2">
               {team ? (
@@ -159,7 +163,7 @@ const Team = () => {
                   Team Formation <span className="text-black text-2xl">is Live!</span>
                 </>
               ) : (
-                <span className="text-3xl">Find, Create, and Join Teams Easily and Effortlessly.</span>
+                <div className="text-4xl font-semibold">Find, Create, and Join Teams Easily and Effortlessly.</div>
               )}
             </div>
             {team && (

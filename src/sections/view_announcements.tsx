@@ -43,12 +43,16 @@ const ViewAnnouncements = ({ setShow }: Props) => {
 
   return (
     <>
-      <div className="fixed top-1/2 -translate-y-1/2 max-md:top-[calc(50%-75px)] w-1/2 max-lg:w-5/6 h-2/3 shadow-2xl dark:shadow-none backdrop-blur-xl bg-[#ffffff] dark:bg-[#ffe1fc22] flex flex-col gap-8 justify-between max-md:items-end p-8 max-md:p-6 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg right-1/2 translate-x-1/2 max-md:-translate-y-1/2 animate-fade_third z-30">
-        <div className="w-full flex flex-col gap-4">
-          {announcements.map(announcement => (
-            <AnnouncementCard key={announcement.id} announcement={announcement} setAnnouncements={setAnnouncements} />
-          ))}
-        </div>
+      <div className="fixed top-1/2 -translate-y-1/2 max-md:top-[calc(50%-75px)] w-1/2 max-lg:w-5/6 h-fit max-h-[75%] shadow-2xl dark:shadow-none backdrop-blur-xl bg-[#ffffff] dark:bg-[#ffe1fc22] flex flex-col gap-8 justify-between max-md:items-end p-8 max-md:p-6 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg right-1/2 translate-x-1/2 max-md:-translate-y-1/2 animate-fade_third z-30">
+        {announcements && announcements.length > 0 ? (
+          <div className="w-full flex flex-col gap-4">
+            {announcements.map(announcement => (
+              <AnnouncementCard key={announcement.id} announcement={announcement} setAnnouncements={setAnnouncements} />
+            ))}
+          </div>
+        ) : (
+          <div className="mx-auto font-medium text-lg">No Announcements yet</div>
+        )}
       </div>
       <div onClick={() => setShow(false)} className="bg-backdrop w-screen h-screen fixed top-0 left-0 animate-fade_third z-20"></div>
     </>
