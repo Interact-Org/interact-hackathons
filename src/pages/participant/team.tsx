@@ -51,7 +51,7 @@ const Team = () => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
       const role = getHackathonRole();
-      if (role != 'participant') window.location.replace('/');
+      if (role != 'participant') window.location.replace('/?action=sync');
       else {
         const now = moment();
         if (hackathon.isEnded) window.location.replace('/participant/ended');

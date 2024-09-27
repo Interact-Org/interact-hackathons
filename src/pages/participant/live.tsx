@@ -58,7 +58,7 @@ const Live = () => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
       const role = getHackathonRole();
-      if (role != 'participant') window.location.replace('/');
+      if (role != 'participant') window.location.replace('/?action=sync');
       else {
         if (hackathon.isEnded) window.location.replace('/participant/ended');
         else if (moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
