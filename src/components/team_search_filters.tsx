@@ -97,7 +97,7 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
           <SelectContent>
             <SelectItem value="latest">Latest</SelectItem>
             <SelectItem value="oldest">Oldest</SelectItem>
-            <SelectItem value="overall_score">Scores</SelectItem>
+            <SelectItem value={hackathon.isEnded ? 'overall_score' : 'round_score'}>Scores</SelectItem>
           </SelectContent>
         </Select>
 

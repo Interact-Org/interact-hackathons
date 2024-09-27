@@ -7,7 +7,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import TeamSearchFilters from '@/components/team_search_filters';
 import AdminLiveRoundAnalytics from '@/sections/analytics/admin_live_round_analytics';
 import { currentHackathonSelector, markHackathonEnded } from '@/slices/hackathonSlice';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { ORG_URL } from '@/config/routes';
 import BaseWrapper from '@/wrappers/base';
@@ -121,11 +121,13 @@ const Index = () => {
 
   const role = useMemo(() => getHackathonRole(), []);
 
+  const dispatch = useDispatch();
+
   const handleEndHackathon = async () => {
     const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/end`;
     const res = await postHandler(URL, { winners: [] });
     if (res.statusCode == 200) {
-      markHackathonEnded();
+      dispatch(markHackathonEnded());
       window.location.assign('/admin/ended');
     } else {
       if (res.data.message) Toaster.error(res.data.message);
