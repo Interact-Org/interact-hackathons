@@ -224,7 +224,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
         <span className="w-full flex flex-col md:flex-row items-center gap-2">
           <Trophy size={32} />
           <h1 className="text-xl md:text-3xl font-semibold text-nowrap">Overall Score</h1>
-          {role == 'org' && !hackathon.isEnded ? (
+          {role == 'admin' && !hackathon.isEnded ? (
             <div className="flex-center gap-4">
               <Input
                 type="number"
@@ -241,7 +241,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
             </h1>
           )}
         </span>
-        {role == 'org' && !hackathon.isEnded && (
+        {role == 'admin' && !hackathon.isEnded && (
           <Button
             onClick={() => handleSubmit(rounds[activeRound].id, inputScores['overallScore'])}
             className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"
