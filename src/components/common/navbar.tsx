@@ -5,17 +5,20 @@ import { ReactSVG } from 'react-svg';
 import Image from 'next/image';
 import { USER_PROFILE_PIC_URL } from '@/config/routes';
 import { userSelector } from '@/slices/userSlice';
+import ProfileDropdown from '@/sections/navbar/profile_dropdown';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import Link from 'next/link';
 
 const Navbar = () => {
   const user = useSelector(userSelector);
+  const [clickedOnProfile, setClickedOnProfile] = useState(false);
   const hackathon = useSelector(currentHackathonSelector);
 
   const path = window.location.pathname?.replace('/', '');
 
   return (
     <div className="w-full h-12 md:h-navbar bg-navbar dark:bg-dark_navbar text-gray-500 dark:text-white border-gray-300 border-b-[1px] dark:border-0 glassMorphism backdrop-blur-sm fixed top-0 flex justify-between px-4 items-center z-20">
+      {clickedOnProfile && <ProfileDropdown setShow={setClickedOnProfile} />}     
       <Link href={'/'} className="hidden dark:flex dark:flex-row">
         <ReactSVG src="/onboarding_logo_dark.svg" />
         {hackathon && <span className="text-black dark:text-white font-medium">X {hackathon.organizationTitle}</span>}
