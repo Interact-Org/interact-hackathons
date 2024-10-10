@@ -95,9 +95,15 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
     }
   };
 
+  const averageScore = useMemo(() => {
+    const numericScores = rounds[activeRound]?.metrics.filter(metric => metric.type === 'number').map(metric => Number(inputScores[metric.id]) || 0);
+    const totalScore = numericScores?.reduce((acc, curr) => acc + curr, 0);
+    return numericScores?.length > 0 ? (totalScore / numericScores.length).toFixed(2) : '0';
+  }, [inputScores, rounds, activeRound]);
+
   return (
     <div className="w-full p-4 flex flex-col gap-8">
-      <div className="w-fit bg-white p-1 rounded-md mx-auto">
+      <div className="w-fit bg-white p-1 rounded-md mx-auto flex flex-wrap justify-center">
         {Array.from({ length: rounds.length }, (_, index) => (
           <button
             key={index}
@@ -109,17 +115,17 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
         ))}
       </div>
 
-      <div className="w-full grid grid-cols-2 gap-4">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
         {rounds[activeRound]?.metrics.map((metric, index) => (
           <div key={index} className="w-full p-3 bg-white rounded-md flex flex-col gap-2">
             <span>
-              <h1 className="text-2xl font-semibold">{metric.title}</h1>
+              <h1 className="text-lg md:text-xl lg:text-2xl font-semibold">{metric.title}</h1>
               <p className="text-xs mb-4">{metric.description}</p>
             </span>
 
             {metric.type === 'number' && (
               <>
-                {role == 'admin' ? (
+                {role == 'admin' && !hackathon.isEnded ? (
                   <Input
                     type="number"
                     className="w-full p-2 border border-gray-300 rounded-md"
@@ -133,7 +139,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
               </>
             )}
 
-            {metric.type === 'text' && (
+            {metric.type === 'text' && !hackathon.isEnded && (
               <>
                 {role == 'admin' ? (
                   <TextArea
@@ -149,7 +155,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
               </>
             )}
 
-            {metric.type === 'select' && metric.options && metric.options.length > 0 && (
+            {metric.type === 'select' && metric.options && metric.options.length > 0 && !hackathon.isEnded && (
               <>
                 {role == 'admin' ? (
                   <Select onValueChange={value => handleInputChange(metric.id, value)}>
@@ -170,10 +176,43 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
               </>
             )}
 
-            {role == 'admin' && (
+            {metric.type === 'boolean' && !hackathon.isEnded && (
+              <>
+                {role === 'admin' ? (
+                  <div className="flex items-center space-x-4">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name={`boolean-${metric.id}`}
+                        value="true"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                        checked={inputScores[metric.id] === true}
+                        onChange={() => handleInputChange(metric.id, true)}
+                      />
+                      <span className="text-gray-900">True</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name={`boolean-${metric.id}`}
+                        value="false"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                        checked={inputScores[metric.id] === false}
+                        onChange={() => handleInputChange(metric.id, false)}
+                      />
+                      <span className="text-gray-900">False</span>
+                    </label>
+                  </div>
+                ) : (
+                  <div>Value: {inputScores[metric.id] ? 'True' : 'False'}</div>
+                )}
+              </>
+            )}
+
+            {role == 'admin' && !hackathon.isEnded && (
               <Button
                 onClick={() => handleSubmit(metric.hackathonRoundID, inputScores[metric.id], metric.id)}
-                className="bg-primary_text/90 hover:bg-primary_text px-12"
+                className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"
               >
                 Submit
               </Button>
@@ -181,26 +220,31 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
           </div>
         ))}
       </div>
-      <div className="w-full p-3 bg-white text-primary_text rounded-md flex justify-between gap-4">
-        <span className="flex items-center gap-2">
+      <div className="w-full p-3 bg-white text-primary_text rounded-md flex flex-col md:flex-row md:justify-between gap-4">
+        <span className="w-full flex flex-col md:flex-row items-center gap-2">
           <Trophy size={32} />
-          <h1 className="text-3xl font-semibold text-nowrap">Overall Score</h1>
-          {role == 'admin' ? (
-            <Input
-              type="number"
-              className="bg-white text-black w-60 ml-8"
-              placeholder="Enter Score"
-              value={inputScores['overallScore'] || ''}
-              onChange={e => handleInputChange('overallScore', e.target.value)}
-            />
+          <h1 className="text-xl md:text-3xl font-semibold text-nowrap">Overall Score</h1>
+          {role == 'admin' && !hackathon.isEnded ? (
+            <div className="flex-center gap-4">
+              <Input
+                type="number"
+                className="bg-white text-black w-full md:w-60"
+                placeholder="Enter Score"
+                value={inputScores['overallScore'] || ''}
+                onChange={e => handleInputChange('overallScore', e.target.value)}
+              />
+              <span className="font-medium">Suggested: {averageScore} (Avg of all numeric metrics)</span>
+            </div>
           ) : (
-            <h1 className="text-3xl font-semibold">: {inputScores['overallScore'] || ''}</h1>
+            <h1 className="flex-center gap-2 text-3xl font-semibold">
+              <span className="hidden md:block">:</span> {inputScores['overallScore'] || ''}
+            </h1>
           )}
         </span>
-        {role == 'admin' && (
+        {role == 'admin' && !hackathon.isEnded && (
           <Button
             onClick={() => handleSubmit(rounds[activeRound].id, inputScores['overallScore'])}
-            className="bg-primary_text/90 hover:bg-primary_text px-12"
+            className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"
           >
             Submit
           </Button>

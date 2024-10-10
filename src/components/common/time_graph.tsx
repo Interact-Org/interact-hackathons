@@ -57,8 +57,8 @@ const TimeProgressGraph = ({ time1, time2, innerRadius = 80, outerRadius = 120, 
   const variants = ['h-[130px]', 'h-[140px]', 'h-[150px]', 'h-[160px]', 'h-[170px]'];
 
   return (
-    <AnalyticBox className={`h-[${height}px] overflow-hidden relative ${className}`}>
-      <ChartContainer config={chartConfig} className="w-full aspect-square relative scale-75 md:scale-90 -top-12 md:-top-6">
+    <AnalyticBox styles={{ height: `${height}px` }} className={`relative ${className}`}>
+      <ChartContainer config={chartConfig} className="w-full transition-ease-500">
         <RadialBarChart
           data={chartData}
           startAngle={180}
@@ -70,9 +70,10 @@ const TimeProgressGraph = ({ time1, time2, innerRadius = 80, outerRadius = 120, 
           <RadialBar dataKey="value" cornerRadius={5} fill="var(--color-remaining)" className="stroke-transparent stroke-2" />
         </RadialBarChart>
       </ChartContainer>
+
       <div className="absolute inset-0 top-1/3 flex flex-col items-center justify-center">
         <span className="text-2xl font-bold text-foreground">{timeLeft}</span>
-        <span className="text-sm text-muted-foreground">Time Left</span>
+        <span className="text-sm text-muted-foreground">Left</span>
       </div>
     </AnalyticBox>
   );

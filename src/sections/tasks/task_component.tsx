@@ -71,7 +71,7 @@ const TaskComponent = ({
   return (
     <>
       {clickedOnUsers && <UsersList title="Task Users" users={task.users} setShow={setClickedOnUsers} />}
-      <div className="w-screen h-screen pt-navbar fixed bg-gray-50 top-0 overflow-y-auto flex flex-col gap-4 p-8 max-md:px-4 font-primary animate-fade_third z-10 max-md:z-20">
+      <div className="w-screen h-screen fixed bg-gray-50 top-0 overflow-y-auto flex flex-col gap-4 p-8 max-md:px-4 font-primary animate-fade_third z-10 max-md:z-20">
         <div className="w-full flex flex-col gap-2">
           <ArrowArcLeft
             className="cursor-pointer"
@@ -148,7 +148,7 @@ const TaskComponent = ({
               {task.priority}
             </div>
           </div>
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center max-md:hidden">
             <div>Difficulty:</div>
             <div style={{ backgroundColor: getTaskDifficultyColor(task) }} className="uppercase px-3 py-1 rounded-lg text-sm font-medium">
               {task.difficulty}
@@ -166,7 +166,7 @@ const TaskComponent = ({
         {task.users.length > 0 ? (
           <div onClick={() => setClickedOnUsers(true)} className="w-fit h-fit flex-center gap-2 cursor-pointer">
             <div className="text-xl font-medium">Assigned To: </div>
-            <PictureList users={task.users} size={8} gap={2} />
+            <PictureList users={task.users} size={8} />
           </div>
         ) : (
           <div onClick={() => setClickedOnEditTask(true)} className="w-full text-base bg-gray-100 rounded-xl p-4 cursor-pointer transition-ease-300">

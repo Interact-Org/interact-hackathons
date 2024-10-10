@@ -31,7 +31,7 @@ const SubTasksTable = ({ subtasks, setClickedOnTask, setClickedSubTask }: Props)
         >
           <div className="w-[35%] max-md:w-[40%] flex-center font-medium max-md:text-xs">{task.title}</div>
           <div className="w-[20%] max-md:w-[25%] flex-center">
-            <PictureList users={task.users} size={6} gap={2} />
+            <PictureList users={task.users} size={6} />
           </div>
           <div className="w-[15%] flex-center">
             <div

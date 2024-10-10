@@ -1,13 +1,12 @@
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
-import { HackathonRound, HackathonTeam } from '@/types';
+import { HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import TeamSearchFilters from '@/components/team_search_filters';
-import AdminLiveRoundAnalytics from '@/sections/analytics/admin_live_round_analytics';
-import { currentHackathonSelector, markHackathonEnded } from '@/slices/hackathonSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { currentHackathonSelector } from '@/slices/hackathonSlice';
+import { useSelector } from 'react-redux';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { ORG_URL } from '@/config/routes';
 import BaseWrapper from '@/wrappers/base';
@@ -17,52 +16,23 @@ import PictureList from '@/components/common/picture_list';
 import { Button } from '@/components/ui/button';
 import NewAnnouncement from '@/sections/admin/new_announcement';
 import ViewAnnouncements from '@/sections/admin/view_announcements';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import postHandler from '@/handlers/post_handler';
-import { UserPlus } from '@phosphor-icons/react';
-import { initialHackathonTeam } from '@/types/initials';
-import AddTeamMember from '@/sections/admin/add_team_member';
+import configuredAxios from '@/config/axios';
+import { Loader } from 'lucide-react';
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const Index = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
-  const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
   const [page, setPage] = useState(0);
-  const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [search, setSearch] = useState('');
   const [track, setTrack] = useState('');
   const [eliminated, setEliminated] = useState('');
   const [overallScore, setOverallScore] = useState(0);
   const [order, setOrder] = useState('latest');
-  const [rounds, setRounds] = useState<HackathonRound[]>([]);
   const hackathon = useSelector(currentHackathonSelector);
   const [clickedOnNewAnnouncement, setClickedOnNewAnnouncement] = useState(false);
   const [clickedOnViewAnnouncement, setClickedOnViewAnnouncement] = useState(false);
-  const [clickedOnEndHackathon, setClickedOnEndHackathon] = useState(false);
-  const [clickedOnAddMember, setClickedOnAddMember] = useState<boolean>(false);
-  const [clickedTeam, setClickedTeam] = useState(initialHackathonTeam);
-
-  const getCurrentRound = async () => {
-    const URL = `/hackathons/${hackathon.id}/participants/round`;
-    const res = await getHandler(URL);
-    if (res.statusCode == 200) {
-      setCurrentRound(res.data.round);
-    } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
-    }
-  };
-
-  const getRounds = async () => {
-    const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/rounds`;
-    const res = await getHandler(URL);
-    if (res.statusCode == 200) {
-      setRounds(res.data.rounds);
-    } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
-    }
-  };
+  const [loading, setLoading] = useState(false);
 
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${
@@ -81,7 +51,6 @@ const Index = () => {
         setTeams(addedTeams);
       }
       setPage(prev => prev + 1);
-      setLoading(false);
     } else {
       if (res.data.message) Toaster.error(res.data.message);
       else Toaster.error(SERVER_ERROR);
@@ -99,7 +68,6 @@ const Index = () => {
       setPage(1);
       setTeams([]);
       setHasMore(true);
-      setLoading(true);
       fetchTeams(abortController, 1);
     }
 
@@ -111,27 +79,63 @@ const Index = () => {
   useEffect(() => {
     const role = getHackathonRole();
     if (role != 'admin' && role != 'org') window.location.replace('/?action=sync');
-    else if (hackathon.isEnded) window.location.replace('/admin/ended');
     else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
-    else {
-      getCurrentRound();
-      getRounds();
-    }
+    else if (!hackathon.isEnded) window.location.replace('/admin/live');
   }, []);
 
-  const role = useMemo(() => getHackathonRole(), []);
+  const handleDownload = async (downloadType: 'team' | 'overall' | 'round', roundID?: string, roundIndex?: number) => {
+    if (loading) return;
+    try {
+      let URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/csv`;
+      let filename = hackathon.title.replaceAll(' ', '_');
 
-  const dispatch = useDispatch();
+      var isValid = true;
 
-  const handleEndHackathon = async () => {
-    const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/end`;
-    const res = await postHandler(URL, { winners: [] });
-    if (res.statusCode == 200) {
-      dispatch(markHackathonEnded());
-      window.location.assign('/admin/ended');
-    } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      switch (downloadType) {
+        case 'team':
+          URL += '/teams';
+          filename += '_teams';
+          break;
+        case 'overall':
+          URL += '/scores';
+          filename += '_overall-scores';
+          break;
+        case 'round':
+          if (!roundID || !roundIndex) isValid = false;
+          else {
+            URL += `/rounds/${roundID}`;
+            filename += `_round-${roundID}-scores`;
+          }
+          break;
+        default:
+          isValid = false;
+      }
+
+      if (!isValid) return;
+
+      setLoading(true);
+
+      const response = await configuredAxios.get(URL, {
+        responseType: 'blob',
+      });
+
+      const blob = new Blob([response.data], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename + '.csv');
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      Toaster.error(SERVER_ERROR);
+      console.error('Error downloading CSV:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -139,70 +143,21 @@ const Index = () => {
     <BaseWrapper>
       {clickedOnNewAnnouncement && <NewAnnouncement setShow={setClickedOnNewAnnouncement} />}
       {clickedOnViewAnnouncement && <ViewAnnouncements setShow={setClickedOnViewAnnouncement} />}
-      {clickedOnAddMember && <AddTeamMember setShow={setClickedOnAddMember} team={clickedTeam} />}
       <div className="w-full bg-[#E1F1FF] min-h-base">
         <div className="w-[95%] mx-auto h-full flex flex-col gap-2 md:gap-4 lg:gap-8">
-          <div className="--meta-info-container  w-full h-fit flex flex-col gap-4 py-4">
+          <div className="--meta-info-container  w-full h-fit flex flex-col gap-4 py-8">
             <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">
-              <div className="--heading w-full md:w-1/2 h-full flex flex-col gap-4">
-                <section className="w-full h-full text-3xl md:text-4xl lg:text-6xl font-bold lg:leading-[4.5rem]">
-                  {currentRound ? (
-                    <>
-                      <h1
-                        style={{
-                          background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                        }}
-                      >
-                        Round {currentRound.index + 1} is Live!
-                      </h1>
-                      <div className="text-3xl"> Ends {moment(currentRound.endTime).fromNow()}.</div>
-                      <div className="text-5xl w-3/4">
-                        {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.judgingEndTime)) ? (
-                          <div className="w-full flex flex-col gap-4">
-                            <div className="text-[#003a7c]">Judging is Live!</div>
-                            <div className="text-3xl">Ends {moment(currentRound.judgingEndTime).fromNow()}.</div>
-                          </div>
-                        ) : (
-                          moment(currentRound.judgingStartTime).isAfter(moment()) && (
-                            <>Next Judging Round Starts {moment(currentRound.judgingStartTime).fromNow()}.</>
-                          )
-                        )}
-                      </div>
-                      {/* <div className="w-full flex items-center gap-4 mt-4">
-                    <EditDetailsBtn rounds={rounds} />
-                  </div> */}
-                    </>
-                  ) : (
-                    <>
-                      <h1
-                        style={{
-                          background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                        }}
-                      >
-                        All Rounds have ended.
-                      </h1>
-                      {role == 'admin' && (
-                        <Dialog open={clickedOnEndHackathon} onOpenChange={setClickedOnEndHackathon}>
-                          <DialogTrigger className="w-full text-base font-medium bg-red-500 text-white py-2 rounded-md">End Hackathon</DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader className="text-left">
-                              <DialogTitle>End Hackathon</DialogTitle>
-                              <DialogDescription>
-                                This action can not be undone. This will mark this hackathon as ended, no further actions would be possible.
-                              </DialogDescription>
-                            </DialogHeader>
-                            <Button onClick={handleEndHackathon} variant={'destructive'}>
-                              Confirm
-                            </Button>
-                          </DialogContent>
-                        </Dialog>
-                      )}
-                    </>
-                  )}
+              <div className="--heading w-full h-full flex flex-col gap-8">
+                <section className="w-full h-full text-center text-3xl md:text-4xl lg:text-7xl font-bold lg:leading-[4.5rem]">
+                  <h1
+                    style={{
+                      background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  >
+                    The Hackathon has ended
+                  </h1>
                 </section>
                 <div className="w-full flex gap-4 max-md:flex-col">
                   <Button onClick={() => setClickedOnNewAnnouncement(true)} className="w-1/2 bg-primary_text">
@@ -212,8 +167,42 @@ const Index = () => {
                     <div className="">View All Announcements</div>
                   </Button>
                 </div>
+                <div className="w-full flex flex-col gap-2">
+                  <div className="text-xl font-semibold">Event Reports (in CSV)</div>
+                  <div className="w-full flex gap-4 max-md:flex-col relative">
+                    {loading && (
+                      <div className="w-full h-full bg-white flex-center absolute top-0 right-0 bg-opacity-50 rounded-lg">
+                        <Loader />
+                      </div>
+                    )}
+                    <Button onClick={() => handleDownload('team')} className="w-1/2 bg-priority_low" variant={'link'}>
+                      <div className="font-semibold">Team Details</div>
+                    </Button>
+                    <Button onClick={() => handleDownload('overall')} className="w-1/2 bg-priority_low" variant={'link'}>
+                      <div className="font-semibold">Overall Team Scores</div>
+                    </Button>
+                    <Button className="w-1/2 bg-priority_low text-primary_black" variant={'default'} disabled={true}>
+                      <div className="font-semibold">Round Wise Team Scores</div>
+                    </Button>
+                    {/* <Button onClick={() => handleDownload('round')} className="w-1/2 bg-priority_low" variant={'link'}>
+                      <Select value={''} onValueChange={()=>}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select Your Role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {sampleRoleData.map((role, index) => (
+                            <SelectItem value={role} key={index}>
+                              {role}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      <div className="">Round Wise Team Scores</div>
+                    </Button> */}
+                  </div>
+                </div>
               </div>
-              <AdminLiveRoundAnalytics round={currentRound} />
             </div>
           </div>
           <div className="--team-data-box flex flex-col gap-4">
@@ -240,13 +229,12 @@ const Index = () => {
                       <TableHead>Track</TableHead>
                       <TableHead className="hidden md:block">Members</TableHead>
                       <TableHead>Elimination Status</TableHead>
-                      <TableHead>Round Score</TableHead>
-                      {role == 'admin' && <TableHead>Actions</TableHead>}
+                      <TableHead>Overall Score</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody className="w-full">
                     {teams.map((team, index) => (
-                      <TableRow onClick={() => window.location.assign('/admin/live/' + team.id)} key={index} className="cursor-pointer">
+                      <TableRow onClick={() => window.location.assign('/admin/ended/' + team.id)} key={index} className="cursor-pointer">
                         <TableCell className="font-medium">{team.title}</TableCell>
                         <TableCell>{team.project?.title}</TableCell>
                         <TableCell>{team.track?.title}</TableCell>
@@ -256,18 +244,7 @@ const Index = () => {
                         <TableCell>
                           <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
                         </TableCell>
-                        <TableCell>{team.roundScore}</TableCell>
-                        {role == 'admin' && (
-                          <TableCell
-                            onClick={el => {
-                              el.stopPropagation();
-                              setClickedTeam(team);
-                              setClickedOnAddMember(true);
-                            }}
-                          >
-                            <UserPlus />
-                          </TableCell>
-                        )}
+                        <TableCell>{team.overallScore}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

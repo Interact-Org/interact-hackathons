@@ -93,6 +93,7 @@ export const initialUser: User = {
   isVerified: false,
   isOrganization: false,
   githubUsername: '',
+  figmaUsername: '',
   organization: null,
   createdAt: '',
 };
@@ -270,7 +271,9 @@ export const initialAnnouncement: Announcement = {
   taggedUsers: [],
   isOpen: true,
   organizationID: '',
-  organization: initialOrganization,
+  organization: null,
+  hackathonID: '',
+  hackathon: null,
 };
 
 export const initialMessage: Message = {
@@ -540,7 +543,9 @@ export const initialHackathonTeam: HackathonTeam = {
   project: initialProject,
   memberships: [],
   isEliminated: false,
+  roundScore: 0,
   noComments: 0,
   createdAt: new Date(),
   comments: [],
+  overallScore: 0,
 };

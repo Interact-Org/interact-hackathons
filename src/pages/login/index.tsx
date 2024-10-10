@@ -97,7 +97,7 @@ const Login = () => {
         />
       </Head>
       <div className="h-full flex">
-        <div className="w-[45%] max-lg:w-full h-full min-h-screen font-primary py-8 px-8 flex flex-col justify-between items-center">
+        <div className="w-[45%] max-lg:w-full h-full min-h-base font-primary py-8 px-8 flex flex-col justify-between items-center">
           <div className="w-full flex justify-between items-center">
             <ReactSVG src="/onboarding_logo.svg" />
           </div>
@@ -180,7 +180,7 @@ const Login = () => {
             <span className="underline underline-offset-2 font-medium cursor-pointer">Privacy Policy.</span>
           </div>
         </div>
-        <div className="w-[55%] max-lg:hidden min-h-screen bg-onboarding  "></div>
+        <div className="w-[55%] max-lg:hidden min-h-base bg-onboarding  "></div>
       </div>
     </>
   );

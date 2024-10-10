@@ -1,6 +1,6 @@
 import { UsersThree } from '@phosphor-icons/react';
-import { PencilRuler } from 'lucide-react';
-import React, { Dispatch, SetStateAction } from 'react';
+import { ArrowLeft, PencilRuler } from 'lucide-react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { HackathonTeam } from '@/types';
@@ -25,6 +25,7 @@ interface Props {
 }
 const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: Props) => {
   const hackathon = useSelector(currentHackathonSelector);
+  const [clickedOnEliminate, setClickedOnEliminate] = useState(false);
 
   const handleEliminateTeam = async () => {
     const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/team/${team.id}/eliminate`;
@@ -35,6 +36,7 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
       setTeam(prev => {
         return { ...prev, isEliminated: !prev.isEliminated };
       });
+      setClickedOnEliminate(false);
       Toaster.success(message);
     } else Toaster.error(message);
   };
@@ -42,9 +44,9 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
   const role = getHackathonRole();
 
   return (
-    <div className="w-[15%] sticky top-8 left-0 bg-white h-base p-3 flex flex-col justify-between">
+    <div className="w-[12%] md:w-[15%] sticky top-16 left-0 bg-white h-base px-2 md:p-3 md:flex flex-col justify-between">
       <div className="w-full">
-        <section className="--team-details flex flex-col gap-2 pb-4 border-b-[2px] border-primary_text">
+        <section className="--team-details hidden md:flex flex-col gap-2 pb-4 border-b-[2px] border-primary_text">
           <h1 className="text-2xl font-semibold">{team.title}</h1>
           <div className="flex flex-wrap gap-2 items-center justify-between">
             <h2 className="text-base font-semibold text-primary_text flex items-center w-full gap-1">
@@ -60,10 +62,10 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
           </div>
           <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
         </section>
-        <section className="--menu-items flex flex-col gap-2 mt-4">
+        <section className="--menu-items flex flex-col gap-4 md:gap-2 mt-4">
           {data.map((item, index) => (
             <button
-              className={`flex items-center gap-2  w-full py-2 rounded-sm px-3  hover:bg-primary_text hover:text-white  ${
+              className={`flex items-center justify-center md:justify-start gap-2 h-8 md:h-fit w-full md:py-2 rounded-sm md:px-3  hover:bg-primary_text hover:text-white  ${
                 activeIndex === index ? 'bg-primary_text text-white' : 'text-primary_black/80'
               } transition-ease-300`}
               key={index}
@@ -72,28 +74,33 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
               }}
             >
               <item.Icon />
-              <span className="font-semibold">{item.title}</span>
+              <span className="font-semibold hidden md:block ">{item.title}</span>
             </button>
           ))}
         </section>
       </div>
       <div className="w-full flex flex-col gap-2">
-        {role == 'admin' && (
-          <Dialog>
-            <DialogTrigger className="bg-red-500 text-white py-2 rounded-md">Eliminate Team</DialogTrigger>
+        {role == 'admin' && !hackathon.isEnded && (
+          <Dialog open={clickedOnEliminate} onOpenChange={setClickedOnEliminate}>
+            <DialogTrigger className={`${team.isEliminated ? 'bg-green-500' : 'bg-red-500'} text-white py-2 rounded-md`}>
+              {team.isEliminated ? 'Restore' : 'Eliminate'} Team
+            </DialogTrigger>
             <DialogContent>
               <DialogHeader className="text-left">
-                <DialogTitle>Eliminate Team</DialogTitle>
+                <DialogTitle>{team.isEliminated ? 'Restore' : 'Eliminate'} Team</DialogTitle>
                 <DialogDescription>This action can be undone. This will remove the team from the competition.</DialogDescription>
               </DialogHeader>
-              <Button onClick={handleEliminateTeam} variant={'destructive'}>
-                Eliminate
+              <Button onClick={handleEliminateTeam} variant={team.isEliminated ? 'default' : 'destructive'}>
+                {team.isEliminated ? 'Restore' : 'Eliminate'}
               </Button>
             </DialogContent>
           </Dialog>
         )}
-        <Button onClick={() => window.location.assign('/admin/live')} className="bg-primary_text">
-          Go Back
+        <Button onClick={() => window.location.assign('/admin' + (hackathon.isEnded ? '/ended' : '/live'))} className="bg-primary_text mt-6">
+          <span className="hidden md:block">Go Back</span>
+          <span className="md:hidden">
+            <ArrowLeft size={16} />
+          </span>
         </Button>
       </div>
     </div>

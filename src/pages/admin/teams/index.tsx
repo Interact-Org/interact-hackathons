@@ -75,12 +75,14 @@ const Teams = () => {
 
   useEffect(() => {
     const role = getHackathonRole();
-    if (role != 'admin' && role != 'org') window.location.replace('/');
+    if (role != 'admin' && role != 'org') window.location.replace('/?action=sync');
+    else if (hackathon.isEnded) window.location.replace('/admin/ended');
+    else if (moment().isAfter(hackathon.teamFormationEndTime)) window.location.replace('/admin/live');
   }, []);
 
   return (
     <BaseWrapper>
-      <div className="w-full bg-[#E1F1FF] min-h-screen">
+      <div className="w-full bg-[#E1F1FF] min-h-base">
         <div className="w-[95%] mx-auto h-full flex flex-col gap-8">
           <div className="--meta-info-container  w-full h-fit py-4">
             <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">
@@ -120,7 +122,7 @@ const Teams = () => {
                   <TableHeader className="uppercase text-xs md:text-sm">
                     <TableRow>
                       <TableHead className="min-w-[100px] w-1/4">Team Name</TableHead>
-                      <TableHead className="hidden md:block">Created By</TableHead>
+                      <TableHead>Created By</TableHead>
                       <TableHead>Members</TableHead>
                       <TableHead>Track</TableHead>
                       <TableHead className="hidden md:block">Created At</TableHead>
@@ -130,12 +132,12 @@ const Teams = () => {
                     {teams.map(team => (
                       <TableRow key={team.id}>
                         <TableCell className="font-medium">{team.title}</TableCell>
-                        <TableCell className="hidden md:block">{team.user.name}</TableCell>
+                        <TableCell className="max-md:hidden">{team.user.name}</TableCell>
                         <TableCell className="min-w-[150px] max-w-[300px] flex items-center gap-2 flex-wrap">
-                          <PictureList users={team.memberships.map(membership => membership.user)} size={6} gap={7} />
+                          <PictureList users={team.memberships.map(membership => membership.user)} size={6} />
                         </TableCell>
                         <TableCell>{team.track?.title}</TableCell>
-                        <TableCell className="hidden md:block">{moment(team.createdAt).format('hh:mm a DD MMMM')}</TableCell>
+                        <TableCell className="max-md:hidden">{moment(team.createdAt).format('hh:mm a DD MMMM')}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

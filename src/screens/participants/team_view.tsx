@@ -3,7 +3,7 @@ import { USER_PROFILE_PIC_URL } from '@/config/routes';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { userSelector } from '@/slices/userSlice';
 import { HackathonTeam, HackathonTrack } from '@/types';
-import { ArrowLineRight, PencilLine, Trash } from '@phosphor-icons/react';
+import { ArrowLineRight, Trash } from '@phosphor-icons/react';
 import moment from 'moment';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -18,13 +18,15 @@ interface Props {
   onKickMember?: (userID: string) => void;
   tracks?: HackathonTrack[] | null;
   onUpdateTeam?: (formData: any) => void;
+  actions?: boolean;
 }
 
-const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam, tracks }: Props) => {
+const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam, tracks, actions = true }: Props) => {
   const user = useSelector(userSelector);
   const [track, setTrack] = useState(team.trackID ?? '');
   const [initialRender, setInitialRender] = useState(true);
   const hackathon = useSelector(currentHackathonSelector);
+
   useEffect(() => {
     if (track && track.length > 0 && onUpdateTeam) {
       if (!initialRender) {
@@ -37,8 +39,9 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
     }
     setInitialRender(false);
   }, [track]);
+
   return (
-    <div className="w-full mx-auto  p-3 md:p-6 bg-white rounded-xl shadow-lg transition hover:shadow-xl">
+    <div className="w-full mx-auto  p-3 md:p-6 md:pt-navbar bg-white rounded-xl shadow-lg transition hover:shadow-xl">
       <div className="w-full flex flex-col md:flex-row items-center justify-between">
         {tracks && tracks.length > 0 && (
           <div className="w-full md:w-fit flex items-center gap-2">
@@ -67,6 +70,12 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
               <ArrowLineRight className="md:ml-2 cursor-pointer" size={20} />
             </Button>
           )}
+          {user.id == team.userID && team.memberships.length == 1 && (
+            <Button variant={'destructive'} onClick={onDeleteTeam}>
+              <p className="hidden md:inline-block">Delete Team</p>
+              <Trash className="md:ml-2 cursor-pointer" size={20} />
+            </Button>
+          )}
         </div>
       </div>
       <Table>
@@ -78,7 +87,7 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
             <TableHead>Member</TableHead>
             <TableHead>Role</TableHead>
             <TableHead className="hidden md:block">Joined At</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            {actions && <TableHead className="text-right">Actions</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -100,13 +109,12 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
                   </div>
                 </TableCell>
                 <TableCell>{membership.role}</TableCell>
-                <TableCell className="hidden md:block">{moment(membership.createdAt).format('hh:mm a, DD MMMM')}</TableCell>
-                <TableCell>
-                  <div className="w-full h-full flex justify-end gap-4">
-                    {member.id != user.id &&
-                      (user.id == team.userID ? (
+                <TableCell className="max-md:hidden">{moment(membership.createdAt).format('hh:mm a, DD MMMM')}</TableCell>
+                {actions && (
+                  <TableCell>
+                    <div className="w-full h-full flex justify-end gap-4">
+                      {member.id != user.id && user.id == team.userID && (
                         <>
-                          <PencilLine className="cursor-pointer" size={20} />
                           {onKickMember && (
                             <Trash
                               onClick={() => {
@@ -117,12 +125,10 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
                             />
                           )}
                         </>
-                      ) : (
-                        // onLeaveTeam && <ArrowLineRight onClick={onLeaveTeam} className="text-primary_danger cursor-pointer" size={20} />
-                        <></>
-                      ))}
-                  </div>
-                </TableCell>
+                      )}
+                    </div>
+                  </TableCell>
+                )}
               </TableRow>
             );
           })}

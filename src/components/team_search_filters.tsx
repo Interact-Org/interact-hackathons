@@ -97,6 +97,7 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
           <SelectContent>
             <SelectItem value="latest">Latest</SelectItem>
             <SelectItem value="oldest">Oldest</SelectItem>
+            <SelectItem value={hackathon.isEnded ? 'overall_score' : 'round_score'}>Scores</SelectItem>
           </SelectContent>
         </Select>
 
@@ -112,7 +113,6 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
             className="w-20 h-8 md:h-10 border-[2px] border-[#dedede] text-center"
           />
         </div> */}
-
 
         <Select value={eliminated} onValueChange={setEliminated}>
           <SelectTrigger className="w-[49%] md:w-32 min-w-fit bg-white h-10 border-[2px] border-[#dedede]">

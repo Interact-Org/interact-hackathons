@@ -19,7 +19,7 @@ import CoverPic from '@/components/utils/new_cover';
 interface Props {
   projectToEdit: Project;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
-  setTeam: React.Dispatch<React.SetStateAction<HackathonTeam>>;
+  setTeam: React.Dispatch<React.SetStateAction<HackathonTeam | null>>;
 }
 
 const EditProject = ({ projectToEdit, setShow, setTeam }: Props) => {
@@ -62,9 +62,9 @@ const EditProject = ({ projectToEdit, setShow, setTeam }: Props) => {
     if (tagline != projectToEdit.tagline) formData.append('tagline', tagline);
     if (description != projectToEdit.description) formData.append('description', description);
     // if (isArrEdited(tags, projectToEdit.tags))
-    tags.forEach(tag => formData.append('tags', tag));
+    tags?.forEach(tag => formData.append('tags', tag));
     // if (isArrEdited(links, projectToEdit.links))
-    links.forEach(link => formData.append('links', link));
+    links?.forEach(link => formData.append('links', link));
     // if (isArrEdited(privateLinks, projectToEdit.privateLinks))
     if (category != projectToEdit.category) formData.append('category', category);
     if (image) formData.append('coverPic', image);
@@ -78,7 +78,7 @@ const EditProject = ({ projectToEdit, setShow, setTeam }: Props) => {
       newProject.user = user;
 
       setTeam(prev => {
-        return { ...prev, project: newProject };
+        return { ...(prev as HackathonTeam), project: newProject };
       });
       Toaster.stopLoad(toaster, 'Project Edited', 1);
       setTagline('');

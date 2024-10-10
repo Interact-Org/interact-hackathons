@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import useUserStateSynchronizer from '@/hooks/sync';
+import { userSelector } from '@/slices/userSlice';
 import { Hackathon } from '@/types';
 import Toaster from '@/utils/toaster';
 import Protect from '@/utils/wrappers/protect';
@@ -11,6 +12,7 @@ import BaseWrapper from '@/wrappers/base';
 import { SignOut } from '@phosphor-icons/react';
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const Index = () => {
   const [registeredHackathons, setRegisteredHackathons] = useState<Hackathon[]>([]);
@@ -29,6 +31,8 @@ const Index = () => {
 
   const userStateSynchronizer = useUserStateSynchronizer();
 
+  const user = useSelector(userSelector);
+
   useEffect(() => {
     fetchHackathons('/hackathons/me', setRegisteredHackathons);
     fetchHackathons('/hackathons/admin/me', setAdminHackathons);
@@ -40,6 +44,9 @@ const Index = () => {
     const action = urlParams.get('action');
 
     if (action == 'sync') userStateSynchronizer(); //TODO remove form params after promise is successful
+    else {
+      if (user.registeredEvents?.length == 0 && user.organizationMemberships?.length == 0) userStateSynchronizer();
+    }
   }, [window.location.search]);
 
   function handleLogout() {
@@ -50,7 +57,7 @@ const Index = () => {
   }
   return (
     <BaseWrapper>
-      <div className="w-full bg-[#E1F1FF] min-h-screen">
+      <div className="w-full bg-[#E1F1FF] min-h-base">
         <div className="w-full bg-white h-fit py-2 text-primary_text flex items-center  justify-between px-4">
           <span className="flex flex-col">
             <h1 className="text-xl md:text-2xl font-semibold">Hackathon Dashboard</h1>

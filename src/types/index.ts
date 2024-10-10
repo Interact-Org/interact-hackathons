@@ -162,6 +162,7 @@ export interface User {
   lastViewed: Project[];
   isVerified: boolean;
   githubUsername: string;
+  figmaUsername: string;
   isOrganization: boolean;
   organization: Organization | null;
   createdAt: string;
@@ -663,8 +664,10 @@ export interface Poll {
 
 export interface Announcement {
   id: string;
-  organizationID: string;
+  organizationID?: string;
   organization: Organization | null;
+  hackathonID?: string;
+  hackathon: Hackathon | null;
   title: string;
   content: string;
   noLikes: number;
@@ -821,6 +824,7 @@ export interface HackathonTeam {
   track?: HackathonTrack;
   memberships: HackathonTeamMembership[];
   isEliminated: boolean;
+  roundScore: number;
   noComments: number;
   createdAt: Date;
   comments: Comment[];
@@ -828,6 +832,7 @@ export interface HackathonTeam {
   facultyEmpID?: string;
   facultyName?: string;
   facultySchool?: string;
+  overallScore: number;
 }
 
 export interface HackathonTeamMembership {
@@ -886,4 +891,68 @@ export interface HackathonHistory {
   user?: User;
   deletedText?: string;
   createdAt: Date;
+}
+
+export interface CommitHistory {
+  id: string;
+  repoId: string;
+  username: string;
+  userId?: string;
+  user: User;
+  message: string;
+  addedFiles: string[];
+  modifiedFiles: string[];
+  removedFiles: string[];
+  changes: number;
+  timestamp: string;
+}
+
+export interface GithubRepo {
+  id: string;
+  repoName: string;
+  repoLink: string;
+  projectID?: string;
+  project: Project;
+  users: User[];
+  commitHistories: CommitHistory[];
+  readability: number;
+  maintainability: number;
+  consistency: number;
+  commenting: number;
+  correctness: number;
+  completeness: number;
+  errorHandling: number;
+  efficiency: number;
+  scalability: number;
+  security: number;
+  testCoverage: number;
+  innovation: number;
+  creativity: number;
+  complexityScore: number;
+  projectImpact: number;
+  technicalComplexity: number;
+  practicality: number;
+  plagiarism: number;
+  updatedAt: string;
+}
+
+export interface FigmaVersionHistory {
+  id: string;
+  figmaFileID: string;
+  versionID: string;
+  versionCreatedAt: Date;
+  label: string;
+  description: string;
+  username: string;
+  userID: string;
+  user: User;
+  thumbnailUrl: string;
+}
+
+export interface FigmaFile {
+  id: string;
+  userID: string;
+  projectID: string;
+  fileURL: string;
+  figmaVersionHistories: FigmaVersionHistory[];
 }

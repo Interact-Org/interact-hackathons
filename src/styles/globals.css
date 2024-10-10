@@ -29,3 +29,39 @@ input::-webkit-inner-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
+
+.gradient-text {
+  background: linear-gradient(to right, #8047F8, #FF59F8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+
+.gradient-text-2 {
+  background: linear-gradient(to right, #E1704F, #CF617E, #6B84BC);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+
+.gradient-text-3 {
+  background: linear-gradient(to left, #4B9EFF, #5977E3, #607EE7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+
+.bg-gradient {
+  background: linear-gradient(to right, #E1F1FF, #E5E7EB);
+}
+
+.button-gradient{
+  background: linear-gradient(to right, #607EE7, #5977E3, #4B9EFF);
+}
+
+.blue-text-gradient{
+  background: linear-gradient(to right, #607EE7, #5977E3, #4B9EFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}

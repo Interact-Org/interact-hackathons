@@ -7,8 +7,10 @@ import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { HackathonRound } from '@/types';
 import TimeProgressGraph from '@/components/common/time_graph';
 import moment from 'moment';
+import Toaster from '@/utils/toaster';
+import { SERVER_ERROR } from '@/config/errors';
 
-export default function LiveRoundAnalytics({ round }: { round: HackathonRound | null }) {
+export default function AdminLiveRoundAnalytics({ round }: { round: HackathonRound | null }) {
   const [totalTeams, setTotalTeams] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalTeamsLeft, setTotalTeamsLeft] = useState(0);
@@ -24,6 +26,9 @@ export default function LiveRoundAnalytics({ round }: { round: HackathonRound | 
         setTotalUsers(res.data.totalUsers);
         setTotalTeamsLeft(res.data.totalTeamsLeft);
         setTotalUsersLeft(res.data.totalUsersLeft);
+      } else {
+        if (res.data.message) Toaster.error(res.data.message);
+        else Toaster.error(SERVER_ERROR);
       }
     };
 
@@ -60,7 +65,7 @@ export default function LiveRoundAnalytics({ round }: { round: HackathonRound | 
         </span> */}
       </AnalyticBox>
       <AnalyticBox className="hidden md:block">
-        <div className="text-sm font-semibold text-primary_btn">Round {(round?.index || 0) + 1} is Live!</div>
+        <div className="text-sm font-semibold text-primary_btn">{round ? `Round ${(round?.index || 0) + 1} is Live!` : 'All rounds have ended.'}</div>
       </AnalyticBox>
       <AnalyticBox className="flex flex-col gap-5 justify-between">
         <div className="flex items-start justify-between">
@@ -90,7 +95,7 @@ export default function LiveRoundAnalytics({ round }: { round: HackathonRound | 
           <p>{analyticsData.total_teams.trend}</p>
         </span> */}
       </AnalyticBox>
-      <TimeProgressGraph time1={moment(round?.startTime)} time2={moment(round?.endTime)} height={130} className="hidden md:block" />
+      {round && <TimeProgressGraph time1={moment(round?.startTime)} time2={moment(round?.endTime)} innerRadius={70} outerRadius={100} height={140} />}
     </div>
   );
 }
