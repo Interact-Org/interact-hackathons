@@ -77,7 +77,7 @@ const Live = () => {
   return (
     <BaseWrapper>
       {team ? (
-        team.isEliminated && !moment().isBetween(currentRound?.judgingStartTime, currentRound?.judgingEndTime) ? (
+        team.isEliminated && currentRound && !moment().isBetween(currentRound?.judgingStartTime, currentRound?.endTime) ? (
           <TeamEliminated team={team} />
         ) : (
           <div className="w-full min-h-base bg-[#E1F1FF] p-6  flex flex-col gap-10">
@@ -93,7 +93,7 @@ const Live = () => {
                         Round {currentRound.index + 1} <span className="text-black text-4xl max-md:text-xl">is Live!</span>
                       </div>
                       <div className="w-fit font-semibold gradient-text-2 text-2xl mt-4">
-                        {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.judgingEndTime)) ? (
+                        {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.endTime)) ? (
                           <div className="w-full">Judging is Live!</div>
                         ) : (
                           moment(currentRound.judgingStartTime).isAfter(moment()) && (

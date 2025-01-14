@@ -142,7 +142,7 @@ const TimeGraphWrapper = ({ title, time1, time2 }: { title?: String; time1: mome
 };
 
 const GraphCarousel = ({ currentRound }: { currentRound: HackathonRound | null }) => {
-  const isJudgingActive = moment().isBetween(moment(currentRound?.judgingStartTime), moment(currentRound?.judgingEndTime));
+  const isJudgingActive = moment().isBetween(moment(currentRound?.judgingStartTime), moment(currentRound?.endTime));
 
   const showTimeTillJudging = moment(currentRound?.judgingStartTime).isAfter(moment());
 
@@ -161,7 +161,7 @@ const GraphCarousel = ({ currentRound }: { currentRound: HackathonRound | null }
     <div className="w-2/3 max-md:hidden bg-white rounded-xl gap-3 md:gap-4 pb-4">
       <Slider {...settings} className="">
         {isJudgingActive && (
-          <TimeGraphWrapper title={'Time For Judging'} time1={moment(currentRound?.judgingStartTime)} time2={moment(currentRound?.judgingEndTime)} />
+          <TimeGraphWrapper title={'Time For Judging'} time1={moment(currentRound?.judgingStartTime)} time2={moment(currentRound?.endTime)} />
         )}
         {showTimeTillJudging && (
           <TimeGraphWrapper title={'Time Till Judging'} time1={moment(currentRound?.startTime)} time2={moment(currentRound?.judgingStartTime)} />

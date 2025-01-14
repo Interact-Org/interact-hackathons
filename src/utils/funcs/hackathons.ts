@@ -11,16 +11,18 @@ const user = store.getState().user;
 const hackathonState = store.getState().hackathon;
 
 export const getHackathonStage = (hackathon: Hackathon): string => {
+  const now = moment();
   const startTime = moment(hackathon.startTime);
-  const endTime = moment(hackathon.endTime);
   const teamFormationStartTime = moment(hackathon.teamFormationStartTime);
   const teamFormationEndTime = moment(hackathon.teamFormationEndTime);
 
-  const now = moment();
-
-  if (now.isBefore(startTime)) return HACKATHON_NOT_STARTED;
-  if (hackathon.isEnded) return HACKATHON_COMPLETED;
-  if (now.isBetween(teamFormationStartTime, teamFormationEndTime)) return HACKATHON_TEAM_REGISTRATION;
+  if (hackathon.isEnded) {
+    return HACKATHON_COMPLETED;
+  } else if (now.isBefore(startTime)) {
+    return HACKATHON_NOT_STARTED;
+  } else if (now.isBetween(teamFormationStartTime, teamFormationEndTime, null, '[)')) {
+    return HACKATHON_TEAM_REGISTRATION;
+  }
   return HACKATHON_LIVE;
 };
 

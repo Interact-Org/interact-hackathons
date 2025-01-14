@@ -35,7 +35,7 @@ const Teams = () => {
       overallScore != 0 ? `&overall_score=${overallScore}` : ''
     }${eliminated != '' && eliminated != 'none' ? `&is_eliminated=${eliminated == 'eliminated' ? 'true' : 'false'}` : ''}&order=${order}`;
 
-    const res = await getHandler(URL, abortController?.signal);
+    const res = await getHandler(URL, abortController?.signal, true);
     if (res.statusCode == 200) {
       if (initialPage == 1) {
         setTeams(res.data.teams || []);

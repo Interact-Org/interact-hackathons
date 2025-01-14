@@ -69,7 +69,7 @@ const Index = () => {
       overallScore != 0 ? `&overall_score=${overallScore}` : ''
     }${eliminated != '' && eliminated != 'none' ? `&is_eliminated=${eliminated == 'eliminated' ? 'true' : 'false'}` : ''}&order=${order}`;
 
-    const res = await getHandler(URL, abortController?.signal);
+    const res = await getHandler(URL, abortController?.signal, true);
     if (res.statusCode == 200) {
       if (initialPage == 1) {
         setTeams(res.data.teams || []);
@@ -155,10 +155,10 @@ const Index = () => {
                       </h1>
                       <div className="text-3xl"> Ends {moment(currentRound.endTime).fromNow()}.</div>
                       <div className="text-5xl w-3/4">
-                        {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.judgingEndTime)) ? (
+                        {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.endTime)) ? (
                           <div className="w-full flex flex-col gap-4">
                             <div className="text-[#003a7c]">Judging is Live!</div>
-                            <div className="text-3xl">Ends {moment(currentRound.judgingEndTime).fromNow()}.</div>
+                            <div className="text-3xl">Ends {moment(currentRound.endTime).fromNow()}.</div>
                           </div>
                         ) : (
                           moment(currentRound.judgingStartTime).isAfter(moment()) && (

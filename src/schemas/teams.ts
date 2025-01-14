@@ -28,9 +28,6 @@ export const createRoundSchema = z.object({
   judgingStartTime: z.string().refine(val => !isNaN(new Date(val).getTime()), {
     message: 'Invalid datetime format',
   }),
-  judgingEndTime: z.string().refine(val => !isNaN(new Date(val).getTime()), {
-    message: 'Invalid datetime format',
-  }),
   // metrics: z.array(hackathonScoreMetricSchema),
 });
 

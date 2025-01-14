@@ -853,7 +853,6 @@ export interface HackathonRound {
   startTime: Date;
   endTime: Date;
   judgingStartTime: Date;
-  judgingEndTime: Date;
   metrics: HackathonRoundScoreMetric[];
 }
 
