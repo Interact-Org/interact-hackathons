@@ -142,48 +142,47 @@ const Index = () => {
     <BaseWrapper>
       {clickedOnNewAnnouncement && <NewAnnouncement setShow={setClickedOnNewAnnouncement} />}
       {clickedOnViewAnnouncement && <ViewAnnouncements setShow={setClickedOnViewAnnouncement} />}
-      <div className="w-full bg-[#E1F1FF] min-h-base">
-        <div className="w-[95%] mx-auto h-full flex flex-col gap-2 md:gap-4 lg:gap-8">
-          <div className="--meta-info-container  w-full h-fit flex flex-col gap-4 py-8">
-            <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">
-              <div className="--heading w-full h-full flex flex-col gap-8">
-                <section className="w-full h-full text-center text-3xl md:text-4xl lg:text-7xl font-bold lg:leading-[4.5rem]">
-                  <h1
-                    style={{
-                      background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
-                  >
-                    The Hackathon has ended
-                  </h1>
-                </section>
-                <div className="w-full flex gap-4 max-md:flex-col">
-                  <Button onClick={() => setClickedOnNewAnnouncement(true)} className="w-1/2 bg-primary_text">
-                    <div className="">Create New Announcement</div>
+      <div className="w-full bg-[#E1F1FF] min-h-bas p-12 max-md:p-8 flex flex-col gap-8">
+        <div className=" w-full h-fit flex flex-col gap-4">
+          <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">
+            <div className="--heading w-full h-full flex flex-col gap-8">
+              <section className="w-full h-full text-center text-3xl md:text-4xl lg:text-7xl font-bold lg:leading-[4.5rem]">
+                <h1
+                  style={{
+                    background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  The Hackathon has ended
+                </h1>
+              </section>
+              <div className="w-full flex gap-4 max-md:flex-col">
+                <Button onClick={() => setClickedOnNewAnnouncement(true)} className="w-1/2 bg-primary_text">
+                  <div className="">Create New Announcement</div>
+                </Button>
+                <Button onClick={() => setClickedOnViewAnnouncement(true)} className="w-1/2 bg-primary_text">
+                  <div className="">View All Announcements</div>
+                </Button>
+              </div>
+              <div className="w-full flex flex-col gap-2">
+                <div className="text-xl font-semibold">Event Reports (in CSV)</div>
+                <div className="w-full flex gap-4 max-md:flex-col relative">
+                  {loading && (
+                    <div className="w-full h-full bg-white flex-center absolute top-0 right-0 bg-opacity-50 rounded-lg">
+                      <Loader />
+                    </div>
+                  )}
+                  <Button onClick={() => handleDownload('team')} className="w-1/2 bg-priority_low" variant={'link'}>
+                    <div className="font-semibold">Team Details</div>
                   </Button>
-                  <Button onClick={() => setClickedOnViewAnnouncement(true)} className="w-1/2 bg-primary_text">
-                    <div className="">View All Announcements</div>
+                  <Button onClick={() => handleDownload('overall')} className="w-1/2 bg-priority_low" variant={'link'}>
+                    <div className="font-semibold">Overall Team Scores</div>
                   </Button>
-                </div>
-                <div className="w-full flex flex-col gap-2">
-                  <div className="text-xl font-semibold">Event Reports (in CSV)</div>
-                  <div className="w-full flex gap-4 max-md:flex-col relative">
-                    {loading && (
-                      <div className="w-full h-full bg-white flex-center absolute top-0 right-0 bg-opacity-50 rounded-lg">
-                        <Loader />
-                      </div>
-                    )}
-                    <Button onClick={() => handleDownload('team')} className="w-1/2 bg-priority_low" variant={'link'}>
-                      <div className="font-semibold">Team Details</div>
-                    </Button>
-                    <Button onClick={() => handleDownload('overall')} className="w-1/2 bg-priority_low" variant={'link'}>
-                      <div className="font-semibold">Overall Team Scores</div>
-                    </Button>
-                    <Button className="w-1/2 bg-priority_low text-primary_black" variant={'default'} disabled={true}>
-                      <div className="font-semibold">Round Wise Team Scores</div>
-                    </Button>
-                    {/* <Button onClick={() => handleDownload('round')} className="w-1/2 bg-priority_low" variant={'link'}>
+                  <Button className="w-1/2 bg-priority_low text-primary_black" variant={'default'} disabled={true}>
+                    <div className="font-semibold">Round Wise Team Scores</div>
+                  </Button>
+                  {/* <Button onClick={() => handleDownload('round')} className="w-1/2 bg-priority_low" variant={'link'}>
                       <Select value={''} onValueChange={()=>}>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select Your Role" />
@@ -199,58 +198,57 @@ const Index = () => {
 
                       <div className="">Round Wise Team Scores</div>
                     </Button> */}
-                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="--team-data-box flex flex-col gap-4">
-            <TeamSearchFilters
-              search={search}
-              setSearch={setSearch}
-              track={track}
-              setTrack={setTrack}
-              eliminated={eliminated}
-              setEliminated={setEliminated}
-              overallScore={overallScore}
-              setOverallScore={setOverallScore}
-              order={order}
-              setOrder={setOrder}
-            />
-            <section className="--team-table">
-              <InfiniteScroll className="w-full" dataLength={teams.length} next={fetchTeams} hasMore={hasMore} loader={<></>}>
-                <Table className="bg-white rounded-md">
-                  <TableCaption>A list of all the participating teams</TableCaption>
-                  <TableHeader className="uppercase text-xs md:text-sm">
-                    <TableRow>
-                      <TableHead>Team Name</TableHead>
-                      <TableHead>Project</TableHead>
-                      <TableHead>Track</TableHead>
-                      <TableHead className="hidden md:block">Members</TableHead>
-                      <TableHead>Elimination Status</TableHead>
-                      <TableHead>Overall Score</TableHead>
+        </div>
+        <div className="--team-data-box flex flex-col gap-4">
+          <TeamSearchFilters
+            search={search}
+            setSearch={setSearch}
+            track={track}
+            setTrack={setTrack}
+            eliminated={eliminated}
+            setEliminated={setEliminated}
+            overallScore={overallScore}
+            setOverallScore={setOverallScore}
+            order={order}
+            setOrder={setOrder}
+          />
+          <section className="--team-table">
+            <InfiniteScroll className="w-full" dataLength={teams.length} next={fetchTeams} hasMore={hasMore} loader={<></>}>
+              <Table className="bg-white rounded-md">
+                <TableCaption>A list of all the participating teams</TableCaption>
+                <TableHeader className="uppercase text-xs md:text-sm">
+                  <TableRow>
+                    <TableHead>Team Name</TableHead>
+                    <TableHead>Project</TableHead>
+                    <TableHead>Track</TableHead>
+                    <TableHead className="hidden md:block">Members</TableHead>
+                    <TableHead>Elimination Status</TableHead>
+                    <TableHead>Overall Score</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="w-full">
+                  {teams.map((team, index) => (
+                    <TableRow onClick={() => window.location.assign('/admin/ended/' + team.id)} key={index} className="cursor-pointer">
+                      <TableCell className="font-medium">{team.title}</TableCell>
+                      <TableCell>{team.project?.title}</TableCell>
+                      <TableCell>{team.track?.title}</TableCell>
+                      <TableCell className="min-w-[150px] max-w-[300px] hidden md:flex items-center gap-2 flex-wrap">
+                        <PictureList users={team.memberships.map(membership => membership.user)} size={6} />
+                      </TableCell>
+                      <TableCell>
+                        <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
+                      </TableCell>
+                      <TableCell>{team.overallScore}</TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody className="w-full">
-                    {teams.map((team, index) => (
-                      <TableRow onClick={() => window.location.assign('/admin/ended/' + team.id)} key={index} className="cursor-pointer">
-                        <TableCell className="font-medium">{team.title}</TableCell>
-                        <TableCell>{team.project?.title}</TableCell>
-                        <TableCell>{team.track?.title}</TableCell>
-                        <TableCell className="min-w-[150px] max-w-[300px] hidden md:flex items-center gap-2 flex-wrap">
-                          <PictureList users={team.memberships.map(membership => membership.user)} size={6} />
-                        </TableCell>
-                        <TableCell>
-                          <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
-                        </TableCell>
-                        <TableCell>{team.overallScore}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </InfiniteScroll>
-            </section>
-          </div>
+                  ))}
+                </TableBody>
+              </Table>
+            </InfiniteScroll>
+          </section>
         </div>
       </div>
     </BaseWrapper>

@@ -1,30 +1,31 @@
-import PrimaryButton from '@/components/buttons/primary_btn';
 import { Input } from '@/components/ui/input';
 import { HackathonTrack } from '@/types';
-import ModalWrapper from '@/wrappers/modal';
 import React, { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Toaster from '@/utils/toaster';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 interface Props {
+  show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   submitHandler: (formData: any) => void;
   hackathonID: string;
-  tracks: HackathonTrack[];
+  tracks: HackathonTrack[] | null;
 }
 
-const CreateTeam = ({ setShow, submitHandler, hackathonID, tracks }: Props) => {
+const CreateTeam = ({ show, setShow, submitHandler, hackathonID, tracks }: Props) => {
   const [title, setTitle] = useState('');
   const [track, setTrack] = useState('');
   const [role, setRole] = useState('');
 
   return (
-    <ModalWrapper setShow={setShow} top="1/2">
-      <div className="w-full flex flex-col gap-3">
-        <span>
-          <h1 className="text-2xl font-semibold">Create new team</h1>
-          <p className="text-black/70 text-sm">Fill in the details below to create a new team</p>
-        </span>
+    <Dialog open={show} onOpenChange={setShow}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create new team</DialogTitle>
+          <DialogDescription>Fill in the details below to create a new team.</DialogDescription>
+        </DialogHeader>
         <Input
           value={title}
           onChange={e => {
@@ -37,11 +38,12 @@ const CreateTeam = ({ setShow, submitHandler, hackathonID, tracks }: Props) => {
             <SelectValue placeholder="Select Track" />
           </SelectTrigger>
           <SelectContent>
-            {tracks.map((track, index) => (
-              <SelectItem value={track.id} key={index}>
-                {track.title}
-              </SelectItem>
-            ))}
+            {tracks &&
+              tracks.map((track, index) => (
+                <SelectItem value={track.id} key={index}>
+                  {track.title}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
         <Select value={role} onValueChange={setRole}>
@@ -56,26 +58,24 @@ const CreateTeam = ({ setShow, submitHandler, hackathonID, tracks }: Props) => {
             ))}
           </SelectContent>
         </Select>
-        <div className="w-full flex justify-center">
-          <PrimaryButton
-            label="Create Team"
-            onClick={() => {
-              if (title && track && role) {
-                submitHandler({
-                  title,
-                  trackID: track,
-                  hackathonID,
-                  role,
-                });
-              } else {
-                Toaster.error('Please fill in all the fields');
-              }
-            }}
-            width={'60'}
-          />
-        </div>
-      </div>
-    </ModalWrapper>
+        <Button
+          onClick={() => {
+            if (title && track && role) {
+              submitHandler({
+                title,
+                trackID: track,
+                hackathonID,
+                role,
+              });
+            } else {
+              Toaster.error('Please fill in all the fields');
+            }
+          }}
+        >
+          Create Team
+        </Button>
+      </DialogContent>
+    </Dialog>
   );
 };
 

@@ -16,6 +16,8 @@ import TeamOverviewAnalytics from '@/sections/analytics/team_overview';
 import moment from 'moment';
 import patchHandler from '@/handlers/patch_handler';
 import BaseWrapper from '@/wrappers/base';
+import { HoverEffect } from '@/components/ui/card-hover-effect';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const Team = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -67,22 +69,28 @@ const Team = () => {
   }, []);
 
   const handleCreateTeam = async (formData: any) => {
+    const toaster = Toaster.startLoad('Creating Team');
+
     const URL = `/hackathons/${hackathon.id}/participants/teams`;
     const res = await postHandler(URL, formData);
     if (res.statusCode == 201) {
       setTeam(res.data.team);
+      Toaster.stopLoad(toaster, 'Team Created Successfully', 1);
     } else {
-      Toaster.error(res.data.message || SERVER_ERROR);
+      Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
     }
   };
 
   const handleJoinTeam = async (formData: any) => {
+    const toaster = Toaster.startLoad('Joining Team');
+
     const URL = `/hackathons/${hackathon.id}/participants/teams/join`;
     const res = await postHandler(URL, formData);
     if (res.statusCode == 200) {
       setTeam(res.data.team);
+      Toaster.stopLoad(toaster, 'Team Joined Successfully', 1);
     } else {
-      Toaster.error(res.data.message || SERVER_ERROR);
+      Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
     }
   };
 
@@ -143,38 +151,37 @@ const Team = () => {
 
   return (
     <BaseWrapper>
-      <div className="w-full min-h-base py-8 mt-4 md:p-12 flex flex-col md:justify-start gap-8 md:gap-16 font-primary p-8">
+      <div className="w-full min-h-base p-8 md:p-12 flex flex-col md:justify-start gap-8 md:gap-16 font-primary">
         <div className="w-full mx-auto flex flex-col items-center md:flex-row gap-4 md:gap-8">
           <div className="w-full md:w-1/2 justify-center items-start flex-col gap-2">
-            <div className="font-bold">
-              {team ? (
-                <h4 className="w-fit gradient-text-3 text-5xl mb-2">Team {team.title}</h4>
-              ) : (
-                <h4 className="w-fit gradient-text-3 text-8xl mb-6">Team Formation</h4>
-              )}
-            </div>
-            <div className="w-fit text-lg md:text-4xl lg:text-8xl font-bold gradient-text-2">
-              {team ? (
-                <>
-                  Team Formation <span className="text-black text-2xl">is Live!</span>
-                </>
-              ) : (
-                <div className="text-4xl font-bold">Create, and Join Teams Easily and Effortlessly.</div>
-              )}
-            </div>
-            {team && (
-              <div className="font-semibold mt-8 text-xl">
-                The Team Code is{' '}
-                <span
-                  onClick={() => {
-                    navigator.clipboard.writeText(team.token);
-                    Toaster.success('Copied to Clipboard!');
-                  }}
-                  className="underline underline-offset-2 cursor-pointer"
-                >
-                  {team.token}
-                </span>
+            {team ? (
+              <div className="flex-center flex-col">
+                <h4 className="w-fit gradient-text-3 text-8xl mb-4">{team.title}</h4>
+                <div className="font-semibold text-xl">
+                  The Team Code is{' '}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <span
+                          onClick={() => {
+                            navigator.clipboard.writeText(team.token);
+                            Toaster.success('Copied to Clipboard!');
+                          }}
+                          className="underline underline-offset-2 cursor-pointer"
+                        >
+                          {team.token}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>Copy to Clipboard</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
               </div>
+            ) : (
+              <>
+                <h4 className="w-fit gradient-text-3 text-8xl mb-6">Team Formation</h4>
+                <div className="text-4xl font-bold">Create, and Join Teams Effortlessly.</div>
+              </>
             )}
           </div>
           <div className="w-full md:w-1/2 flex gap-2 md:gap-4">
@@ -191,30 +198,30 @@ const Team = () => {
             tracks={tracks}
           />
         ) : (
-          <div className="w-[95%] mx-auto mt-8 flex flex-col md:flex-row gap-4 md:gap-12">
-            {clickedOnCreateTeam && tracks && tracks.length > 0 && (
-              <CreateTeam setShow={setClickedOnCreateTeam} submitHandler={handleCreateTeam} hackathonID={hackathon.id} tracks={tracks} />
-            )}
-            {clickedOnJoinTeam && <JoinTeam setShow={setClickedOnJoinTeam} submitHandler={handleJoinTeam} />}
-
-            <div
-              onClick={() => setClickedOnCreateTeam(true)}
-              className="w-full md:w-1/2 h-40 md:h-52 p-2 md:p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex flex-col justify-center items-center"
-            >
-              <div className="text-2xl md:text-4xl font-semibold">Create Team</div>
-              <div className="text-xs md:text-base">
-                Initiate brilliance! Create a team to transform your visionary ideas into actionable innovation
-              </div>
-            </div>
-            <div
-              onClick={() => setClickedOnJoinTeam(true)}
-              className="w-full md:w-1/2 h-40 md:h-52 p-2 md:p-4 text-center gap-6 text-primary_text hover:ring-2 cursor-pointer bg-white rounded-md flex flex-col justify-center items-center"
-            >
-              <div className="text-2xl md:text-4xl font-semibold">Join Team</div>
-              <div className="text-xs md:text-base">
-                Contribute to success! Join a team to merge your skills with theirs and drive innovative solutions.
-              </div>
-            </div>
+          <div className="w-full flex flex-col md:flex-row gap-4 md:gap-12">
+            <CreateTeam
+              show={clickedOnCreateTeam}
+              setShow={setClickedOnCreateTeam}
+              submitHandler={handleCreateTeam}
+              hackathonID={hackathon.id}
+              tracks={tracks}
+            />
+            <JoinTeam show={clickedOnJoinTeam} setShow={setClickedOnJoinTeam} submitHandler={handleJoinTeam} />
+            <HoverEffect
+              className="w-full"
+              items={[
+                {
+                  title: 'Create Team',
+                  description: 'Initiate brilliance! Create a team to transform your visionary ideas into actionable innovation',
+                  onClick: () => setClickedOnCreateTeam(true),
+                },
+                {
+                  title: 'Join Team',
+                  description: 'Contribute to success! Join a team to merge your skills with theirs and drive innovative solutions.',
+                  onClick: () => setClickedOnJoinTeam(true),
+                },
+              ]}
+            />
           </div>
         )}
       </div>

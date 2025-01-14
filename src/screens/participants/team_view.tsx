@@ -3,13 +3,25 @@ import { USER_PROFILE_PIC_URL } from '@/config/routes';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { userSelector } from '@/slices/userSlice';
 import { HackathonTeam, HackathonTrack } from '@/types';
-import { ArrowLineRight, Trash } from '@phosphor-icons/react';
+import { Trash } from '@phosphor-icons/react';
 import moment from 'moment';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface Props {
   team: HackathonTeam;
@@ -41,7 +53,7 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
   }, [track]);
 
   return (
-    <div className="w-full mx-auto  p-3 md:p-6 md:pt-navbar bg-white rounded-xl shadow-lg transition hover:shadow-xl">
+    <div className="w-full space-y-4 p-3 md:p-6 bg-white rounded-xl shadow-md hover:shadow-xl transition-ease-300">
       <div className="w-full flex flex-col md:flex-row items-center justify-between">
         {tracks && tracks.length > 0 && (
           <div className="w-full md:w-fit flex items-center gap-2">
@@ -60,21 +72,53 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
             </Select>
           </div>
         )}
-        <div className="w-full md:w-fit flex items-center justify-between md:justify-start gap-5 my-4 md:mt-2">
-          <div>
+        <div className="w-full md:w-fit flex items-center justify-between md:justify-start gap-5">
+          <div className="text-sm font-medium">
             Members {team.memberships?.length}/{hackathon.maxTeamSize}
           </div>
           {user.id != team.userID && onLeaveTeam && (
-            <Button variant={'destructive'} onClick={onLeaveTeam}>
-              <p className="hidden md:inline-block">Leave Team</p>
-              <ArrowLineRight className="md:ml-2 cursor-pointer" size={20} />
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger>Open</AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. You may not be able to join the team again if it reaches the capacity.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={onLeaveTeam}>Continue</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
-          {user.id == team.userID && team.memberships.length == 1 && (
-            <Button variant={'destructive'} onClick={onDeleteTeam}>
-              <p className="hidden md:inline-block">Delete Team</p>
-              <Trash className="md:ml-2 cursor-pointer" size={20} />
-            </Button>
+          {user.id == team.userID && (
+            <AlertDialog>
+              <AlertDialogTrigger>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Button disabled={team.memberships.length > 1} variant="destructive">
+                        <p className="hidden md:inline-block">Delete Team</p>
+                        <Trash className="md:ml-2 cursor-pointer" size={20} />
+                      </Button>
+                    </TooltipTrigger>
+                    {team.memberships.length > 1 && <TooltipContent>Remove all members to delete the team.</TooltipContent>}
+                  </Tooltip>
+                </TooltipProvider>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>This action cannot be undone. Your Team will be deleted permanently.</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={onDeleteTeam}>Continue</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
         </div>
       </div>

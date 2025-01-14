@@ -20,6 +20,7 @@ interface TeamSearchFiltersProps {
   setOverallScore: (value: number) => void;
   order: string;
   setOrder: (value: string) => void;
+  showAll?: boolean;
 }
 
 const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
@@ -33,6 +34,7 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
   setOverallScore,
   order,
   setOrder,
+  showAll = true,
 }) => {
   const [tempSearch, setTempSearch] = useState(search);
   const [tracks, setTracks] = useState<HackathonTrack[]>([]);
@@ -96,7 +98,7 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
           <SelectContent>
             <SelectItem value="latest">Latest</SelectItem>
             <SelectItem value="oldest">Oldest</SelectItem>
-            <SelectItem value={hackathon.isEnded ? 'overall_score' : 'round_score'}>Scores</SelectItem>
+            {showAll && <SelectItem value={hackathon.isEnded ? 'overall_score' : 'round_score'}>Scores</SelectItem>}
           </SelectContent>
         </Select>
 
@@ -113,16 +115,18 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
           />
         </div> */}
 
-        <Select value={eliminated} onValueChange={setEliminated}>
-          <SelectTrigger className="w-[49%] md:w-32 min-w-fit bg-white h-10 border-[2px] border-[#dedede]">
-            <SelectValue placeholder="Elimination Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="none">All</SelectItem>
-            <SelectItem value="eliminated">Eliminated</SelectItem>
-            <SelectItem value="not_eliminated">Not Eliminated</SelectItem>
-          </SelectContent>
-        </Select>
+        {showAll && (
+          <Select value={eliminated} onValueChange={setEliminated}>
+            <SelectTrigger className="w-[49%] md:w-32 min-w-fit bg-white h-10 border-[2px] border-[#dedede]">
+              <SelectValue placeholder="Elimination Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">All</SelectItem>
+              <SelectItem value="eliminated">Eliminated</SelectItem>
+              <SelectItem value="not_eliminated">Not Eliminated</SelectItem>
+            </SelectContent>
+          </Select>
+        )}
       </div>
     </section>
   );

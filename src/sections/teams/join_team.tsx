@@ -1,23 +1,27 @@
-import PrimaryButton from '@/components/buttons/primary_btn';
 import { Input } from '@/components/ui/input';
-import ModalWrapper from '@/wrappers/modal';
 import React, { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { sampleRoleData } from './create_team';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 interface Props {
+  show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   submitHandler: (formData: any) => void;
 }
 
-const JoinTeam = ({ setShow, submitHandler }: Props) => {
+const JoinTeam = ({ show, setShow, submitHandler }: Props) => {
   const [token, setToken] = useState('');
   const [role, setRole] = useState('');
 
   return (
-    <ModalWrapper setShow={setShow} top="1/2">
-      <div className="flex w-full flex-col gap-3">
-        <h1 className="text-2xl font-semibold">Join a Team</h1>
+    <Dialog open={show} onOpenChange={setShow}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Join a team</DialogTitle>
+          <DialogDescription>Fill in the details below to join a team.</DialogDescription>
+        </DialogHeader>
         <Input
           value={token}
           onChange={e => {
@@ -37,11 +41,9 @@ const JoinTeam = ({ setShow, submitHandler }: Props) => {
             ))}
           </SelectContent>
         </Select>
-        <div className="w-full flex justify-center">
-          <PrimaryButton label="Join Team" onClick={() => submitHandler({ token, role })} width={'60'} />
-        </div>
-      </div>
-    </ModalWrapper>
+        <Button onClick={() => submitHandler({ token, role })}>Join Team</Button>
+      </DialogContent>
+    </Dialog>
   );
 };
 
