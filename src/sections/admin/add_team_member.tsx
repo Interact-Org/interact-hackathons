@@ -30,8 +30,7 @@ const AddTeamMember = ({ setShow, team }: Props) => {
       Toaster.success('User added to the team');
       setShow(false);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 

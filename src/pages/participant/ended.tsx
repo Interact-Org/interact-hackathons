@@ -29,8 +29,7 @@ const Ended = () => {
       else setTeam(team);
       setLoading(false);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
@@ -40,8 +39,7 @@ const Ended = () => {
       setAnnouncements(res.data.announcements);
       console.log(res.data.announcements);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 

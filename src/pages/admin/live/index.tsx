@@ -48,8 +48,7 @@ const Index = () => {
     if (res.statusCode == 200) {
       setCurrentRound(res.data.round);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
@@ -59,8 +58,7 @@ const Index = () => {
     if (res.statusCode == 200) {
       setRounds(res.data.rounds);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
@@ -83,8 +81,7 @@ const Index = () => {
       setPage(prev => prev + 1);
       setLoading(false);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
@@ -130,8 +127,7 @@ const Index = () => {
       dispatch(markHackathonEnded());
       window.location.assign('/admin/ended');
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 

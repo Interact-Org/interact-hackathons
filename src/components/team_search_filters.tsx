@@ -45,8 +45,7 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
     if (res.statusCode == 200) {
       setTracks(res.data.tracks);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 

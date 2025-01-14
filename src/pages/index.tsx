@@ -1,4 +1,3 @@
-import Navbar from '@/components/common/navbar';
 import HackathonCard from '@/components/hackathon_card';
 import { Button } from '@/components/ui/button';
 import { SERVER_ERROR } from '@/config/errors';
@@ -24,8 +23,7 @@ const Index = () => {
     if (res.statusCode == 200) {
       setter(res.data.hackathons || []);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 

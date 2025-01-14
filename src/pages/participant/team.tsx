@@ -25,14 +25,14 @@ const Team = () => {
   const user = useSelector(userSelector);
   const hackathon = useSelector(currentHackathonSelector);
 
+  //TODO get hackathon details as well to update the state in case of any updations. (rn we need to go to index and click again to reflect hackathon changes)
   const getTeam = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/teams`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       setTeam(res.data.team);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
@@ -42,11 +42,11 @@ const Team = () => {
     if (res.statusCode == 200) {
       setTracks(res.data.tracks);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
+  //TODO make a wrapper for this
   useEffect(() => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
@@ -72,8 +72,7 @@ const Team = () => {
     if (res.statusCode == 201) {
       setTeam(res.data.team);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
@@ -83,8 +82,7 @@ const Team = () => {
     if (res.statusCode == 200) {
       setTeam(res.data.team);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
@@ -94,8 +92,7 @@ const Team = () => {
     if (res.statusCode == 204) {
       setTeam(null);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
@@ -113,20 +110,20 @@ const Team = () => {
       });
       setTeam(null);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
+
   const handleUpdateTeam = async (formData: any) => {
     const URL = `/hackathons/${hackathon.id}/participants/teams/${team?.id}`;
     const res = await patchHandler(URL, formData);
     if (res.statusCode == 200) {
       Toaster.success('Team Data Updated Successfully');
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
+
   const handleKickMember = async (userID: string) => {
     const URL = `/hackathons/${hackathon.id}/participants/teams/${team?.id}/member/${userID}`;
     const res = await deleteHandler(URL);
@@ -140,8 +137,7 @@ const Team = () => {
         return null;
       });
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 

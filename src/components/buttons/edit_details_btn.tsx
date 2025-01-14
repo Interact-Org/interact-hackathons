@@ -39,8 +39,7 @@ const EditDetailsBtn = ({ rounds }: { rounds: HackathonRound[] }) => {
     if (res.statusCode == 200) {
       console.log(res.data);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   }
 

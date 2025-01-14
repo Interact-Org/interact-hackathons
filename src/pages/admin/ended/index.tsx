@@ -52,8 +52,7 @@ const Index = () => {
       }
       setPage(prev => prev + 1);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 

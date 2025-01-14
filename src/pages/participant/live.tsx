@@ -33,8 +33,7 @@ const Live = () => {
       setCurrentRound(res.data.round);
       setNextRound(res.data.nextRound);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
@@ -47,8 +46,7 @@ const Live = () => {
       else setTeam(team);
       setLoading(false);
     } else {
-      if (res.data.message) Toaster.error(res.data.message);
-      else Toaster.error(SERVER_ERROR);
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
