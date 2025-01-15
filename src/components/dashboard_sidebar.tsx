@@ -10,7 +10,7 @@ import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import patchHandler from '@/handlers/patch_handler';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
-import { Status } from '@/pages/admin/live';
+import Status from './common/status';
 
 interface Props {
   data: {

@@ -1,10 +1,9 @@
-import { Status } from '@/pages/admin/live';
+import React, { useEffect, useState } from 'react';
 import { UsersThree } from '@phosphor-icons/react';
 import { PencilRuler } from 'lucide-react';
 import { USER_PROFILE_PIC_URL } from '@/config/routes';
 import { HackathonTeam, HackathonTeamMembership, User } from '@/types';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
 import CodeQualityGraph from '../analytics/code_quality_graph';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
@@ -13,6 +12,7 @@ import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import ContributionsGraph from '../analytics/contribution_graph';
 import ComparisonScoreBar from '../analytics/comparison_score_bar';
+import Status from '@/components/common/status';
 
 const TeamDetails = ({ team }: { team: HackathonTeam }) => {
   const [scores, setScores] = useState<{ userID: string; score: number }[]>([]);

@@ -40,7 +40,7 @@ const Tasks = ({ slug }: Props) => {
   const [page, setPage] = useState(1);
 
   const getProject = () => {
-    const URL = `${EXPLORE_URL}/projects/${slug}`;
+    const URL = `${PROJECT_URL}/${slug}`;
     getHandler(URL)
       .then(res => {
         if (res.statusCode == 200) setProject(res.data.project);

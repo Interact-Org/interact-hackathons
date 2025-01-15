@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-import { Pen } from '@phosphor-icons/react';
+import React from 'react';
 import EditProject from '@/sections/projects/edit_project';
-import { initialHackathonTeam } from '@/types/initials';
 import { Project, HackathonTeam } from '@/types'; // Assuming HackathonTeam type is defined in types
 import Link from 'next/link';
 import getDomainName from '@/utils/funcs/get_domain_name';
@@ -13,8 +11,6 @@ interface OverviewComponentProps {
 }
 
 const OverviewComponent: React.FC<OverviewComponentProps> = ({ project, setTeam }) => {
-  const [clickedOnProject, setClickedOnProject] = useState(false);
-
   const getTagColor = (tag: string): string => {
     const lowerCaseTag = tag.toLowerCase();
     for (const key in languageColors) {
@@ -49,12 +45,7 @@ const OverviewComponent: React.FC<OverviewComponentProps> = ({ project, setTeam 
   return (
     <div className="relative bg-white p-6 rounded-xl font-primary shadow-lg max-w-full mx-auto">
       <h1 className="text-3xl md:text-5xl font-bold">{project?.title}</h1>
-      <Pen
-        onClick={() => setClickedOnProject(true)}
-        className="absolute top-4 right-4 cursor-pointer text-gray-600 hover:text-gray-800 transition-colors duration-200"
-        size={24}
-      />
-      {clickedOnProject && project && <EditProject setShow={setClickedOnProject} projectToEdit={project} setTeam={setTeam} />}
+      {project && <EditProject project={project} setTeam={setTeam} />}
       <hr className="border-gray-400 my-4" />
       <h4 className="text-lg md:text-xl mb-2">{project?.description}</h4>
       <div className="flex flex-wrap gap-4 mt-6">

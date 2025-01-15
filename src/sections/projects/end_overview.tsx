@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import { Pen } from '@phosphor-icons/react';
-import EditProject from '@/sections/projects/edit_project';
+import React from 'react';
 import { Project } from '@/types'; // Assuming HackathonTeam type is defined in types
 import Link from 'next/link';
 import getDomainName from '@/utils/funcs/get_domain_name';

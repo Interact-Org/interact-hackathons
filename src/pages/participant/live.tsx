@@ -88,7 +88,7 @@ const Live = () => {
               <div className="w-full md:w-1/2 flex flex-col gap-2">
                 <div className="w-full text-4xl md:text-6xl lg:text-10xl flex flex-col font-bold">
                   <div className="font-bold">
-                    <h4 className="gradient-text-3 text-7xl mb-2">Team {team ? team.title : 'Formation'}</h4>
+                    <h4 className="gradient-text-3 text-7xl mb-2">{team.title}</h4>
                   </div>
                   {currentRound ? (
                     <div className="w-fit flex flex-col">
@@ -100,7 +100,7 @@ const Live = () => {
                           <div className="w-full">Judging is Live!</div>
                         ) : (
                           moment(currentRound.judgingStartTime).isAfter(moment()) && (
-                            <>Next Judging Round Starts {moment(currentRound.judgingStartTime).fromNow()}.</>
+                            <>Judging Starts {moment(currentRound.judgingStartTime).fromNow()}.</>
                           )
                         )}
                       </div>
@@ -139,20 +139,7 @@ const Live = () => {
                   {team?.projectID && project ? (
                     <ProjectView project={project} team={team} setTeam={setTeam} />
                   ) : (
-                    <>
-                      <div className="w-full max-w-md mx-auto bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105">
-                        <div
-                          onClick={() => setClickedOnProject(true)}
-                          className="py-6 px-8 text-xl md:text-3xl font-semibold text-center cursor-pointer bg-gradient-to-r from-blue-500 to-purple-500 text-white"
-                        >
-                          Add your Project and Get Started!
-                        </div>
-                        <div className="p-4 text-2xl text-center text-gray-700">
-                          Click to start your project journey and collaborate with your team.
-                        </div>
-                      </div>
-                      {clickedOnProject && <NewProject setShow={setClickedOnProject} setTeam={setTeam} team={team} />}
-                    </>
+                    <NewProject setTeam={setTeam} team={team} />
                   )}
                 </>
               )}
