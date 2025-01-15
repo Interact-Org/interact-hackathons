@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input';
 import React, { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { sampleRoleData } from '../teams/create_team';
-import { HackathonTeam } from '@/types';
+import { HackathonTrack } from '@/types';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import postHandler from '@/handlers/post_handler';
@@ -12,41 +12,65 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from '@/components/ui/button';
 
 interface Props {
-  show: boolean;
-  setShow: React.Dispatch<React.SetStateAction<boolean>>;
-  team: HackathonTeam;
+  tracks: HackathonTrack[];
 }
 
-const AddTeamMember = ({ show, setShow, team }: Props) => {
+const NewTeam = ({ tracks }: Props) => {
+  const [title, setTitle] = useState('');
+  const [track, setTrack] = useState('');
   const [username, setUsername] = useState('');
   const [role, setRole] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const hackathon = useSelector(currentHackathonSelector);
 
   const submitHandler = async () => {
     const formData = { username, role };
-    const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/team/${team.id}/add`;
+    const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/team/`;
     const res = await postHandler(URL, formData);
     if (res.statusCode == 200) {
-      Toaster.success('Member added to the Team');
-      setShow(false);
+      Toaster.success('Team Created');
+      setIsDialogOpen(false);
     } else {
       Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
   return (
-    <Dialog open={show} onOpenChange={setShow}>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogTrigger>
+        <Button>Add Team</Button>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Member to {team.title}</DialogTitle>
-          <DialogDescription>You can use this admin panel to add any member to any team, given the team is not already full. </DialogDescription>
+          <DialogTitle>Create a New Team</DialogTitle>
+          <DialogDescription>You can use this admin panel to create a new team. </DialogDescription>
         </DialogHeader>
         <div className="flex w-full flex-col gap-3">
-          <Input value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter User's Username" />
+          <Input
+            value={title}
+            onChange={e => {
+              setTitle(e.target.value);
+            }}
+            placeholder="Enter Team Name"
+          />
+          <Select value={track} onValueChange={setTrack}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select Track" />
+            </SelectTrigger>
+            <SelectContent>
+              {tracks &&
+                tracks.map((track, index) => (
+                  <SelectItem value={track.id} key={index}>
+                    {track.title}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+          <Input value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter Team Leader's Username" />
           <Select value={role} onValueChange={setRole}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select User's Role" />
+              <SelectValue placeholder="Select Team Leader's Role" />
             </SelectTrigger>
             <SelectContent>
               {sampleRoleData.map((role, index) => (
@@ -56,11 +80,11 @@ const AddTeamMember = ({ show, setShow, team }: Props) => {
               ))}
             </SelectContent>
           </Select>
-          <Button onClick={submitHandler}>Add Team Member</Button>
+          <Button onClick={submitHandler}>Add Team</Button>
         </div>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default AddTeamMember;
+export default NewTeam;

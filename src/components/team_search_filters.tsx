@@ -21,6 +21,7 @@ interface TeamSearchFiltersProps {
   order: string;
   setOrder: (value: string) => void;
   showAll?: boolean;
+  tracks: HackathonTrack[];
 }
 
 const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
@@ -34,26 +35,12 @@ const TeamSearchFilters: React.FC<TeamSearchFiltersProps> = ({
   setOverallScore,
   order,
   setOrder,
+  tracks,
   showAll = true,
 }) => {
   const [tempSearch, setTempSearch] = useState(search);
-  const [tracks, setTracks] = useState<HackathonTrack[]>([]);
 
   const hackathon = useSelector(currentHackathonSelector);
-
-  const getTracks = async () => {
-    const URL = `/hackathons/tracks/${hackathon.id}`;
-    const res = await getHandler(URL);
-    if (res.statusCode == 200) {
-      setTracks(res.data.tracks);
-    } else {
-      Toaster.error(res.data.message || SERVER_ERROR);
-    }
-  };
-
-  useEffect(() => {
-    getTracks();
-  }, []);
 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {

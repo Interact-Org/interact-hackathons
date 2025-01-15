@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '../common/loader';
 import moment from 'moment';
@@ -6,13 +6,18 @@ import Image from 'next/image';
 import TeamSearchFilters from '../team_search_filters';
 import TeamMemberHoverCard from '@/components/team_member_hover_card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { HackathonTeam } from '@/types';
+import { HackathonTeam, HackathonTrack } from '@/types';
 import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import { ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
+import { UserPlus } from '@phosphor-icons/react';
+import { initialHackathonTeam } from '@/types/initials';
+import AddTeamMember from '@/sections/admin/add_team_member';
+import NewTeam from '@/sections/admin/new_team';
+import { getHackathonRole } from '@/utils/funcs/hackathons';
 
 const TeamsTable = ({ showAllFilters = true }) => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -24,6 +29,9 @@ const TeamsTable = ({ showAllFilters = true }) => {
   const [eliminated, setEliminated] = useState('');
   const [overallScore, setOverallScore] = useState(0);
   const [order, setOrder] = useState('latest');
+  const [tracks, setTracks] = useState<HackathonTrack[]>([]);
+  const [clickedOnAddMember, setClickedOnAddMember] = useState<boolean>(false);
+  const [clickedTeam, setClickedTeam] = useState(initialHackathonTeam);
 
   const hackathon = useSelector(currentHackathonSelector);
 
@@ -71,8 +79,30 @@ const TeamsTable = ({ showAllFilters = true }) => {
     };
   }, [search, track, eliminated, overallScore, order]);
 
+  const getTracks = async () => {
+    const URL = `/hackathons/tracks/${hackathon.id}`;
+    const res = await getHandler(URL);
+    if (res.statusCode == 200) {
+      setTracks(res.data.tracks);
+    } else {
+      Toaster.error(res.data.message || SERVER_ERROR);
+    }
+  };
+
+  useEffect(() => {
+    getTracks();
+  }, []);
+
+  const role = useMemo(() => getHackathonRole(), []);
+
   return (
     <div className="flex flex-col gap-4">
+      {role == 'admin' && (
+        <>
+          <NewTeam tracks={tracks} />
+          <AddTeamMember show={clickedOnAddMember} setShow={setClickedOnAddMember} team={clickedTeam} />
+        </>
+      )}
       <TeamSearchFilters
         search={search}
         setSearch={setSearch}
@@ -85,6 +115,7 @@ const TeamsTable = ({ showAllFilters = true }) => {
         order={order}
         setOrder={setOrder}
         showAll={showAllFilters}
+        tracks={tracks}
       />
       <section className="--team-table">
         <InfiniteScroll className="w-full" dataLength={teams.length} next={fetchTeams} hasMore={hasMore} loader={<></>}>
@@ -95,7 +126,8 @@ const TeamsTable = ({ showAllFilters = true }) => {
                 <TableHead>Members</TableHead>
                 <TableHead>Track</TableHead>
                 <TableHead>Created By</TableHead>
-                <TableHead className="hidden md:block">Created At</TableHead>
+                <TableHead className="max-md:hidden">Created At</TableHead>
+                {role == 'admin' && <TableHead>Actions</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -143,6 +175,18 @@ const TeamsTable = ({ showAllFilters = true }) => {
                     </div>
                   </TableCell>
                   <TableCell className="max-md:hidden">{moment(team.createdAt).format('hh:mm a DD MMMM')}</TableCell>
+                  {role == 'admin' && (
+                    <TableCell>
+                      <UserPlus
+                        className="cursor-pointer"
+                        size={20}
+                        onClick={() => {
+                          setClickedTeam(team);
+                          setClickedOnAddMember(true);
+                        }}
+                      />
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>
