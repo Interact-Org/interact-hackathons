@@ -3,11 +3,8 @@ import { MagnifyingGlass, Newspaper } from '@phosphor-icons/react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from './ui/input';
 import { HackathonTrack } from '@/types';
-import getHandler from '@/handlers/get_handler';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
-import Toaster from '@/utils/toaster';
-import { SERVER_ERROR } from '@/config/errors';
 
 interface TeamSearchFiltersProps {
   search: string;

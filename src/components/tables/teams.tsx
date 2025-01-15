@@ -36,6 +36,7 @@ const TeamsTable = ({ showAllFilters = true }) => {
   const hackathon = useSelector(currentHackathonSelector);
 
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
+    setLoading(true);
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${
       initialPage ? initialPage : page
     }&limit=${20}&search=${search}${track != '' && track != 'none' ? `&track_id=${track}` : ''}${

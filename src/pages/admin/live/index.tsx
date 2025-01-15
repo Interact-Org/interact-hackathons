@@ -1,46 +1,28 @@
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
-import { HackathonRound, HackathonTeam } from '@/types';
+import { HackathonRound } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import TeamSearchFilters from '@/components/team_search_filters';
 import AdminLiveRoundAnalytics from '@/sections/analytics/admin_live_round_analytics';
 import { currentHackathonSelector, markHackathonEnded } from '@/slices/hackathonSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
-import { ORG_URL } from '@/config/routes';
 import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import PictureList from '@/components/common/picture_list';
 import { Button } from '@/components/ui/button';
 import NewAnnouncement from '@/sections/admin/new_announcement';
 import ViewAnnouncements from '@/sections/admin/view_announcements';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import postHandler from '@/handlers/post_handler';
-import { UserPlus } from '@phosphor-icons/react';
-import { initialHackathonTeam } from '@/types/initials';
-import AddTeamMember from '@/sections/admin/add_team_member';
+import TeamProjectsTable from '@/components/tables/teams_projects';
 
 const Index = () => {
-  const [teams, setTeams] = useState<HackathonTeam[]>([]);
   const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
-  const [page, setPage] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [hasMore, setHasMore] = useState(true);
-  const [search, setSearch] = useState('');
-  const [track, setTrack] = useState('');
-  const [eliminated, setEliminated] = useState('');
-  const [overallScore, setOverallScore] = useState(0);
-  const [order, setOrder] = useState('latest');
-  const [rounds, setRounds] = useState<HackathonRound[]>([]);
-  const hackathon = useSelector(currentHackathonSelector);
   const [clickedOnNewAnnouncement, setClickedOnNewAnnouncement] = useState(false);
   const [clickedOnViewAnnouncement, setClickedOnViewAnnouncement] = useState(false);
   const [clickedOnEndHackathon, setClickedOnEndHackathon] = useState(false);
-  const [clickedOnAddMember, setClickedOnAddMember] = useState<boolean>(false);
-  const [clickedTeam, setClickedTeam] = useState(initialHackathonTeam);
+
+  const hackathon = useSelector(currentHackathonSelector);
 
   const getCurrentRound = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
@@ -52,68 +34,12 @@ const Index = () => {
     }
   };
 
-  const getRounds = async () => {
-    const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/rounds`;
-    const res = await getHandler(URL);
-    if (res.statusCode == 200) {
-      setRounds(res.data.rounds);
-    } else {
-      Toaster.error(res.data.message || SERVER_ERROR);
-    }
-  };
-
-  const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
-    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?page=${
-      initialPage ? initialPage : page
-    }&limit=${20}&search=${search}${track != '' && track != 'none' ? `&track_id=${track}` : ''}${
-      overallScore != 0 ? `&overall_score=${overallScore}` : ''
-    }${eliminated != '' && eliminated != 'none' ? `&is_eliminated=${eliminated == 'eliminated' ? 'true' : 'false'}` : ''}&order=${order}`;
-
-    const res = await getHandler(URL, abortController?.signal, true);
-    if (res.statusCode == 200) {
-      if (initialPage == 1) {
-        setTeams(res.data.teams || []);
-      } else {
-        const addedTeams = [...teams, ...(res.data.teams || [])];
-        if (addedTeams.length === teams.length) setHasMore(false);
-        setTeams(addedTeams);
-      }
-      setPage(prev => prev + 1);
-      setLoading(false);
-    } else {
-      Toaster.error(res.data.message || SERVER_ERROR);
-    }
-  };
-
-  let oldAbortController: AbortController | null = null;
-
-  useEffect(() => {
-    const abortController = new AbortController();
-    if (oldAbortController) oldAbortController.abort();
-    oldAbortController = abortController;
-    if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
-    else {
-      setPage(1);
-      setTeams([]);
-      setHasMore(true);
-      setLoading(true);
-      fetchTeams(abortController, 1);
-    }
-
-    return () => {
-      abortController.abort();
-    };
-  }, [search, track, eliminated, overallScore, order]);
-
   useEffect(() => {
     const role = getHackathonRole();
     if (role != 'admin' && role != 'org') window.location.replace('/?action=sync');
     else if (hackathon.isEnded) window.location.replace('/admin/ended');
     else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
-    else {
-      getCurrentRound();
-      getRounds();
-    }
+    else getCurrentRound();
   }, []);
 
   const role = useMemo(() => getHackathonRole(), []);
@@ -135,8 +61,7 @@ const Index = () => {
     <BaseWrapper>
       {clickedOnNewAnnouncement && <NewAnnouncement setShow={setClickedOnNewAnnouncement} />}
       {clickedOnViewAnnouncement && <ViewAnnouncements setShow={setClickedOnViewAnnouncement} />}
-      <AddTeamMember show={clickedOnAddMember} setShow={setClickedOnAddMember} team={clickedTeam} />
-      <div className="w-full bg-[#E1F1FF] min-h-bas p-12 max-md:p-8 flex flex-col gap-8">
+      <div className="w-full bg-[#E1F1FF] min-h-base p-12 max-md:p-8 flex flex-col gap-8">
         <div className=" w-full h-fit flex flex-col gap-4">
           <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">
             <div className="--heading w-full md:w-1/2 h-full flex flex-col gap-4">
@@ -152,8 +77,7 @@ const Index = () => {
                     >
                       Round {currentRound.index + 1} is Live!
                     </h1>
-                    <div className="text-3xl"> Ends {moment(currentRound.endTime).fromNow()}.</div>
-                    <div className="text-5xl w-3/4">
+                    <div className="text-2xl w-3/4">
                       {moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.endTime)) ? (
                         <div className="w-full flex flex-col gap-4">
                           <div className="text-[#003a7c]">Judging is Live!</div>
@@ -161,7 +85,7 @@ const Index = () => {
                         </div>
                       ) : (
                         moment(currentRound.judgingStartTime).isAfter(moment()) && (
-                          <>Next Judging Round Starts {moment(currentRound.judgingStartTime).fromNow()}.</>
+                          <>Judging Starts {moment(currentRound.judgingStartTime).fromNow()}.</>
                         )
                       )}
                     </div>
@@ -211,74 +135,10 @@ const Index = () => {
             <AdminLiveRoundAnalytics round={currentRound} />
           </div>
         </div>
-        <div className="flex flex-col gap-4">
-          <TeamSearchFilters
-            search={search}
-            setSearch={setSearch}
-            track={track}
-            setTrack={setTrack}
-            eliminated={eliminated}
-            setEliminated={setEliminated}
-            overallScore={overallScore}
-            setOverallScore={setOverallScore}
-            order={order}
-            setOrder={setOrder}
-          />
-          <InfiniteScroll className="w-full" dataLength={teams.length} next={fetchTeams} hasMore={hasMore} loader={<></>}>
-            <Table className="bg-white rounded-md">
-              <TableCaption>A list of all the participating teams</TableCaption>
-              <TableHeader className="uppercase text-xs md:text-sm">
-                <TableRow>
-                  <TableHead>Team Name</TableHead>
-                  <TableHead>Project</TableHead>
-                  <TableHead>Track</TableHead>
-                  <TableHead className="hidden md:block">Members</TableHead>
-                  <TableHead>Elimination Status</TableHead>
-                  <TableHead>Round Score</TableHead>
-                  {role == 'admin' && <TableHead>Actions</TableHead>}
-                </TableRow>
-              </TableHeader>
-              <TableBody className="w-full">
-                {teams.map((team, index) => (
-                  <TableRow onClick={() => window.location.assign('/admin/live/' + team.id)} key={index} className="cursor-pointer">
-                    <TableCell className="font-medium">{team.title}</TableCell>
-                    <TableCell>{team.project?.title}</TableCell>
-                    <TableCell>{team.track?.title}</TableCell>
-                    <TableCell className="min-w-[150px] max-w-[300px] hidden md:flex items-center gap-2 flex-wrap">
-                      <PictureList users={team.memberships.map(membership => membership.user)} size={6} />
-                    </TableCell>
-                    <TableCell>
-                      <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
-                    </TableCell>
-                    <TableCell>{team.roundScore}</TableCell>
-                    {role == 'admin' && (
-                      <TableCell
-                        onClick={el => {
-                          el.stopPropagation();
-                          setClickedTeam(team);
-                          setClickedOnAddMember(true);
-                        }}
-                      >
-                        <UserPlus />
-                      </TableCell>
-                    )}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </InfiniteScroll>
-        </div>
+        <TeamProjectsTable />
       </div>
     </BaseWrapper>
   );
 };
 
 export default Index;
-
-export function Status({ status }: { status: 'eliminated' | 'not eliminated' }) {
-  return (
-    <button className={`${status === 'eliminated' ? 'bg-red-500' : 'bg-green-500'} text-white text-xs font-medium px-3 py-1 rounded-full`}>
-      {status === 'eliminated' ? 'Eliminated' : 'Not Eliminated'}
-    </button>
-  );
-}
