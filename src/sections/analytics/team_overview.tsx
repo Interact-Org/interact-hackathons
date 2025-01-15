@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import TimeProgressGraph from '@/components/common/time_graph';
 import moment from 'moment';
+import { HackathonRound } from '@/types';
 
 const initialChartData = [
   { time: '5 Days Ago', noOfTeams: 0, noOfParticipants: 0 },
@@ -27,7 +28,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const TeamOverviewAnalytics = () => {
+const TeamOverviewAnalytics = ({ nextRound }: { nextRound?: HackathonRound | null }) => {
   const [chartData, setChartData] = useState(initialChartData);
   const [totalTeams, setTotalTeams] = useState(0);
   const [totalParticipants, setTotalParticipants] = useState(0);
@@ -84,13 +85,23 @@ const TeamOverviewAnalytics = () => {
         </ChartContainer>
       </AnalyticBox>
 
-      <TimeProgressGraph
-        time1={moment(hackathon.teamFormationStartTime)}
-        time2={moment(hackathon.teamFormationEndTime)}
-        innerRadius={80}
-        outerRadius={140}
-        height={140}
-      />
+      {nextRound ? (
+        <TimeProgressGraph
+          time1={moment(hackathon.teamFormationEndTime)}
+          time2={moment(nextRound.startTime)}
+          innerRadius={80}
+          outerRadius={140}
+          height={140}
+        />
+      ) : (
+        <TimeProgressGraph
+          time1={moment(hackathon.teamFormationStartTime)}
+          time2={moment(hackathon.teamFormationEndTime)}
+          innerRadius={80}
+          outerRadius={140}
+          height={140}
+        />
+      )}
 
       <div className="w-full grid grid-cols-2 gap-2">
         <AnalyticBox className="flex flex-col  justify-between">

@@ -54,74 +54,79 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
 
   return (
     <div className="w-full space-y-4 p-3 md:p-6 bg-white rounded-xl shadow-md hover:shadow-xl transition-ease-300">
-      <div className="w-full flex flex-col md:flex-row items-center justify-between">
-        {tracks && tracks.length > 0 && (
-          <div className="w-full md:w-fit flex items-center gap-2">
-            <p className="text-nowrap">Your Track: </p>
-            <Select value={track} onValueChange={setTrack}>
-              <SelectTrigger className="w-full min-w-40">
-                <SelectValue placeholder="Select Track" />
-              </SelectTrigger>
-              <SelectContent>
-                {tracks.map((track, index) => (
-                  <SelectItem value={track.id} key={index}>
-                    {track.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-        <div className="w-full md:w-fit flex items-center justify-between md:justify-start gap-5">
-          <div className="text-sm font-medium">
-            Members {team.memberships?.length}/{hackathon.maxTeamSize}
-          </div>
-          {user.id != team.userID && onLeaveTeam && (
-            <AlertDialog>
-              <AlertDialogTrigger>Open</AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. You may not be able to join the team again if it reaches the capacity.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={onLeaveTeam}>Continue</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+      {actions ? (
+        <div className="w-full flex flex-col md:flex-row items-center justify-between">
+          {tracks && tracks.length > 0 && (
+            <div className="w-full md:w-fit flex items-center gap-2">
+              <p className="text-nowrap">Your Track: </p>
+              <Select value={track} onValueChange={setTrack}>
+                <SelectTrigger className="w-full min-w-40">
+                  <SelectValue placeholder="Select Track" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tracks.map((track, index) => (
+                    <SelectItem value={track.id} key={index}>
+                      {track.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           )}
-          {user.id == team.userID && (
-            <AlertDialog>
-              <AlertDialogTrigger>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Button disabled={team.memberships.length > 1} variant="destructive">
-                        <p className="hidden md:inline-block">Delete Team</p>
-                        <Trash className="md:ml-2 cursor-pointer" size={20} />
-                      </Button>
-                    </TooltipTrigger>
-                    {team.memberships.length > 1 && <TooltipContent>Remove all members to delete the team.</TooltipContent>}
-                  </Tooltip>
-                </TooltipProvider>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>This action cannot be undone. Your Team will be deleted permanently.</AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={onDeleteTeam}>Continue</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
+          <div className="w-full md:w-fit flex items-center justify-between md:justify-start gap-5">
+            <div className="text-sm font-medium">
+              Members {team.memberships?.length}/{hackathon.maxTeamSize}
+            </div>
+            {user.id != team.userID && onLeaveTeam && (
+              <AlertDialog>
+                <AlertDialogTrigger>Open</AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. You may not be able to join the team again if it reaches the capacity.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={onLeaveTeam}>Continue</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+            {user.id == team.userID && (
+              <AlertDialog>
+                <AlertDialogTrigger>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button disabled={team.memberships.length > 1} variant="destructive">
+                          <p className="hidden md:inline-block">Delete Team</p>
+                          <Trash className="md:ml-2 cursor-pointer" size={20} />
+                        </Button>
+                      </TooltipTrigger>
+                      {team.memberships.length > 1 && <TooltipContent>Remove all members to delete the team.</TooltipContent>}
+                    </Tooltip>
+                  </TooltipProvider>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>This action cannot be undone. Your Team will be deleted permanently.</AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={onDeleteTeam}>Continue</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div>Selected Track: {team.track?.title}</div>
+      )}
+
       <Table>
         <TableCaption>
           Created By <b>{team.user.name}</b> at {moment(team.createdAt).format('hh:mm a, DD MMMM')}

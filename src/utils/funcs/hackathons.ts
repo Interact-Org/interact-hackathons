@@ -1,16 +1,17 @@
 import { store } from '@/store';
-import { Hackathon } from '@/types';
+import { Hackathon, HackathonRound } from '@/types';
 import moment from 'moment';
 
 export const HACKATHON_NOT_STARTED = 'not started';
 export const HACKATHON_TEAM_REGISTRATION = 'team registration';
+export const HACKATHON_TEAM_ENDED = 'team registration ended';
 export const HACKATHON_LIVE = 'is live';
 export const HACKATHON_COMPLETED = 'completed';
 
 const user = store.getState().user;
 const hackathonState = store.getState().hackathon;
 
-export const getHackathonStage = (hackathon: Hackathon): string => {
+export const getHackathonStage = (hackathon: Hackathon, roundProvided?: boolean, currentRound?: HackathonRound): string => {
   const now = moment();
   const startTime = moment(hackathon.startTime);
   const teamFormationStartTime = moment(hackathon.teamFormationStartTime);
@@ -22,6 +23,8 @@ export const getHackathonStage = (hackathon: Hackathon): string => {
     return HACKATHON_NOT_STARTED;
   } else if (now.isBetween(teamFormationStartTime, teamFormationEndTime, null, '[)')) {
     return HACKATHON_TEAM_REGISTRATION;
+  } else if (roundProvided && !currentRound) {
+    return HACKATHON_TEAM_ENDED;
   }
   return HACKATHON_LIVE;
 };

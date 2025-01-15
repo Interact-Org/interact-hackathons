@@ -211,7 +211,7 @@ const Index = () => {
             <AdminLiveRoundAnalytics round={currentRound} />
           </div>
         </div>
-        <div className="--team-data-box flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           <TeamSearchFilters
             search={search}
             setSearch={setSearch}

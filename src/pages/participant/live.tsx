@@ -30,6 +30,9 @@ const Live = () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
+      if (!res.data.round) {
+        window.location.replace('/participant/stage');
+      }
       setCurrentRound(res.data.round);
       setNextRound(res.data.nextRound);
     } else {

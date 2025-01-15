@@ -1,12 +1,22 @@
+import { SERVER_ERROR } from '@/config/errors';
 import { EVENT_PIC_URL } from '@/config/routes';
+import getHandler from '@/handlers/get_handler';
 import { setCurrentHackathon } from '@/slices/hackathonSlice';
-import { Hackathon } from '@/types';
-import { getHackathonStage, HACKATHON_COMPLETED, HACKATHON_LIVE, HACKATHON_NOT_STARTED, HACKATHON_TEAM_REGISTRATION } from '@/utils/funcs/hackathons';
+import { Hackathon, HackathonRound } from '@/types';
+import {
+  getHackathonStage,
+  HACKATHON_COMPLETED,
+  HACKATHON_LIVE,
+  HACKATHON_NOT_STARTED,
+  HACKATHON_TEAM_ENDED,
+  HACKATHON_TEAM_REGISTRATION,
+} from '@/utils/funcs/hackathons';
+import Toaster from '@/utils/toaster';
 import { Users } from '@phosphor-icons/react';
 import moment from 'moment';
 import Image from 'next/image';
-import Link from 'next/link';
-import React, { useMemo } from 'react';
+import { useRouter } from 'next/router';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 
 interface Props {
@@ -15,20 +25,32 @@ interface Props {
 }
 
 const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
-  const URL = useMemo(() => {
-    const hackathonStage = getHackathonStage(hackathon);
-    let URL = '';
+  const router = useRouter();
 
+  const getCurrentRound = async () => {
+    const URL = `/hackathons/${hackathon.id}/participants/round`;
+    const res = await getHandler(URL, undefined, true);
+    if (res.statusCode == 200) {
+      return res.data.round;
+    } else {
+      Toaster.error(res.data.message || SERVER_ERROR);
+    }
+  };
+
+  const buildURL = (currentRound: HackathonRound) => {
+    let URL = '';
     if (isAdmin) URL += 'admin';
     else URL += 'participant';
-
-    switch (hackathonStage) {
+    switch (getHackathonStage(hackathon, true, currentRound)) {
       case HACKATHON_NOT_STARTED:
         URL = '#';
         break;
       case HACKATHON_TEAM_REGISTRATION:
         if (isAdmin) URL += '/teams';
         else URL += '/team';
+        break;
+      case HACKATHON_TEAM_ENDED:
+        URL += `/stage`;
         break;
       case HACKATHON_LIVE:
         URL += `/live`;
@@ -37,17 +59,21 @@ const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
         URL += `/ended`;
         break;
     }
-
     return URL;
-  }, [hackathon, isAdmin]);
+  };
 
   const dispatch = useDispatch();
 
+  const handleClick = async () => {
+    dispatch(setCurrentHackathon(hackathon));
+    const currentRound = await getCurrentRound();
+    router.push(buildURL(currentRound));
+  };
+
   return (
-    <Link
-      onClick={() => dispatch(setCurrentHackathon(hackathon))}
-      href={URL}
-      className="w-full rounded-xl hover:shadow-xl transition-ease-out-500 animate-fade_third border-[2px] border-[#dedede]"
+    <div
+      onClick={handleClick}
+      className="w-full rounded-xl hover:shadow-xl transition-ease-out-500 animate-fade_third border-[2px] border-[#dedede] cursor-pointer"
     >
       <div className="w-full relative group">
         <div className="flex gap-1 top-2 right-2 absolute bg-white text-gray-500 text-xxs px-2 py-1 rounded-lg">
@@ -81,7 +107,7 @@ const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
           <div className="text-xs md:text-sm text-gray-500 line-clamp-2 transition-ease-out-500">{hackathon.tagline}</div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 
