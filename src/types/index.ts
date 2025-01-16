@@ -957,3 +957,25 @@ export interface FigmaFile {
   fileURL: string;
   figmaVersionHistories: FigmaVersionHistory[];
 }
+
+export interface Community {
+  id: string;
+  title: string;
+  description?: string;
+  tagline: string;
+  userID: string;
+  user: User;
+  profilePic: string;
+  profilePicBlurHash: string;
+  coverPic: string;
+  coverPicBlurHash: string;
+  tags: string[];
+  links: string[];
+  category: string;
+  isOpen: boolean;
+  noViews: number;
+  impressions: number;
+  noLikes: number;
+  noMembers: number;
+  createdAt: Date;
+}

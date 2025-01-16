@@ -133,7 +133,11 @@ const TeamProjectsTable = () => {
           </TableHeader>
           <TableBody className="w-full">
             {teams.map((team, index) => (
-              <TableRow onClick={() => window.location.assign('/admin/live/' + team.id)} key={index} className="cursor-pointer">
+              <TableRow
+                onClick={() => window.location.assign('/admin/' + (hackathon.isEnded ? 'ended/' : 'live/') + team.id)}
+                key={index}
+                className="cursor-pointer"
+              >
                 <TableCell className="font-medium">{team.title}</TableCell>
                 <TableCell>{team.project?.title || '-'}</TableCell>
                 <TableCell>{team.track?.title}</TableCell>

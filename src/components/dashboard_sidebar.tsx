@@ -1,5 +1,5 @@
-import { UsersThree } from '@phosphor-icons/react';
-import { ArrowLeft, PencilRuler } from 'lucide-react';
+import { Blueprint, UsersThree } from '@phosphor-icons/react';
+import { ArrowLeft } from 'lucide-react';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -53,7 +53,7 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
           <h1 className="text-2xl font-semibold">{team.title}</h1>
           <div className="flex flex-wrap gap-2 items-center justify-between">
             <h2 className="text-base font-semibold text-primary_text flex items-center w-full gap-1">
-              <PencilRuler size={24} /> <p className="text-primary_black truncate w-full ">{team.track?.title}</p>
+              <Blueprint size={24} /> <p className="text-primary_black truncate w-full ">{team.track?.title}</p>
             </h2>
             <h2 className="text-base font-semibold text-primary_text flex items-center gap-1">
               <UsersThree size={24} />

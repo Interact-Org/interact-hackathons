@@ -35,3 +35,5 @@ export const POST_PIC_URL = `${GC_API}/${BUCKET}/posts`;
 export const GROUP_CHAT_PIC_URL = `${GC_API}/${BUCKET}/chats`;
 export const APPLICATION_RESUME_URL = `${GC_API}/${BUCKET}/users/resumes`;
 export const RESOURCE_URL = `${GC_API}/${BUCKET}/resources`;
+export const COMMUNITY_PROFILE_PIC_URL = `${GC_API}/${BUCKET}/communities/profilePics`;
+export const COMMUNITY_COVER_PIC_URL = `${GC_API}/${BUCKET}/communities/coverPics`;

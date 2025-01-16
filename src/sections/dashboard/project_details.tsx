@@ -5,6 +5,8 @@ import { PROJECT_PIC_URL } from '@/config/routes';
 import { Project } from '@/types';
 import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 import { getProjectPicHash, getProjectPicURL } from '@/utils/funcs/safe_extract';
+import { FigmaLogo } from '@phosphor-icons/react';
+import { GitBranch } from 'lucide-react';
 import Image from 'next/image';
 import React, { useState } from 'react';
 
@@ -62,7 +64,7 @@ export const ProjectDetails = ({ project }: { project: Project | undefined }) =>
           </div>
           <div className="w-full flex flex-col gap-4">
             <div className="w-full flex items-center justify-between flex-wrap gap-4">
-              <div className="w-fit font-bold text-4xl text-gradient">{project.title}</div>
+              <div className="w-fit font-bold text-4xl">{project.title}</div>
             </div>
             <div className="font-semibold text-lg">{project.tagline}</div>
             <Tags tags={project.tags} displayAll />
@@ -88,8 +90,19 @@ export const ProjectDetails = ({ project }: { project: Project | undefined }) =>
         </div>
       </div>
       <div className="w-1/3 space-y-4">
-        <div className="w-full bg-white p-4 rounded-lg">Connected Github Repositories</div>
-        <div className="w-full bg-white p-4 rounded-lg">Connected Figma Files</div>
+        <div className="w-full bg-white p-4 rounded-lg">
+          <div className="text-lg font-semibold text-primary_text flex items-center gap-2">
+            <GitBranch />
+            Connected Github Repositories
+          </div>
+        </div>
+
+        <div className="w-full bg-white p-4 rounded-lg">
+          <div className="text-lg font-semibold text-primary_text flex items-center gap-2">
+            <FigmaLogo size={24} />
+            Connected Figma Files
+          </div>
+        </div>
       </div>
     </div>
   );

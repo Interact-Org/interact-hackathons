@@ -39,7 +39,7 @@ const CommentBox = ({ type, subURL = '', item, setNoComments, userFetchURL }: Pr
   const getComments = async () => {
     setLoading(true);
     const URL = `${COMMENT_URL}/${type}${subURL ? `/${subURL}` : ''}/${item.id}?page=${page}&limit=${limit}`;
-    getHandler(URL)
+    getHandler(URL, undefined, true)
       .then(res => {
         if (res.statusCode == 200) {
           const newComments = [...comments, ...res.data.comments];

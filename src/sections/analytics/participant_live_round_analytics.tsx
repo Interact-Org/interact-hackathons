@@ -131,8 +131,8 @@ export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: 
       )}
 
       {announcements && announcements.length > 0 && (
-        <div className="w-full h-full max-h-96 overflow-y-auto pb-12">
-          <div className="text-xl font-semibold mb-2">Announcements</div>
+        <div className="w-full h-full max-h-96 overflow-y-auto thin_scrollbar">
+          <div className="text-3xl font-semibold mb-2">Announcements</div>
           {announcements.map(announcement => (
             <div key={announcement.id} className="pb-2">
               <AnnouncementCard announcement={announcement} />

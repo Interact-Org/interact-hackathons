@@ -23,7 +23,7 @@ const OverviewComponent: React.FC<OverviewComponentProps> = ({ project, setTeam 
 
   return (
     <div className="w-full bg-white rounded-xl p-6 space-y-6">
-      <ProjectBlockHeader title="Overview" icon={<ReadCvLogo />} separator />
+      <ProjectBlockHeader title="Overview" icon={<ReadCvLogo size={32} />} separator />
       <div className="w-full flex items-start gap-10">
         <div className="w-1/3 relative group">
           <EditProjectImages

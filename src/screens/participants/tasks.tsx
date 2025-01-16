@@ -41,7 +41,7 @@ const Tasks = ({ slug }: Props) => {
 
   const getProject = () => {
     const URL = `${PROJECT_URL}/${slug}`;
-    getHandler(URL)
+    getHandler(URL, undefined, true)
       .then(res => {
         if (res.statusCode == 200) setProject(res.data.project);
         else {
@@ -63,7 +63,7 @@ const Tasks = ({ slug }: Props) => {
         status == '' ? '' : status == 'completed'
       }&user_id=${users.map(u => u.id).join(',')}&page=${initialPage ? initialPage : page}&limit=${20}`;
 
-    getHandler(URL, abortController?.signal)
+    getHandler(URL, abortController?.signal, true)
       .then(res => {
         if (res.statusCode === 200) {
           const taskData = res.data.tasks || [];

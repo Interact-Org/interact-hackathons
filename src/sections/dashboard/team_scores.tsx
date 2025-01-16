@@ -24,7 +24,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
 
   const getRounds = async () => {
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/rounds`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode === 200) {
       setRounds(res.data.rounds);
     } else {
@@ -137,7 +137,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
                     onChange={e => handleInputChange(metric.id, e.target.value)}
                   />
                 ) : (
-                  <div>Score: {Number(inputScores[metric.id]) || ''}</div>
+                  <div>Score: {Number(inputScores[metric.id]) || '-'}</div>
                 )}
               </>
             )}

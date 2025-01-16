@@ -88,8 +88,6 @@ const Index = () => {
 
   return (
     <BaseWrapper>
-      {clickedOnNewAnnouncement && <NewAnnouncement setShow={setClickedOnNewAnnouncement} />}
-      {clickedOnViewAnnouncement && <ViewAnnouncements setShow={setClickedOnViewAnnouncement} />}
       <div className="w-full bg-[#E1F1FF] min-h-base p-12 max-md:p-8 flex flex-col gap-8">
         <div className=" w-full h-fit flex flex-col gap-4">
           <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">

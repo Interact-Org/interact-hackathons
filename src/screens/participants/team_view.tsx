@@ -3,7 +3,7 @@ import { USER_PROFILE_PIC_URL } from '@/config/routes';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { userSelector } from '@/slices/userSlice';
 import { HackathonTeam, HackathonTrack } from '@/types';
-import { Trash } from '@phosphor-icons/react';
+import { Blueprint, Trash } from '@phosphor-icons/react';
 import moment from 'moment';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -22,6 +22,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import Separator from '@/components/ui/separator';
 
 interface Props {
   team: HackathonTeam;
@@ -126,7 +127,13 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
           </div>
         </div>
       ) : (
-        <div>Selected Track: {team.track?.title}</div>
+        <div className="space-y-2">
+          <div className="text-lg font-semibold text-primary_text flex items-center gap-2">
+            <Blueprint size={32} />
+            <div>Selected Track: {team.track?.title}</div>
+          </div>
+          <Separator className="border-primary_text" />
+        </div>
       )}
 
       <Table>
@@ -137,7 +144,7 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
           <TableRow>
             <TableHead>Member</TableHead>
             <TableHead>Role</TableHead>
-            <TableHead className="hidden md:block">Joined At</TableHead>
+            <TableHead className="max-md:hidden">Joined At</TableHead>
             {actions && <TableHead className="text-right">Actions</TableHead>}
           </TableRow>
         </TableHeader>
