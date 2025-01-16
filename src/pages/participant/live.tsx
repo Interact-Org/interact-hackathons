@@ -85,11 +85,18 @@ const Live = () => {
         ) : (
           <div className="w-full min-h-base bg-[#E1F1FF] p-12 flex flex-col gap-10">
             <div className="w-full flex flex-col md:flex-row gap-8">
-              <div className="w-full md:w-1/2 flex flex-col justify-between gap-2">
-                <div className="w-full text-4xl md:text-6xl lg:text-10xl flex flex-col font-bold">
-                  <div className="font-bold">
-                    <h4 className="gradient-text-3 text-7xl mb-2">{team.title}</h4>
-                  </div>
+              <div className="w-full md:w-1/2 flex flex-col items-center justify-between gap-8">
+                <div
+                  style={{
+                    background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                  className="w-fit text-3xl lg:text-5xl font-semibold"
+                >
+                  {team.title}
+                </div>
+                <div className="w-fit text-4xl md:text-6xl lg:text-10xl flex flex-col font-bold">
                   <div className="w-full h-full">
                     <div className="text-xl">Now Ongoing</div>
                     <div
@@ -98,11 +105,11 @@ const Live = () => {
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                       }}
-                      className="text-3xl md:text-4xl lg:text-8xl font-bold"
+                      className="text-3xl md:text-4xl lg:text-9xl font-bold"
                     >
                       {currentRound ? `Round ${currentRound.index + 1}` : 'Break'}
                     </div>
-                    <div className="text-2xl w-3/4 font-medium">
+                    <div className="text-3xl w-fit font-medium">
                       {currentRound
                         ? moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.endTime))
                           ? 'Judging is Live!'
