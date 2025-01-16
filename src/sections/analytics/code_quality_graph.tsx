@@ -70,7 +70,7 @@ const CodeQualityGraph = ({ teamID }: { teamID: string }) => {
     const fetchRepositories = async () => {
       try {
         const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/connections/${teamID}`;
-        const res = await getHandler(URL);
+        const res = await getHandler(URL, undefined, true);
         if (res.statusCode == 200) {
           setGithubRepos(res.data.githubRepos || []);
         } else {

@@ -15,6 +15,7 @@ import ParticipantLiveRoundAnalytics from '@/sections/analytics/participant_live
 import TeamEliminated from '@/screens/participants/team_eliminated';
 import ProjectView from '@/screens/participants/view_project';
 import Loader from '@/components/common/loader';
+import { ProjectDetails } from '@/sections/dashboard/project_details';
 
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -85,7 +86,7 @@ const Live = () => {
         ) : (
           <div className="w-full min-h-base bg-[#E1F1FF] p-6  flex flex-col gap-10">
             <div className="w-full flex flex-col md:flex-row gap-8">
-              <div className="w-full md:w-1/2 flex flex-col gap-2">
+              <div className="w-full md:w-1/2 flex flex-col justify-between gap-2">
                 <div className="w-full text-4xl md:text-6xl lg:text-10xl flex flex-col font-bold">
                   <div className="font-bold">
                     <h4 className="gradient-text-3 text-7xl mb-2">{team.title}</h4>
@@ -112,7 +113,7 @@ const Live = () => {
                   )}
                 </div>
 
-                <div className="w-fit flex flex-row items-start justify-start gap-0 md:gap-6 md:mt-12 rounded-lg overflow-hidden md:rounded-none md:overflow-auto mt-6">
+                <div className="w-fit flex flex-row items-start justify-start md:gap-4 rounded-lg overflow-hidden md:rounded-none md:overflow-auto">
                   {(team.projectID ? ['Team', 'Project', 'Tasks'] : ['Team', 'Project']).map((tab, i) => (
                     <div
                       key={i}

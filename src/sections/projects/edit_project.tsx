@@ -50,6 +50,10 @@ const EditProject = ({ project, setTeam }: Props) => {
       Toaster.error('Tags cannot be empty');
       return;
     }
+    if (project.links.length > 0 && links.length == 0) {
+      Toaster.error('Links cannot be empty');
+      return;
+    }
 
     if (mutex) return;
     setMutex(true);
@@ -91,9 +95,8 @@ const EditProject = ({ project, setTeam }: Props) => {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <div className="w-full p-2 flex items-center gap-2 hover:bg-primary_comp dark:hover:bg-dark_primary_comp_hover rounded-lg cursor-pointer transition-ease-300">
-          <PencilSimple className="cursor-pointer max-lg:w-6 max-lg:h-6" size={20} weight="regular" />
-          Edit
+        <div className="w-12 h-12 p-2 flex-center hover:bg-primary_comp dark:hover:bg-dark_primary_comp_hover rounded-full cursor-pointer transition-ease-300">
+          <PencilSimple size={24} />
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md min-w-[40%]">

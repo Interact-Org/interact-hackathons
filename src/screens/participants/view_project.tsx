@@ -1,44 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import OverviewComponent from '@/sections/projects/overview';
 import RepositoriesComponent from '@/sections/projects/repositories';
 import FigmaComponent from '@/sections/projects/figma';
 import { HackathonTeam, Project } from '@/types';
+import Separator from '@/components/ui/separator';
+import { FigmaLogo, ReadCvLogo } from '@phosphor-icons/react';
+import { GitBranch } from 'lucide-react';
 
 interface ProjectViewProps {
-  project: Project | null;
-  team: HackathonTeam | null;
+  project: Project;
+  team: HackathonTeam;
   setTeam: React.Dispatch<React.SetStateAction<HackathonTeam | null>>;
 }
 
 const ProjectView: React.FC<ProjectViewProps> = ({ project, team, setTeam }) => {
-  const [activeTab, setActiveTab] = useState('overview');
-
-  useEffect(() => {
-    const tab = new URLSearchParams(window.location.search).get('tab');
-    if (tab) setActiveTab(tab);
-  }, []);
-
-  const TabButton = ({ title }: { title: string }) => (
-    <button
-      className={`text-xl ${activeTab === title.toLowerCase() ? 'text-blue-800 underline underline-offset-4' : 'text-blue-500'} transition-ease-500`}
-      onClick={() => setActiveTab(title.toLowerCase())}
-    >
-      {title}
-    </button>
-  );
-
   return (
-    <div className="w-full flex flex-col md:justify-center font-primary">
-      <div className="flex flex-wrap justify-start items-start gap-8 font-semibold">
-        <TabButton title="Overview" />
-        <TabButton title="Repositories" />
-        <TabButton title="Figma" />
+    <div className="w-full flex space-x-4">
+      <OverviewComponent project={project} setTeam={setTeam} />
+
+      <div className="w-1/3 space-y-4">
+        <div className="w-full bg-white p-4 rounded-xl space-y-4">
+          <ProjectBlockHeader title="Connected Github Repositories" icon={<GitBranch />} />
+          <RepositoriesComponent team={team} />
+        </div>
+        <div className="w-full bg-white p-4 rounded-xl space-y-4">
+          <ProjectBlockHeader title="Connected Figma Files" icon={<FigmaLogo />} />
+          <FigmaComponent team={team} />
+        </div>
       </div>
-      <div className="mt-4">
-        {activeTab === 'overview' && project && <OverviewComponent project={project} setTeam={setTeam} />}
-        {activeTab === 'repositories' && team && <RepositoriesComponent team={team} />}
-        {activeTab === 'figma' && team && <FigmaComponent team={team} />}
+    </div>
+  );
+};
+
+export const ProjectBlockHeader = ({ title, icon, separator = false }: { title: string; icon: React.ReactNode; separator?: boolean }) => {
+  return (
+    <div className="space-y-2">
+      <div className="text-lg font-semibold text-primary_text flex items-center gap-2">
+        {icon}
+        {title}
       </div>
+      {separator && <Separator className="border-primary_text" />}
     </div>
   );
 };

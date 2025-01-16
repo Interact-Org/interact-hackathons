@@ -11,79 +11,50 @@ import isURL from 'validator/lib/isURL';
 import Loader from '@/components/common/loader';
 import Link from 'next/link';
 import Toaster from '@/utils/toaster';
-import { Trash } from '@phosphor-icons/react';
+import { Plus, Trash, X } from '@phosphor-icons/react';
 import deleteHandler from '@/handlers/delete_handler';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-interface RepositoriesComponentProps {
-  team: HackathonTeam;
-}
-
-const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) => {
+const RepositoriesComponent = ({ team }: { team: HackathonTeam }) => {
   const [githubRepos, setGithubRepos] = useState<GithubRepo[]>([]);
   const [newRepos, setNewRepos] = useState<string[]>(['']);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchRepositories = async () => {
-      try {
-        const URL = `/hackathons/${team.hackathonID}/participants/connections/${team.id}`;
-        const res = await getHandler(URL);
-        if (res.statusCode == 200) {
-          setGithubRepos(res.data.githubRepos);
-        } else {
-          if (res.data.message) setError(res.data.message);
-          else setError(SERVER_ERROR);
-        }
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to fetch repositories');
-        setLoading(false);
+      const URL = `/hackathons/${team.hackathonID}/participants/connections/${team.id}`;
+      const res = await getHandler(URL, undefined, true);
+      if (res.statusCode == 200) {
+        setGithubRepos(res.data.githubRepos || []);
+        setNewRepos(['']);
+      } else {
+        Toaster.error(res.data.message || SERVER_ERROR);
       }
+      setLoading(false);
     };
 
     fetchRepositories();
-  }, [team.hackathonID, team.id]);
-
-  const handleAddInput = () => {
-    setNewRepos([...newRepos, '']);
-  };
-
-  const handleRemoveInput = (index: number) => {
-    const updatedRepos = newRepos.filter((_, i) => i !== index);
-    setNewRepos(updatedRepos);
-  };
-
-  const handleInputChange = (index: number, value: string) => {
-    const updatedRepos = newRepos.map((repo, i) => (i === index ? value : repo));
-    setNewRepos(updatedRepos);
-  };
+  }, [team]);
 
   const isValid = useMemo(() => newRepos.every(repo => isURL(repo)), [newRepos]);
 
   const handleSaveRepositories = async () => {
-    try {
-      const URL = `${BACKEND_URL}/auth/github/${team.id}?token=${Cookies.get('token')}&repo_links=${newRepos.join(',')}`;
-      window.location.assign(URL);
-    } catch (err) {
-      setError('Failed to save repositories');
-    }
+    const URL = `${BACKEND_URL}/auth/github/${team.id}?token=${Cookies.get('token')}&repo_links=${newRepos.join(',')}`;
+    window.location.assign(URL);
   };
 
   const handleRepoDelete = async (repo: string) => {
-    try {
-      const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project/github/${repo}?repoID=${repo}`;
-      const res = await deleteHandler(URL, { project_id: team.projectID });
-      if (res.statusCode == 200) {
-        setGithubRepos(githubRepos.filter(r => r.id != repo));
-        Toaster.success('Repository deleted successfully');
-      } else {
-        Toaster.error('Failed to delete repository  ' + res.data.message);
-      }
-    } catch (err) {
-      setError('Failed to delete repository');
+    const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project/github/${repo}?repoID=${repo}`;
+    const res = await deleteHandler(URL, { project_id: team.projectID });
+    if (res.statusCode == 200) {
+      setGithubRepos(prev => prev.filter(r => r.id != repo));
+      Toaster.success('Repository deleted successfully');
+    } else {
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
@@ -116,73 +87,81 @@ const RepositoriesComponent: React.FC<RepositoriesComponentProps> = ({ team }) =
     }
   }, []);
 
-  if (loading) {
-    return (
-      <div>
-        <Loader />
-      </div>
-    );
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Github Repositories</h2>
-      <ul className="list-disc space-y-2">
-        {githubRepos.map((repo, index) => (
-          <li key={index} className="flex items-center w-96">
-            <Link
-              href={repo.repoLink}
-              target="_blank"
-              key={index}
-              className="w-96 h-8 py-2 px-3 rounded-lg flex items-center gap-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 shadow-sm"
-            >
-              <span className="text-blue-500 dark:text-blue-400 font-semibold">{repo.repoName}</span>
-            </Link>
-            <Trash className="h-5 w-5 ml-2 text-red-500 cursor-pointer" onClick={() => handleRepoDelete(repo.id)} />
-          </li>
-        ))}
-      </ul>
-      <div className="mt-4">
-        {newRepos.map((repo, index) => (
-          <div key={index} className="flex items-center mb-2">
-            <input
-              type="text"
-              value={repo}
-              onChange={e => handleInputChange(index, e.target.value)}
-              className="border p-2 rounded mr-2 w-full"
-              placeholder="Enter GitHub repository URL"
-            />
-            <button onClick={() => handleRemoveInput(index)} className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-700">
-              Remove
-            </button>
-          </div>
-        ))}
-      </div>
-      <div className="w-full flex items-center justify-between">
-        <button onClick={handleAddInput} className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-700 mt-2">
-          New Link
-        </button>
-        {newRepos && newRepos.length > 0 && (
-          <div className="group">
-            <button
-              disabled={!isValid}
-              onClick={handleSaveRepositories}
-              className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-blue-300 hover:bg-blue-700 mt-4"
-            >
-              Link Selected Repositories
-            </button>
-            {!isValid && (
-              <div className="w-full opacity-0 group-hover:opacity-100 text-center text-gray-500 text-xs mt-2 font-medium transition-ease-300">
-                All repo links must be valid URLs
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="">
+          <ul className="list-disc space-y-2">
+            {githubRepos.map((repo, index) => (
+              <li key={index} className="flex items-center w-96">
+                <Link
+                  href={repo.repoLink}
+                  target="_blank"
+                  key={index}
+                  className="w-96 h-8 py-2 px-3 rounded-lg flex items-center gap-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 shadow-sm"
+                >
+                  <span className="text-blue-500 dark:text-blue-400 font-semibold">{repo.repoName}</span>
+                </Link>
+                <Trash className="h-5 w-5 ml-2 text-red-500 cursor-pointer" onClick={() => handleRepoDelete(repo.id)} />
+              </li>
+            ))}
+          </ul>
+          <Dialog>
+            <DialogTrigger className="w-full">
+              <Button className="w-full" variant="outline">
+                Connect Your Project Repos
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Connect your Github Repos</DialogTitle>
+                <DialogDescription>
+                  This action will make a webhook on the selected repositories, which will be used for activity monitoring and analysis by the judges.
+                  You can remove this webhook anytime later.{' '}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-2">
+                {newRepos.map((repo, index) => (
+                  <div key={index} className="w-full h-12 flex gap-2">
+                    <input
+                      type="text"
+                      value={repo}
+                      onChange={e => setNewRepos(prev => prev.map((repo, i) => (i === index ? e.target.value : repo)))}
+                      className="w-full h-full border p-2 rounded-md focus:outline-none"
+                      placeholder="Enter GitHub repository URL"
+                    />
+                    <button
+                      onClick={() => setNewRepos(prev => prev.filter((_, i) => i !== index))}
+                      className="w-12 h-full flex-center bg-red-500 text-white rounded-md hover:bg-red-700 transition-ease-300"
+                    >
+                      <X weight="bold" />
+                    </button>
+                  </div>
+                ))}
+                <div
+                  onClick={() => setNewRepos(prev => [...prev, ''])}
+                  className="w-full h-10 text-sm bg-primary_comp hover:bg-primary_comp_hover flex-center gap-2 rounded-md transition-ease-300 cursor-pointer"
+                >
+                  New Link <Plus weight="bold" />
+                </div>
               </div>
-            )}
-          </div>
-        )}
-      </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button onClick={handleSaveRepositories} className="w-full" disabled={!isValid}>
+                      Link Selected Repositories
+                    </Button>
+                  </TooltipTrigger>
+                  {!isValid && <TooltipContent>All repo links must be valid URLs</TooltipContent>}
+                </Tooltip>
+              </TooltipProvider>
+              <DialogFooter>*Make sure all the selected repositories are public on Github.</DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+      )}
     </div>
   );
 };

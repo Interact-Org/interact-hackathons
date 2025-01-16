@@ -121,7 +121,7 @@ const ContributionsGraph = ({
 
   useEffect(() => {
     const fetchContributions = async () => {
-      const res = await getHandler(`/org/${hackathon.organizationID}/hackathons/${hackathon.id}/contributions/${teamID}`);
+      const res = await getHandler(`/org/${hackathon.organizationID}/hackathons/${hackathon.id}/contributions/${teamID}`, undefined, true);
       if (res.statusCode === 200) {
         const contributions: Contribution[] = res.data.contributions || [];
         const { overallData, codeData, figmaData, tasksData } = extractContributionData(contributions);

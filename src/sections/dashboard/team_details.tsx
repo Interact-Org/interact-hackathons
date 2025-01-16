@@ -32,7 +32,7 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
 
   useEffect(() => {
     const fetchAnalyticsData = async () => {
-      const res = await getHandler(`/org/${hackathon.organizationID}/hackathons/${hackathon.id}/analytics/live/${team.id}`);
+      const res = await getHandler(`/org/${hackathon.organizationID}/hackathons/${hackathon.id}/analytics/live/${team.id}`, undefined, true);
       if (res.statusCode == 200) {
         const data = res.data;
         setAnalyticsData({

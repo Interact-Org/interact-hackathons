@@ -200,13 +200,14 @@ export interface Project {
   userID: string;
   title: string;
   tagline: string;
-  coverPic: string;
-  blurHash: string;
+  images: string[] | null;
+  hashes: string[] | null;
   description: string;
   page: string;
   user: User;
   likedBy: User[];
   comments: Comment[];
+  noOpenings: number;
   noLikes: number;
   noShares: number;
   noComments: number;
@@ -217,17 +218,18 @@ export interface Project {
   invitations: Invitation[];
   openings: Opening[];
   chats: Chat[];
-  hashes: string[];
   isPrivate: boolean;
+  isFlagged: boolean;
   views: number;
   totalNoViews: number;
   noMembers: number;
   privateLinks: string[];
   links: string[];
+  buckets?: ResourceBucket[];
   organizationID: string;
   organization: Organization | null;
   createdAt: Date;
-  updatedAt?: Date;
+  history: ProjectHistory[] | null;
 }
 
 export interface PostTag {

@@ -13,12 +13,13 @@ import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import postHandler from '@/handlers/post_handler';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
+import moment from 'moment';
 
 const TeamScores = ({ teamID }: { teamID: string }) => {
   const [activeRound, setActiveRound] = useState(0);
   const [rounds, setRounds] = useState<HackathonRound[]>([]);
   const [scores, setScores] = useState<HackathonRoundTeamScoreCard[]>([]);
-  const [currentRound, setCurrentRound] = useState(null);
+  const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
   const hackathon = useSelector(currentHackathonSelector);
 
   const getRounds = async () => {
@@ -100,6 +101,8 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
     const totalScore = numericScores?.reduce((acc, curr) => acc + curr, 0);
     return numericScores?.length > 0 ? (totalScore / numericScores.length).toFixed(2) : '0';
   }, [inputScores, rounds, activeRound]);
+
+  const isJudgingLive = useMemo(() => moment().isBetween(moment(currentRound?.judgingStartTime), moment(currentRound?.endTime)), [currentRound]);
 
   return (
     <div className="w-full p-4 flex flex-col gap-8">
@@ -220,36 +223,38 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
           </div>
         ))}
       </div>
-      <div className="w-full p-3 bg-white text-primary_text rounded-md flex flex-col md:flex-row md:justify-between gap-4">
-        <span className="w-full flex flex-col md:flex-row items-center gap-2">
-          <Trophy size={32} />
-          <h1 className="text-xl md:text-3xl font-semibold text-nowrap">Overall Score</h1>
-          {role == 'admin' && !hackathon.isEnded ? (
-            <div className="flex-center gap-4">
-              <Input
-                type="number"
-                className="bg-white text-black w-full md:w-60"
-                placeholder="Enter Score"
-                value={inputScores['overallScore'] || ''}
-                onChange={e => handleInputChange('overallScore', e.target.value)}
-              />
-              <span className="font-medium">Suggested: {averageScore} (Avg of all numeric metrics)</span>
-            </div>
-          ) : (
-            <h1 className="flex-center gap-2 text-3xl font-semibold">
-              <span className="hidden md:block">:</span> {inputScores['overallScore'] || ''}
-            </h1>
+      {((role == 'admin' && isJudgingLive) || inputScores['overallScore']) && (
+        <div className="w-full p-3 bg-white text-primary_text rounded-md flex flex-col md:flex-row md:justify-between gap-4">
+          <span className="w-full flex flex-col md:flex-row items-center gap-2">
+            <Trophy size={32} />
+            <h1 className="text-xl md:text-3xl font-semibold text-nowrap">Overall Score</h1>
+            {role == 'admin' && !hackathon.isEnded ? (
+              <div className="flex-center gap-4">
+                <Input
+                  type="number"
+                  className="bg-white text-black w-full md:w-60"
+                  placeholder="Enter Score"
+                  value={inputScores['overallScore'] || ''}
+                  onChange={e => handleInputChange('overallScore', e.target.value)}
+                />
+                <span className="font-medium">Suggested: {averageScore} (Avg of all numeric metrics)</span>
+              </div>
+            ) : (
+              <h1 className="flex-center gap-2 text-3xl font-semibold">
+                <span className="hidden md:block">:</span> {inputScores['overallScore'] || ''}
+              </h1>
+            )}
+          </span>
+          {role == 'admin' && !hackathon.isEnded && (
+            <Button
+              onClick={() => handleSubmit(rounds[activeRound].id, inputScores['overallScore'])}
+              className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"
+            >
+              Submit
+            </Button>
           )}
-        </span>
-        {role == 'admin' && !hackathon.isEnded && (
-          <Button
-            onClick={() => handleSubmit(rounds[activeRound].id, inputScores['overallScore'])}
-            className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"
-          >
-            Submit
-          </Button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

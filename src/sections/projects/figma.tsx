@@ -15,52 +15,32 @@ import isURL from 'validator/lib/isURL';
 import Link from 'next/link';
 import Toaster from '@/utils/toaster';
 import deleteHandler from '@/handlers/delete_handler';
-import { Trash } from '@phosphor-icons/react';
+import { Plus, Trash, X } from '@phosphor-icons/react';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-interface FigmaComponentProps {
-  team: HackathonTeam;
-}
-
-const FigmaComponent: React.FC<FigmaComponentProps> = ({ team }) => {
-  const [error, setError] = useState<string | null>(null);
+const FigmaComponent = ({ team }: { team: HackathonTeam }) => {
   const [figmaFiles, setFigmaFiles] = useState<FigmaFile[]>([]);
   const [newFigmaFiles, setNewFigmaFiles] = useState<string[]>(['']);
   const [loading, setLoading] = useState<boolean>(true);
 
   const user = useSelector(userSelector);
 
-  const handleAddInput = () => {
-    setNewFigmaFiles([...newFigmaFiles, '']);
-  };
-
-  const handleRemoveInput = (index: number) => {
-    const updatedFiles = newFigmaFiles.filter((_, i) => i !== index);
-    setNewFigmaFiles(updatedFiles);
-  };
-
-  const handleInputChange = (index: number, value: string) => {
-    const updatedFiles = newFigmaFiles.map((file, i) => (i === index ? value : file));
-    setNewFigmaFiles(updatedFiles);
-  };
-
   const isValid = useMemo(() => newFigmaFiles.every(repo => isURL(repo)), [newFigmaFiles]);
 
   const handleSaveFigmaFiles = async () => {
-    try {
-      const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project/figma?projectID=${
-        team.projectID
-      }&file_urls=${newFigmaFiles.join(',')}`;
-      const body = {};
-      const res = await postHandler(URL, body);
-      if (res.statusCode == 201) {
-        setFigmaFiles(prev => [...prev, ...(res.data.figmaFiles || [])]);
-      }
-      setLoading(false);
-    } catch (error) {
-      setError('Failed to save repositories');
-      setLoading(false);
+    const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project/figma?projectID=${
+      team.projectID
+    }&file_urls=${newFigmaFiles.join(',')}`;
+    const body = {};
+    const res = await postHandler(URL, body);
+    if (res.statusCode == 201) {
+      setFigmaFiles(prev => [...prev, ...(res.data.figmaFiles || [])]);
+      setNewFigmaFiles(['']);
+    } else {
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
-    setNewFigmaFiles(['']);
   };
 
   const dispatch = useDispatch();
@@ -97,69 +77,42 @@ const FigmaComponent: React.FC<FigmaComponentProps> = ({ team }) => {
   }, []);
 
   const handleFigmaLogin = async () => {
-    try {
-      const URL = `${BACKEND_URL}/auth/figma?token=${Cookies.get('token')}`;
-      window.location.assign(URL);
-    } catch (err) {
-      setError('Failed to save links');
-    }
+    const URL = `${BACKEND_URL}/auth/figma?token=${Cookies.get('token')}`;
+    window.location.assign(URL);
   };
 
   const handleFigmaDelete = async (repo: string) => {
-    try {
-      const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project/figma/${repo}?fileID=${repo}`;
-      const res = await deleteHandler(URL, { projectID: team.projectID });
-      if (res.statusCode == 200) {
-        setFigmaFiles(figmaFiles.filter(r => r.id != repo));
-        Toaster.success('Repository deleted successfully');
-      } else {
-        console.log(res.data);
-        Toaster.error('Failed to delete repository  ' + res.data.message);
-      }
-    } catch (err) {
-      setError('Failed to delete repository');
+    const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project/figma/${repo}?fileID=${repo}`;
+    const res = await deleteHandler(URL, { projectID: team.projectID });
+    if (res.statusCode == 200) {
+      setFigmaFiles(prev => prev.filter(r => r.id != repo));
+      Toaster.success('Repository deleted successfully');
+    } else {
+      Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
   useEffect(() => {
     const fetchFigmaLinks = async () => {
-      try {
-        const URL = `/hackathons/${team.hackathonID}/participants/connections/${team.id}`;
-        const res = await getHandler(URL);
-        if (res.statusCode == 200) {
-          setFigmaFiles(res.data.figmaFiles);
-          console.log(res.data.figmaFiles);
-        } else {
-          if (res.data.message) setError(res.data.message);
-          else setError(SERVER_ERROR);
-        }
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to fetch links');
-        setLoading(false);
+      const URL = `/hackathons/${team.hackathonID}/participants/connections/${team.id}`;
+      const res = await getHandler(URL, undefined, true);
+      if (res.statusCode == 200) {
+        setFigmaFiles(res.data.figmaFiles);
+      } else {
+        Toaster.error(res.data.message || SERVER_ERROR);
       }
+      setLoading(false);
     };
 
     fetchFigmaLinks();
   }, [team.hackathonID, team.id]);
 
-  if (loading) {
-    return (
-      <div>
-        <Loader />
-      </div>
-    );
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   return (
     <div>
-      {user.figmaUsername ? (
+      {loading ? (
+        <Loader />
+      ) : user.figmaUsername ? (
         <div>
-          <h2 className="text-2xl font-bold mb-4">Figma Files</h2>
           <ul className="list-disc space-y-2">
             {figmaFiles.map((file, index) => (
               <li key={index} className="flex items-center">
@@ -175,48 +128,64 @@ const FigmaComponent: React.FC<FigmaComponentProps> = ({ team }) => {
               </li>
             ))}
           </ul>
-          <div className="mt-4">
-            {newFigmaFiles.map((file, index) => (
-              <div key={index} className="flex items-center mb-2">
-                <input
-                  type="text"
-                  value={file}
-                  onChange={e => handleInputChange(index, e.target.value)}
-                  className="border p-2 rounded mr-2 w-full"
-                  placeholder="Enter Figma file URL"
-                />
-                <button onClick={() => handleRemoveInput(index)} className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-700">
-                  Remove
-                </button>
-              </div>
-            ))}
-            <div className="w-full flex items-center justify-between">
-              <button onClick={handleAddInput} className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-700 mt-2">
-                New Link
-              </button>
-              {newFigmaFiles && newFigmaFiles.length > 0 && (
-                <div className="group">
-                  <button
-                    disabled={!isValid}
-                    onClick={handleSaveFigmaFiles}
-                    className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-blue-300 hover:bg-blue-700 mt-4"
-                  >
-                    Link Selected Repositories
-                  </button>
-                  {!isValid && (
-                    <div className="w-full opacity-0 group-hover:opacity-100 text-center text-gray-500 text-xs mt-2 font-medium transition-ease-300">
-                      All repo links must be valid URLs
-                    </div>
-                  )}
+
+          <Dialog>
+            <DialogTrigger className="w-full">
+              <Button className="w-full" variant="outline">
+                Connect Your Project Figma
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Connect your Figma Files</DialogTitle>
+                <DialogDescription>
+                  This action will make a link on the selected file, which will be used for activity monitoring and analysis by the judges. You can
+                  remove this link anytime later.{' '}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-2">
+                {newFigmaFiles.map((file, index) => (
+                  <div key={index} className="w-full h-12 flex gap-2">
+                    <input
+                      type="text"
+                      value={file}
+                      onChange={e => setNewFigmaFiles(prev => prev.map((repo, i) => (i === index ? e.target.value : repo)))}
+                      className="w-full h-full border p-2 rounded-md focus:outline-none"
+                      placeholder="Enter Figma file URL"
+                    />
+                    <button
+                      onClick={() => setNewFigmaFiles(prev => prev.filter((_, i) => i !== index))}
+                      className="w-12 h-full flex-center bg-red-500 text-white rounded-md hover:bg-red-700 transition-ease-300"
+                    >
+                      <X weight="bold" />
+                    </button>
+                  </div>
+                ))}
+                <div
+                  onClick={() => setNewFigmaFiles(prev => [...prev, ''])}
+                  className="w-full h-10 text-sm bg-primary_comp hover:bg-primary_comp_hover flex-center gap-2 rounded-md transition-ease-300 cursor-pointer"
+                >
+                  New Link <Plus weight="bold" />
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button onClick={handleSaveFigmaFiles} className="w-full" disabled={!isValid}>
+                      Link Selected Files
+                    </Button>
+                  </TooltipTrigger>
+                  {!isValid && <TooltipContent>All file links must be valid URLs</TooltipContent>}
+                </Tooltip>
+              </TooltipProvider>
+              <DialogFooter>*Make sure all the selected file are public on Figma.</DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       ) : (
-        <button onClick={handleFigmaLogin} className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
+        <Button onClick={handleFigmaLogin} className="w-full" variant="outline">
           Sync with Figma
-        </button>
+        </Button>
       )}
     </div>
   );

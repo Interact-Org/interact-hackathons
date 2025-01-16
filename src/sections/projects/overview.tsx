@@ -1,81 +1,115 @@
-import React from 'react';
-import EditProject from '@/sections/projects/edit_project';
+import React, { useState } from 'react';
 import { Project, HackathonTeam } from '@/types'; // Assuming HackathonTeam type is defined in types
-import Link from 'next/link';
-import getDomainName from '@/utils/funcs/get_domain_name';
-import getIcon from '@/utils/funcs/get_icon';
+import Tags from '@/components/common/tags';
+import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
+import Links from '@/components/common/links';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { PROJECT_PIC_URL } from '@/config/routes';
+import Image from 'next/image';
+import { getProjectPicHash, getProjectPicURL } from '@/utils/funcs/safe_extract';
+import { PencilSimple, ReadCvLogo } from '@phosphor-icons/react';
+import { ProjectBlockHeader } from '@/screens/participants/view_project';
+import EditProject from './edit_project';
+import EditProjectImages from './edit_project_images';
 
 interface OverviewComponentProps {
-  project: Project | null;
+  project: Project;
   setTeam: React.Dispatch<React.SetStateAction<HackathonTeam | null>>;
 }
 
 const OverviewComponent: React.FC<OverviewComponentProps> = ({ project, setTeam }) => {
-  const getTagColor = (tag: string): string => {
-    const lowerCaseTag = tag.toLowerCase();
-    for (const key in languageColors) {
-      if (lowerCaseTag.includes(key)) {
-        return languageColors[key];
-      }
-    }
-    return 'bg-gray-100'; // Default color if no match is found
-  };
-
-  const languageColors: { [key: string]: string } = {
-    javascript: 'bg-yellow-400 text-black',
-    python: 'bg-blue-500 text-white',
-    java: 'bg-red-500 text-white',
-    csharp: 'bg-purple-500 text-white',
-    ruby: 'bg-red-400 text-white',
-    php: 'bg-indigo-400 text-white',
-    typescript: 'bg-blue-600 text-white',
-    react: 'bg-blue-400 text-white',
-    angular: 'bg-red-600 text-white',
-    vue: 'bg-green-500 text-white',
-    django: 'bg-green-400 text-white',
-    flask: 'bg-gray-400 text-white',
-    spring: 'bg-green-600 text-white',
-    laravel: 'bg-red-700 text-white',
-    express: 'bg-gray-600 text-white',
-    next: 'bg-black text-white',
-    html: 'bg-orange-500 text-white',
-    css: 'bg-blue-300 text-white',
-  };
+  const [clickedOnReadMore, setClickedOnReadMore] = useState(false);
+  const [clickedOnEditProjectImages, setClickedOnEditProjectImages] = useState(false);
 
   return (
-    <div className="relative bg-white p-6 rounded-xl font-primary shadow-lg max-w-full mx-auto">
-      <h1 className="text-3xl md:text-5xl font-bold">{project?.title}</h1>
-      {project && <EditProject project={project} setTeam={setTeam} />}
-      <hr className="border-gray-400 my-4" />
-      <h4 className="text-lg md:text-xl mb-2">{project?.description}</h4>
-      <div className="flex flex-wrap gap-4 mt-6">
-        {project?.tags?.map(tag => (
-          <div key={tag} className={`py-2 px-4 rounded-xl ${getTagColor(tag)}`}>
-            <p>{tag}</p>
+    <div className="w-full bg-white rounded-xl p-6 space-y-6">
+      <ProjectBlockHeader title="Overview" icon={<ReadCvLogo />} separator />
+      <div className="w-full flex items-start gap-10">
+        <div className="w-1/3 relative group">
+          <EditProjectImages
+            project={project}
+            setTeam={setTeam}
+            isDialogOpen={clickedOnEditProjectImages}
+            setIsDialogOpen={setClickedOnEditProjectImages}
+          />
+          <div
+            onClick={() => setClickedOnEditProjectImages(true)}
+            className="w-full h-full absolute top-0 right-0 flex-center gap-2 hover:bg-[#ffffffa3] opacity-0 hover:opacity-100 font-medium rounded-lg transition-ease-300 cursor-pointer z-10"
+          >
+            <PencilSimple size={20} weight="bold" /> Edit Cover
           </div>
-        ))}
-      </div>
-      <div className="flex flex-wrap gap-4 mt-8">
-        {project?.links?.map((link, index) => {
-          const fullLink = link.startsWith('https') ? link : `https://${link}`;
-
-          return (
-            <Link
-              href={fullLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              key={index}
-              className="w-fit h-8 py-2 px-3 border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg flex items-center gap-2"
+          {project.images && project.images.length > 1 ? (
+            <Carousel
+              className="w-full"
+              opts={{
+                align: 'center',
+              }}
             >
-              {getIcon(getDomainName(fullLink), 24)}
-              <div className="capitalize">{getDomainName(fullLink)}</div>
-            </Link>
-          );
-        })}
+              <CarouselContent>
+                {project.images.map((image, index) => {
+                  let imageHash = 'no-hash';
+                  if (project.hashes && index < project.hashes.length) imageHash = project.hashes[index];
+                  return (
+                    <CarouselItem key={image}>
+                      <Image
+                        crossOrigin="anonymous"
+                        width={1920}
+                        height={1080}
+                        className="w-full rounded-lg"
+                        alt={'Project Pic'}
+                        src={`${PROJECT_PIC_URL}/${image}`}
+                        placeholder="blur"
+                        blurDataURL={imageHash}
+                      />
+                    </CarouselItem>
+                  );
+                })}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+          ) : (
+            <Image
+              crossOrigin="anonymous"
+              className="w-full rounded-lg"
+              src={getProjectPicURL(project)}
+              alt="Project Cover"
+              width={1920}
+              height={1080}
+              placeholder="blur"
+              blurDataURL={getProjectPicHash(project)}
+            />
+          )}
+        </div>
+        <div className="w-2/3 space-y-4">
+          <div className="w-full flex justify-between">
+            <div className="w-[calc(100%-48px)] font-bold text-5xl">{project.title}</div>
+            <EditProject project={project} setTeam={setTeam} />
+          </div>
+          <div className="font-semibold text-lg">{project.tagline}</div>
+          <Tags tags={project?.tags} displayAll />
+        </div>
       </div>
-      <p className="text-yellow-700 pt-4 rounded-md">
-        *Disclaimer: This project is now private on Interact but will be converted to public once the hackathon ends.
-      </p>
+      <div className="w-full flex flex-col gap-4">
+        <div className="whitespace-pre-line">
+          {project.description.length > 200 ? (
+            clickedOnReadMore ? (
+              project.description
+            ) : (
+              <>
+                {project.description.substring(0, 200)}
+                <span onClick={() => setClickedOnReadMore(true)} className="text-xs italic opacity-60 cursor-pointer">
+                  {' '}
+                  Read More...
+                </span>
+              </>
+            )
+          ) : (
+            renderContentWithLinks(project.description)
+          )}
+        </div>
+        <Links links={project.links} />
+      </div>
     </div>
   );
 };
