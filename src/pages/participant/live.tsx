@@ -15,7 +15,6 @@ import ParticipantLiveRoundAnalytics from '@/sections/analytics/participant_live
 import TeamEliminated from '@/screens/participants/team_eliminated';
 import ProjectView from '@/screens/participants/view_project';
 import Loader from '@/components/common/loader';
-import { ProjectDetails } from '@/sections/dashboard/project_details';
 
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -109,7 +108,7 @@ const Live = () => {
                     >
                       {currentRound ? `Round ${currentRound.index + 1}` : 'Break'}
                     </div>
-                    <div className="text-3xl w-fit font-medium">
+                    <div className="mx-auto text-3xl w-fit font-medium">
                       {currentRound
                         ? moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.endTime))
                           ? 'Judging is Live!'
