@@ -1,29 +1,66 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { EmblaCarouselType, EmblaEventType, EmblaOptionsType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
-import { NextButton, PrevButton, usePrevNextButtons } from './arrow-buttons';
-import { DotButton, useDotButton } from './dot-buttons';
+import { NextButton, PrevButton, usePrevNextButtons } from '@/components/carousel/arrow-buttons';
+import { setCurrentHackathon } from '@/slices/hackathonSlice';
+import { HackathonPrize, HackathonTeam } from '@/types';
+import Image from 'next/image';
+import { getProjectPicHash, getProjectPicURL } from '@/utils/funcs/safe_extract';
+
+
+export interface PrizeCardProps {
+  prize: HackathonPrize,
+  // team?: HackathonTeam
+}
+
+export const Prize = ({
+  prize
+}: PrizeCardProps) => {
+
+
+  return (
+    <div
+      className={`w-96 h-52 rounded-lg prize-card-bg relative flex justify-center items-center text-white embla__slide__number ${!prize.team && 'prize-card-bg'}`}
+    >
+      {prize.team && <Image
+          crossOrigin="anonymous"
+          className={`absolute top-0 left-0 w-full h-full object-cover rounded-lg -z-10`}
+          src={getProjectPicURL(prize.team?.project)}
+          alt="Project Cover"
+          width={430}
+          height={270}
+          placeholder="blur"
+          blurDataURL={getProjectPicHash(prize.team?.project)}
+      />}
+      {prize.track && <div className={"absolute px-2 py-0.5 top-1 left-1 text-white bg-[#00EA41] text-xs rounded-full w-fit"}>{prize.track.title}</div> }
+      <div className={"flex flex-col"}>
+        <p className={"text-lg font-primary text-center font-semibold"}>{prize.title}</p>
+        <p className={"text-xs font-primary text-center"}>{prize.team?.title || "Select team to declare winner"}</p>
+      </div>
+    </div>
+  )
+}
 
 const TWEEN_SCALE_FACTOR_BASE = 0.25;
 const TWEEN_OPACITY_FACTOR_BASE = 0.4;
 
 const numberWithinRange = (number: number, min: number, max: number): number => Math.min(Math.max(number, min), max);
 
-type PropType = {
-  slides: number[];
+export type PrizeCarouselProps = {
+  prizeCards: HackathonPrize[];
   options?: EmblaOptionsType;
+  // setSlideInFrameIndex?: React.Dispatch<React.SetStateAction<number>>,
+  setCurrentPrizeCardData?: React.Dispatch<React.SetStateAction<HackathonPrize>>
 };
 
-const EmblaCarousel: React.FC<PropType> = props => {
-  const { slides, options } = props;
+const PrizesCarousel: React.FC<PrizeCarouselProps> = props => {
+  const { prizeCards, options, setCurrentPrizeCardData } = props;
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
   const tweenScaleFactor = useRef(0);
   const tweenOpacityFactor = useRef(0);
   const tweenNodes = useRef<HTMLElement[]>([]);
 
-  const [inFrameIndex, setInFrameIndex] = useState(0);
-
-  const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(emblaApi);
+  // const [inFrameIndex, setInFrameIndex] = useState(0);
 
   const { prevBtnDisabled, nextBtnDisabled, onPrevButtonClick, onNextButtonClick } = usePrevNextButtons(emblaApi);
 
@@ -71,14 +108,15 @@ const EmblaCarousel: React.FC<PropType> = props => {
         const tweenScaleValue = 1 - Math.abs(diffToTarget * tweenScaleFactor.current);
         const scale = numberWithinRange(tweenScaleValue, 0, 1).toString();
         const tweenNode = tweenNodes.current[slideIndex];
-        tweenNode.style.transform = `scale(${scale})`;
+        if (tweenNode) tweenNode.style.transform = `scale(${scale})`;
 
         const tweenOpacityValue = 1 - Math.abs(diffToTarget * tweenOpacityFactor.current);
         const opacity = numberWithinRange(tweenOpacityValue, 0, 1).toString();
         emblaApi.slideNodes()[slideIndex].style.opacity = opacity;
 
         if (Number(opacity) + 0.001 > 1) {
-          setInFrameIndex(slideIndex);
+          // if (setSlideInFrameIndex) setSlideInFrameIndex(slideIndex);
+          if (setCurrentPrizeCardData) setCurrentPrizeCardData(prizeCards[slideIndex]);
         }
       });
     });
@@ -99,42 +137,29 @@ const EmblaCarousel: React.FC<PropType> = props => {
   }, [emblaApi, tweenScaleAndOpacity]);
 
   return (
-    <div className="embla max-w-[60rem]">
-      <div className="embla__viewport" ref={emblaRef}>
-        <div className="embla__container">
-          {slides.map(index => (
-            <div className="embla__slide" key={index}>
-              <div className="embla__slide__number border-primary_black border-2">
-                {index + 1}
-                <img
-                  className="w-full h-full rounded-3xl absolute top-0 right-0"
-                  src={`https://picsum.photos/600/350?v=${index}`}
-                  alt="Your alt text"
-                />
-              </div>
+    <div className="embla w-full relative">
+      <div className="embla__viewport px-20" ref={emblaRef}>
+        <div className="embla__container items-center">
+          {prizeCards.map(prizeCard => (
+            <div
+              key={prizeCard.id}
+              className={"embla__slide flex justify-center"}
+            >
+            <Prize
+              prize={prizeCard}
+            />
             </div>
           ))}
         </div>
       </div>
-
       <div className="embla__controls">
         <div className="embla__buttons">
-          <PrevButton onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
-          <NextButton onClick={onNextButtonClick} disabled={nextBtnDisabled} />
-        </div>
-
-        <div className="embla__dots">
-          {scrollSnaps.map((_, index) => (
-            <DotButton
-              key={index}
-              onClick={() => onDotButtonClick(index)}
-              className={'embla__dot'.concat(index === selectedIndex ? ' embla__dot--selected' : '')}
-            />
-          ))}
+          <PrevButton onClick={onPrevButtonClick} disabled={prevBtnDisabled} className={"bg-white rounded-full absolute left-5 top-1/2 size-8 flex justify-center items-center"} />
+          <NextButton onClick={onNextButtonClick} disabled={nextBtnDisabled} className={"bg-white rounded-full absolute right-5 top-1/2 size-8 flex justify-center items-center"} />
         </div>
       </div>
     </div>
   );
 };
 
-export default EmblaCarousel;
+export default PrizesCarousel;

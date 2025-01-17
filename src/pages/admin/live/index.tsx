@@ -15,6 +15,7 @@ import ViewAnnouncements from '@/sections/admin/view_announcements';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import postHandler from '@/handlers/post_handler';
 import TeamProjectsTable from '@/components/tables/teams_projects';
+import { useRouter } from 'next/router';
 
 const Index = () => {
   const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
@@ -23,6 +24,8 @@ const Index = () => {
   const [announcementReloadTrigger, setAnnouncementReloadTrigger] = useState(false);
 
   const hackathon = useSelector(currentHackathonSelector);
+
+  const router = useRouter();
 
   const getCurrentRound = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
@@ -45,18 +48,12 @@ const Index = () => {
 
   const role = useMemo(() => getHackathonRole(), []);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const handleEndHackathon = async () => {
-    const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/end`;
-    const res = await postHandler(URL, { winners: [] });
-    if (res.statusCode == 200) {
-      dispatch(markHackathonEnded());
-      window.location.assign('/admin/ended');
-    } else {
-      Toaster.error(res.data.message || SERVER_ERROR);
-    }
-  };
+  const handleEndHackathon = ()=>{
+    router.push("/admin/live/prizes");
+  }
+
 
   return (
     <BaseWrapper>

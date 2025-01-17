@@ -792,6 +792,7 @@ export interface HackathonPrize {
   track?: HackathonTrack;
   description?: string;
   amount: number;
+  team?: HackathonTeam
 }
 
 export interface HackathonSponsor {
@@ -827,6 +828,7 @@ export interface HackathonTeam {
   memberships: HackathonTeamMembership[];
   isEliminated: boolean;
   roundScore: number;
+  roundScores: HackathonRoundTeamScore[];
   noComments: number;
   createdAt: Date;
   comments: Comment[];
