@@ -161,23 +161,27 @@ export default function PrizeDistributionPage() {
 
   return (
     <BaseWrapper>
-      <AppSidebar
-        hackathonName={hackathonData.name}
-        hackathonTagline={hackathonData.tagline}
-        tracks={hackathonData.noTracks}
-        participants={hackathonData.noParticipants}
-        totalRemaining={hackathonData.remainingParticipants}
-        handleEndHackathon={handleEndHackathon}
-      />
-      <div className={'w-5/6 h-base flex flex-col items-center py-5 overflow-hidden gap-5'}>
-        <div className={'text-6xl max-lg:text-5xl max-md:text-4xl gradient-text-3 font-bold'}>Prize distribution</div>
-        <PrizesCarousel prizes={prizes} currentPrize={currentPrize} setCurrentPrize={setCurrentPrize} />
-        <div className={'mt-5 w-4/5 max-lg:w-5/6 max-md:10/12 h-3/4 overflow-y-scroll --scrollbar px-20 max-lg:px-10 max-md:px-2 flex flex-col gap-1'}>
-          <Accordion type={'single'} collapsible className={'space-y-1'}>
-            {displayTeams.map(team => (
-              <TeamAccordianItem team={team} key={team.id} selected={isTeamSelected(team)} onSelect={onTeamSelect} />
-            ))}
-          </Accordion>
+      <div className="w-full h-full flex max-md:flex-col-reverse">
+        <AppSidebar
+          hackathonName={hackathonData.name}
+          hackathonTagline={hackathonData.tagline}
+          tracks={hackathonData.noTracks}
+          participants={hackathonData.noParticipants}
+          totalRemaining={hackathonData.remainingParticipants}
+          handleEndHackathon={handleEndHackathon}
+        />
+        <div className={'w-5/6 max-md:w-full h-base max-md:h-fit flex flex-col items-center py-5 overflow-hidden gap-5'}>
+          <div className={'text-6xl max-lg:text-5xl max-md:text-4xl gradient-text-3 font-bold'}>Prize distribution</div>
+          <PrizesCarousel prizes={prizes} currentPrize={currentPrize} setCurrentPrize={setCurrentPrize} />
+          <div
+            className={'mt-5 w-4/5 max-lg:w-5/6 max-md:10/12 h-3/4 overflow-y-scroll --scrollbar px-20 max-lg:px-10 max-md:px-2 flex flex-col gap-1'}
+          >
+            <Accordion type={'single'} collapsible className={'space-y-1'}>
+              {displayTeams.map(team => (
+                <TeamAccordianItem team={team} key={team.id} selected={isTeamSelected(team)} onSelect={onTeamSelect} />
+              ))}
+            </Accordion>
+          </div>
         </div>
       </div>
     </BaseWrapper>
