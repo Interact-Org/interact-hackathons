@@ -18,20 +18,20 @@ export const TeamAccordianItem = ({ team, selected = false, onSelect }: TeamAcco
   return (
     <AccordionItem value={team.id} className={'w-full hover:shadow-lg transition-ease-300'}>
       <AccordionTrigger
-        className={`w-full group no-underline bg-white px-4 font-primary rounded group-hover:bg-sky-200 select-none ${selected ? 'bg-amber-50' : ''}`}
+        className={`w-full group no-underline bg-white px-4 font-primary rounded group-hover:bg-sky-200 select-none hover:no-underline  ${selected ? 'bg-amber-50' : ''}`}
       >
-        <div className={'grid grid-cols-3 w-full  place-items-center py-2'}>
-          <div className={'font-bold text-lg text-neutral-800'}>{team.title}</div>
+        <div className={'grid grid-cols-3 w-full  place-items-center py-2 max-md:py-0'}>
+          <div className={'font-bold text-lg max-md:text-base text-neutral-800'}>{team.title}</div>
           <div className={'flex items-center gap-2'}>
-            <Users className={'size-5 text-neutral-800'} />
-            <div className={'font-semibold text-lg text-neutral-800'}>{team.memberships.length}</div>
+            <Users className={'size-5 max-md:size-4 text-neutral-800'} />
+            <div className={'font-semibold text-lg max-md:text-base text-neutral-800'}>{team.memberships.length}</div>
           </div>
           <div>
             <Progress progress={team.overallScore} />
           </div>
         </div>
         <button
-          className={`h-full w-fit bg-amber-50 text-amber-700 hover:text-amber-800 px-3 flex justify-center items-center rounded-r ${
+          className={`h-full w-fit bg-amber-50 text-amber-700 hover:text-amber-800 px-3 max-md:px-2 flex justify-center items-center rounded-r ${
             selected ? 'bg-amber-200' : ''
           }`}
           onClick={e => {
@@ -39,7 +39,7 @@ export const TeamAccordianItem = ({ team, selected = false, onSelect }: TeamAcco
             onSelect(team);
           }}
         >
-          <Trophy className={'size-5'} />
+          <Trophy className={'size-5 max-md:size-4'} />
         </button>
       </AccordionTrigger>
       <AccordionContent className={'w-full rounded rounded-t-none border-t-[1px] bg-white flex flex-col items-center gap-3 p-3'}>
@@ -57,9 +57,9 @@ export const TeamAccordianItem = ({ team, selected = false, onSelect }: TeamAcco
             />
             <div className="w-3/5 flex flex-col gap-4">
               <div className="w-full flex items-center justify-between flex-wrap gap-4">
-                <div className="w-fit font-bold text-4xl">{team.project?.title}</div>
+                <div className="w-fit font-bold text-4xl max-md:text-3xl">{team.project?.title}</div>
               </div>
-              <div className="font-semibold text-lg">{team.project?.tagline}</div>
+              <div className="font-semibold text-lg max-md:text-base">{team.project?.tagline}</div>
               {team.project?.tags && <Tags tags={team.project?.tags} />}
             </div>
           </div>
@@ -79,7 +79,7 @@ export const TeamAccordianItem = ({ team, selected = false, onSelect }: TeamAcco
 };
 
 export const Progress = ({ progress }: { progress: number }) => (
-  <div className={'size-8'}>
+  <div className={'size-8 max-md:size-7'}>
     <svg style={{ height: 0 }}>
       <defs>
         <linearGradient id="gradientColor" x1="0%" y1="0%" x2="100%" y2="0%">

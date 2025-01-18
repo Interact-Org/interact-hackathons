@@ -118,15 +118,13 @@ export default function PrizeDistributionPage() {
     setDisplayTeams(filteredTeams);
   };
 
-  const selectedTeamIds = useMemo(() => {
-    return new Set(prizes.map(prize => prize.team?.id));
-  }, [prizes]);
-
-  const isTeamSelected = (team: HackathonTeam) => selectedTeamIds.has(team.id);
+  const isTeamSelected = (team: HackathonTeam) => {
+    return prizes.some(prize => prize.team?.id === team.id);
+  };
 
   const onTeamSelect = useCallback(
     (team: HackathonTeam) => {
-      const updatesprizes = prizes.map(prize => {
+      const updatedprizes = prizes.map(prize => {
         if (prize.team?.id === team.id) {
           return {
             ...prize,
@@ -139,8 +137,7 @@ export default function PrizeDistributionPage() {
           };
         } else return prize;
       });
-
-      setPrizes(updatesprizes);
+      setPrizes(updatedprizes);
     },
     [prizes, currentPrize]
   );
@@ -173,9 +170,9 @@ export default function PrizeDistributionPage() {
         handleEndHackathon={handleEndHackathon}
       />
       <div className={'w-5/6 h-base flex flex-col items-center py-5 overflow-hidden gap-5'}>
-        <div className={'text-6xl gradient-text font-bold'}>Prize distribution</div>
-        <PrizesCarousel prizes={prizes} setCurrentPrize={setCurrentPrize} />
-        <div className={'mt-5 w-4/5 h-3/4 overflow-y-scroll --scrollbar px-20 flex flex-col gap-1'}>
+        <div className={'text-6xl max-lg:text-5xl max-md:text-4xl gradient-text-3 font-bold'}>Prize distribution</div>
+        <PrizesCarousel prizes={prizes} currentPrize={currentPrize} setCurrentPrize={setCurrentPrize} />
+        <div className={'mt-5 w-4/5 max-lg:w-5/6 max-md:10/12 h-3/4 overflow-y-scroll --scrollbar px-20 max-lg:px-10 max-md:px-2 flex flex-col gap-1'}>
           <Accordion type={'single'} collapsible className={'space-y-1'}>
             {displayTeams.map(team => (
               <TeamAccordianItem team={team} key={team.id} selected={isTeamSelected(team)} onSelect={onTeamSelect} />

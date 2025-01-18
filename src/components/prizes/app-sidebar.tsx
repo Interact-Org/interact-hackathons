@@ -17,24 +17,24 @@ export const AppSidebar = ({ hackathonName, hackathonTagline, tracks, participan
   const router = useRouter();
 
   return (
-    <div className={'h-base w-1/6 bg-white'}>
+    <div className={'h-base w-1/6 max-lg:w-3/12 max-md:5/12 bg-white'}>
       <div className={'flex flex-col justify-between h-base'}>
         <div className={'h-full px-5'}>
           <div className={'pt-5 py-2.5 space-y-2'}>
-            <div className={'text-3xl text-wrap font-bold gradient-text-3 font-primary'}>{hackathonName}</div>
-            <div className={'text-black text-sm mt-2 font-primary'}>{hackathonTagline}</div>
+            <div className={'text-3xl text-wrap font-bold gradient-text-3 font-primary max-md:text-2xl'}>{hackathonName}</div>
+            <div className={'text-black text-sm mt-2 font-primary max-md:text-sm'}>{hackathonTagline}</div>
           </div>
           <div className={'py-5 space-y-1 font-primary font-bold text-black border-b-2 border-neutral-300'}>
             <div>
-              <span className={'gradient-text-3 text-lg'}>Tracks: </span>
+              <span className={'gradient-text-3 text-lg max-md:text-base'}>Tracks: </span>
               {tracks}
             </div>
             <div>
-              <span className={'gradient-text-3 text-lg'}>Participants: </span>
+              <span className={'gradient-text-3 text-lg max-md:text-base'}>Participants: </span>
               {participants}
             </div>
             <div>
-              <span className={'gradient-text-3 text-lg'}>Total Remaining: </span>
+              <span className={'gradient-text-3 text-lg max-md:text-base'}>Total Remaining: </span>
               {totalRemaining}
             </div>
           </div>
@@ -43,7 +43,7 @@ export const AppSidebar = ({ hackathonName, hackathonTagline, tracks, participan
         <div className={'space-y-2 mb-2 px-4'}>
           <Dialog>
             <DialogTrigger className="w-full">
-              <Button className="w-full" variant="destructive">
+              <Button className="w-full max-md:text-xs" variant="destructive">
                 End Hackathon
               </Button>
             </DialogTrigger>
@@ -64,7 +64,7 @@ export const AppSidebar = ({ hackathonName, hackathonTagline, tracks, participan
             onClick={() => router.back()}
           >
             <Undo2 className={'size-5'} />
-            <div className={'w-full'}>Return to Dashboard</div>
+            <div className={'w-full text-wrap max-md:text-xs line-clamp-1'}>Return to Dashboard</div>
           </Button>
         </div>
       </div>

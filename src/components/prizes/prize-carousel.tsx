@@ -15,11 +15,12 @@ const numberWithinRange = (number: number, min: number, max: number): number => 
 export type PrizeCarouselProps = {
   prizes: HackathonPrize[];
   options?: EmblaOptionsType;
+  currentPrize: HackathonPrize;
   setCurrentPrize: React.Dispatch<React.SetStateAction<HackathonPrize>>;
 };
 
 const PrizesCarousel: React.FC<PrizeCarouselProps> = props => {
-  const { prizes, options, setCurrentPrize } = props;
+  const { prizes, options, setCurrentPrize, currentPrize } = props;
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
   const tweenScaleFactor = useRef(0);
   const tweenOpacityFactor = useRef(0);
@@ -80,7 +81,6 @@ const PrizesCarousel: React.FC<PrizeCarouselProps> = props => {
           emblaApi.slideNodes()[slideIndex].style.opacity = opacity;
 
           if (prizes?.length > 2 && Number(opacity) + 0.001 > 1) {
-            setInFrameIndex(slideIndex);
             setCurrentPrize(prizes[slideIndex]);
           }
         });
@@ -92,20 +92,44 @@ const PrizesCarousel: React.FC<PrizeCarouselProps> = props => {
   useEffect(() => {
     if (!emblaApi) return;
 
-    setTweenNodes(emblaApi);
-    setTweenFactor(emblaApi);
-    tweenScaleAndOpacity(emblaApi);
+    const handleInit = () => {
+      setTweenNodes(emblaApi);
+      setTweenFactor(emblaApi);
+      tweenScaleAndOpacity(emblaApi);
+    };
 
-    emblaApi
-      .on('reInit', setTweenFactor)
-      .on('reInit', tweenScaleAndOpacity)
-      .on('scroll', tweenScaleAndOpacity)
-      .on('slideFocus', tweenScaleAndOpacity);
+    emblaApi.on('reInit', handleInit);
+    emblaApi.on('init', handleInit);
+    emblaApi.on('scroll', tweenScaleAndOpacity);
+    emblaApi.on('slideFocus', tweenScaleAndOpacity);
+
+    return () => {
+      emblaApi.off('reInit', handleInit);
+      emblaApi.off('init', handleInit);
+      emblaApi.off('scroll', tweenScaleAndOpacity);
+      emblaApi.off('slideFocus', tweenScaleAndOpacity);
+    };
   }, [emblaApi, tweenScaleAndOpacity]);
 
   useEffect(() => {
-    if (prizes?.length > 0) setCurrentPrize(prizes[0]);
-  }, [prizes]);
+    if (!emblaApi) return;
+    const slides = emblaApi.slideNodes();
+    // a reflow (forcing the layout) to ensure the animation and effects are applied after the DOM elements are rendered.
+    // because the state or layout hasn’t been fully calculated on the first render
+    slides.forEach(slide => {
+      slide.offsetHeight;
+    });
+
+    setTweenNodes(emblaApi);
+    setTweenFactor(emblaApi);
+    tweenScaleAndOpacity(emblaApi);
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (prizes?.length > 0) {
+      setCurrentPrize(prizes[0]);
+    }
+  }, [setCurrentPrize]);
 
   return (
     <div className="embla w-full relative">
@@ -114,11 +138,11 @@ const PrizesCarousel: React.FC<PrizeCarouselProps> = props => {
           {prizes.map((prizeCard, index) => (
             <div key={prizeCard.id} className={'embla__slide flex justify-center'}>
               <Prize
-                index={index}
+                // index={index}
                 prize={prizeCard}
-                isCurrent={index == inFrameIndex}
+                isCurrent={prizeCard.id === currentPrize.id}
                 setCurrentPrize={setCurrentPrize}
-                setInFrameIndex={setInFrameIndex}
+                // setInFrameIndex={setInFrameIndex}
               />
             </div>
           ))}
@@ -145,21 +169,28 @@ const PrizesCarousel: React.FC<PrizeCarouselProps> = props => {
 };
 
 export interface PrizeCardProps {
-  index: number;
+  // index: number;
   prize: HackathonPrize;
   isCurrent: boolean;
   setCurrentPrize: React.Dispatch<React.SetStateAction<HackathonPrize>>;
-  setInFrameIndex: React.Dispatch<React.SetStateAction<number>>;
+  // setInFrameIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export const Prize = ({ index, prize, isCurrent, setCurrentPrize, setInFrameIndex }: PrizeCardProps) => {
+export const Prize = ({
+                        // index,
+                        prize,
+                        isCurrent,
+                        setCurrentPrize,
+                        // setInFrameIndex
+}: PrizeCardProps) => {
+
   return (
     <div
       onClick={() => {
         setCurrentPrize(prize);
-        setInFrameIndex(index);
+        // setInFrameIndex(index);
       }}
-      className={`w-96 h-52 rounded-lg prize-card-bg relative flex justify-center items-center text-white embla__slide__number ${
+      className={`w-96 max-md:w-64 h-52 max-md:h-40 rounded-lg prize-card-bg relative flex justify-center items-center text-white embla__slide__number ${
         !prize.team && 'prize-card-bg'
       }`}
     >
@@ -181,11 +212,11 @@ export const Prize = ({ index, prize, isCurrent, setCurrentPrize, setInFrameInde
         <div className={'absolute px-2 py-0.5 top-1 left-1 text-white bg-[#00EA41] text-xs rounded-full w-fit'}>{prize.track?.title}</div>
       )}
       <div className={'flex flex-col'}>
-        <p className={'text-2xl font-primary text-center font-semibold'}>{prize.title}</p>
+        <p className={'text-2xl max-md:text-lg font-primary text-center font-semibold'}>{prize.title}</p>
         {prize.team?.title ? (
-          <p className={'text-base font-primary font-light text-center'}>Team - {prize.team?.title}</p>
+          <p className={'text-base font-primary font-light text-center max-md:text-xs'}>Team - {prize.team?.title}</p>
         ) : (
-          isCurrent && <p className={'text-xs font-primary font-light text-center'}>Select team to declare winner</p>
+          isCurrent && <p className={'text-xs font-primary font-light text-center max-md:px-2'}>Select team to declare winner</p>
         )}
       </div>
     </div>
