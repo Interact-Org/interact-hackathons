@@ -7,8 +7,8 @@ import {
   Comment,
   Education,
   Event,
-  EventBookmark,
-  HackathonTeam,
+  EventBookmark, HackathonPrize,
+  HackathonTeam, HackathonTrack,
   Invitation,
   Meeting,
   Membership,
@@ -28,7 +28,7 @@ import {
   SubTask,
   Task,
   Team,
-  User,
+  User
 } from '.';
 
 export const initialEducation: Education = {
@@ -549,4 +549,12 @@ export const initialHackathonTeam: HackathonTeam = {
   createdAt: new Date(),
   comments: [],
   overallScore: 0,
+  roundScores: [],
 };
+
+export const initialHackathonPrize: HackathonPrize = {
+  id: '',
+  hackathonID: '',
+  title: '',
+  amount: 0,
+}

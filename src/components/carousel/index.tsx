@@ -99,7 +99,7 @@ const EmblaCarousel: React.FC<PropType> = props => {
   }, [emblaApi, tweenScaleAndOpacity]);
 
   return (
-    <div className="embla max-w-[48rem]">
+    <div className="embla max-w-[60rem]">
       <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container">
           {slides.map(index => (

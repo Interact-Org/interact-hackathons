@@ -128,7 +128,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
 
             {metric.type === 'number' && (
               <>
-                {role == 'admin' && !hackathon.isEnded ? (
+                {role == 'admin' && isJudgingLive ? (
                   <Input
                     type="number"
                     className="w-full p-2 border border-gray-300 rounded-md"
@@ -142,9 +142,9 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
               </>
             )}
 
-            {metric.type === 'text' && !hackathon.isEnded && (
+            {metric.type === 'text' && (
               <>
-                {role == 'admin' ? (
+                {role == 'admin' && isJudgingLive ? (
                   <TextArea
                     className="w-full p-2 border border-gray-300 rounded-md resize-none"
                     placeholder="Enter judgement"
@@ -158,9 +158,9 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
               </>
             )}
 
-            {metric.type === 'select' && metric.options && metric.options.length > 0 && !hackathon.isEnded && (
+            {metric.type === 'select' && metric.options && metric.options.length > 0 && (
               <>
-                {role == 'admin' ? (
+                {role == 'admin' && isJudgingLive ? (
                   <Select onValueChange={value => handleInputChange(metric.id, value)}>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select Option" />
@@ -179,9 +179,9 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
               </>
             )}
 
-            {metric.type === 'boolean' && !hackathon.isEnded && (
+            {metric.type === 'boolean' && (
               <>
-                {role === 'admin' ? (
+                {role === 'admin' && isJudgingLive ? (
                   <div className="flex items-center space-x-4">
                     <label className="flex items-center space-x-2">
                       <input
@@ -212,7 +212,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
               </>
             )}
 
-            {role == 'admin' && !hackathon.isEnded && (
+            {role == 'admin' && isJudgingLive && (
               <Button
                 onClick={() => handleSubmit(metric.hackathonRoundID, inputScores[metric.id], metric.id)}
                 className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"
@@ -244,7 +244,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
             </h1>
           )}
         </span>
-        {role == 'admin' && !hackathon.isEnded && (
+        {role == 'admin' && isJudgingLive && (
           <Button
             onClick={() => handleSubmit(rounds[activeRound].id, inputScores['overallScore'])}
             className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"

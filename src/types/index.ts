@@ -788,10 +788,11 @@ export interface HackathonPrize {
   id: string;
   hackathonID: string;
   title: string;
-  trackID?: string;
+  hackathonTrackID?: string;
   track?: HackathonTrack;
   description?: string;
   amount: number;
+  team?: HackathonTeam;
 }
 
 export interface HackathonSponsor {
@@ -827,6 +828,7 @@ export interface HackathonTeam {
   memberships: HackathonTeamMembership[];
   isEliminated: boolean;
   roundScore: number;
+  roundScores: HackathonRoundTeamScore[];
   noComments: number;
   createdAt: Date;
   comments: Comment[];
@@ -880,6 +882,7 @@ export interface HackathonRoundTeamScore {
   hackathonRoundTeamScoreCardID: string;
   hackathonRoundScoreMetricID: string;
   score: string;
+  overallScore: string;
 }
 
 export interface HackathonHistory {

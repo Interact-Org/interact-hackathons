@@ -366,10 +366,65 @@ input[type='number'] {
   @apply hover:bg-primary_comp_active hover:dark:bg-dark_primary_comp_active;
 }
 
+@layer utilities {
+  .--scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .--scrollbar::-webkit-scrollbar-track {
+    background-color: #D9D9D9;
+    border-radius: 10px;
+  }
+
+  .--scrollbar::-webkit-scrollbar-thumb {
+    background-color: #306CB1;
+    border-radius: 10px;
+  }
+
+  .--scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #306CB1AF;
+  }
+
+  .--scrollbar::-webkit-scrollbar-track:active {
+    @apply bg-slate-300
+  }
+}
+
+.prize-card-bg {
+  /*background-image: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);*/
+  background-image: linear-gradient(120deg, #fccb90 0%, #d57eeb 100%);
+}
+
+.team-card-bg {
+  background-image: linear-gradient(120deg, #fccb90 0%, #d57eeb 100%);
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+}
+
+/*SWIPER**************************************************************************************SWIPER*/
+
+/*.swiper_container {*/
+/*  height: 10rem;*/
+/*  padding: 2rem 0;*/
+/*  position: relative;*/
+/*}*/
+
+.swiper-slide {
+  width: 10rem;
+  height: 8rem;
+  position: relative;
+}
+
+.swiper-slide-shadow-left,
+.swiper-slide-shadow-right {
+  display: none;
+}
+
+
 .embla {
   /* max-width: 48rem; */
   margin: auto;
-  --slide-height: 19rem;
+  --slide-height:10rem;
   --slide-spacing: 1rem;
   --slide-size: 60%;
 }
@@ -385,7 +440,8 @@ input[type='number'] {
   transform: translate3d(0, 0, 0);
   flex: 0 0 var(--slide-size);
   min-width: 0;
-  padding-left: var(--slide-spacing);
+  max-width: 30rem;
+  /*padding-left: var(--slide-spacing);*/
 }
 .embla__slide__number {
   box-shadow: inset 0 0 0 0.2rem var(--detail-medium-contrast);

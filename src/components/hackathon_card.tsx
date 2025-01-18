@@ -31,17 +31,17 @@ const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
     const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
-      return res.data.round;
+      return [res.data.round, res.data.nextRound];
     } else {
       Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
-  const buildURL = (currentRound: HackathonRound) => {
+  const buildURL = (currentRound: HackathonRound, nextRound: HackathonRound) => {
     let URL = '';
     if (isAdmin) URL += 'admin';
     else URL += 'participant';
-    switch (getHackathonStage(hackathon, true, currentRound)) {
+    switch (getHackathonStage(hackathon, true, currentRound, nextRound)) {
       case HACKATHON_NOT_STARTED:
         URL = '#';
         break;
@@ -66,8 +66,8 @@ const HackathonCard = ({ hackathon, isAdmin = false }: Props) => {
 
   const handleClick = async () => {
     dispatch(setCurrentHackathon(hackathon));
-    const currentRound = await getCurrentRound();
-    router.push(buildURL(currentRound));
+    const [currentRound, nextRound] = (await getCurrentRound()) || [undefined, undefined];
+    router.push(buildURL(currentRound, nextRound));
   };
 
   return (
