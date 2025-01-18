@@ -112,7 +112,8 @@ export default function PrizeDistributionPage() {
   };
 
   const filterTeamBasedOnTrack = (trackID: string | undefined) => {
-    if (!trackID || !teams.length) return;
+    if ((!trackID && displayTeams.length == teams.length) || !teams.length) return;
+    if (!trackID) return setDisplayTeams(teams);
     const filteredTeams = teams.filter(team => team.track?.id === trackID);
     setDisplayTeams(filteredTeams);
   };
@@ -158,7 +159,7 @@ export default function PrizeDistributionPage() {
   }, [hackathon]);
 
   useEffect(() => {
-    filterTeamBasedOnTrack(currentPrize?.trackID);
+    filterTeamBasedOnTrack(currentPrize?.hackathonTrackID);
   }, [currentPrize]);
 
   return (

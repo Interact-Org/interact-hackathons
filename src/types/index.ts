@@ -788,7 +788,7 @@ export interface HackathonPrize {
   id: string;
   hackathonID: string;
   title: string;
-  trackID?: string;
+  hackathonTrackID?: string;
   track?: HackathonTrack;
   description?: string;
   amount: number;

@@ -177,7 +177,7 @@ export const Prize = ({ index, prize, isCurrent, setCurrentPrize, setInFrameInde
         />
       )}
       {isCurrent && <BorderBeam />}
-      {prize.trackID && (
+      {prize.hackathonTrackID && (
         <div className={'absolute px-2 py-0.5 top-1 left-1 text-white bg-[#00EA41] text-xs rounded-full w-fit'}>{prize.track?.title}</div>
       )}
       <div className={'flex flex-col'}>
