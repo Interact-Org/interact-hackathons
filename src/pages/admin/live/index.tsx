@@ -4,16 +4,14 @@ import { HackathonRound } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useMemo, useState } from 'react';
 import AdminLiveRoundAnalytics from '@/sections/analytics/admin_live_round_analytics';
-import { currentHackathonSelector, markHackathonEnded } from '@/slices/hackathonSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { currentHackathonSelector } from '@/slices/hackathonSlice';
+import { useSelector } from 'react-redux';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
 import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
 import { Button } from '@/components/ui/button';
 import NewAnnouncement from '@/sections/admin/new_announcement';
 import ViewAnnouncements from '@/sections/admin/view_announcements';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import postHandler from '@/handlers/post_handler';
 import TeamProjectsTable from '@/components/tables/teams_projects';
 import { useRouter } from 'next/router';
 
@@ -48,13 +46,6 @@ const Index = () => {
 
   const role = useMemo(() => getHackathonRole(), []);
 
-  // const dispatch = useDispatch();
-
-  const handleEndHackathon = ()=>{
-    router.push("/admin/live/prizes");
-  }
-
-
   return (
     <BaseWrapper>
       <div className="w-full bg-[#E1F1FF] min-h-base p-12 max-md:p-8 flex flex-col gap-8">
@@ -83,23 +74,12 @@ const Index = () => {
                   ) : nextRound ? (
                     ` Round ${nextRound.index + 1} Starts ${moment(nextRound.startTime).fromNow()}.`
                   ) : (
-                    <div>
-                      All rounds are over. It&apos;s time to end the hackathon!
+                    <div className="space-y-6">
+                      <div> All rounds are over.</div>
                       {role == 'admin' && (
-                        <Dialog open={clickedOnEndHackathon} onOpenChange={setClickedOnEndHackathon}>
-                          <DialogTrigger className="w-full text-base font-medium bg-red-500 text-white py-2 rounded-md">End Hackathon</DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader className="text-left">
-                              <DialogTitle>End Hackathon</DialogTitle>
-                              <DialogDescription>
-                                This action can not be undone. This will mark this hackathon as ended, no further actions would be possible.
-                              </DialogDescription>
-                            </DialogHeader>
-                            <Button onClick={handleEndHackathon} variant={'destructive'}>
-                              Confirm
-                            </Button>
-                          </DialogContent>
-                        </Dialog>
+                        <Button onClick={() => router.push('/admin/live/prizes')} className="w-full" variant="destructive">
+                          End Hackathon
+                        </Button>
                       )}
                     </div>
                   )}

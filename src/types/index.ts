@@ -792,7 +792,7 @@ export interface HackathonPrize {
   track?: HackathonTrack;
   description?: string;
   amount: number;
-  team?: HackathonTeam
+  team?: HackathonTeam;
 }
 
 export interface HackathonSponsor {
@@ -882,6 +882,7 @@ export interface HackathonRoundTeamScore {
   hackathonRoundTeamScoreCardID: string;
   hackathonRoundScoreMetricID: string;
   score: string;
+  overallScore: string;
 }
 
 export interface HackathonHistory {
